@@ -1,0 +1,202 @@
+[
+  {
+    "theme": "css",
+    "type": "quiz",
+    "question": "Quel sélecteur CSS cible un élément par son ID 'titre' ?",
+    "choices": [".titre", "#titre", "titre", "*titre"],
+    "answer": 1,
+    "explanation": "# pour un id, . pour une classe, le nom seul pour une balise.",
+    "difficulty": 1
+  },
+  {
+    "theme": "css",
+    "type": "quiz",
+    "question": "Comment mettre le texte en rouge ?",
+    "choices": ["background: red", "color: red", "font-color: red", "text: red"],
+    "answer": 1,
+    "explanation": "color contrôle la couleur du texte. background contrôle l'arrière-plan.",
+    "difficulty": 1
+  },
+  {
+    "theme": "css",
+    "type": "quiz",
+    "question": "Que représente le 'box model' en CSS ?",
+    "choices": [
+      "Une bibliothèque de design",
+      "Le découpage de chaque élément : content + padding + border + margin",
+      "Un type de positionnement",
+      "Un format d'image"
+    ],
+    "answer": 1,
+    "explanation": "Tout élément HTML est une boîte composée de : contenu, padding (intérieur), border, margin (extérieur).",
+    "difficulty": 1
+  },
+  {
+    "theme": "css",
+    "type": "quiz",
+    "question": "Quelle déclaration applique 16px d'espace INTÉRIEUR ?",
+    "choices": ["margin: 16px", "padding: 16px", "border: 16px", "spacing: 16px"],
+    "answer": 1,
+    "explanation": "padding = intérieur (entre contenu et bordure). margin = extérieur (entre bordure et voisins).",
+    "difficulty": 1
+  },
+  {
+    "theme": "css",
+    "type": "quiz",
+    "question": "Que fait `box-sizing: border-box` ?",
+    "choices": [
+      "Ajoute une bordure",
+      "Inclut padding et border DANS la largeur définie (mise en page prévisible)",
+      "Active les bordures arrondies",
+      "Centre l'élément"
+    ],
+    "answer": 1,
+    "explanation": "Sans border-box, .card { width: 300px; padding: 20px } fait 340px de large. Avec, c'est 300px exactement.",
+    "difficulty": 2
+  },
+  {
+    "theme": "css",
+    "type": "quiz",
+    "question": "Sur quel élément applique-t-on `display: flex` ?",
+    "choices": [
+      "Sur l'enfant qu'on veut centrer",
+      "Sur le parent (le conteneur)",
+      "Sur <body>",
+      "N'importe lequel"
+    ],
+    "answer": 1,
+    "explanation": "Toujours sur le parent. Ce sont ses enfants directs qui deviennent flex items.",
+    "difficulty": 1
+  },
+  {
+    "theme": "css",
+    "type": "quiz",
+    "question": "Comment centrer parfaitement un enfant dans son parent ?",
+    "choices": [
+      "text-align: center",
+      "margin: auto",
+      "display: flex; justify-content: center; align-items: center sur le parent",
+      "position: center"
+    ],
+    "answer": 2,
+    "explanation": "Le snippet à connaître par cœur. justify-content centre sur l'axe principal, align-items sur le perpendiculaire.",
+    "difficulty": 2
+  },
+  {
+    "theme": "css",
+    "type": "quiz",
+    "question": "Que fait `flex: 1` sur un enfant flex ?",
+    "choices": [
+      "Lui donne 1px de large",
+      "Lui dit de prendre tout l'espace disponible (et de partager équitablement avec d'autres flex: 1)",
+      "Le cache",
+      "L'aligne à droite"
+    ],
+    "answer": 1,
+    "explanation": "flex: 1 = flex-grow: 1. Si plusieurs enfants ont flex: 1, ils se partagent l'espace à parts égales.",
+    "difficulty": 2
+  },
+  {
+    "theme": "css",
+    "type": "quiz",
+    "question": "Quelle unité s'adapte à la taille de police de l'élément racine <html> ?",
+    "choices": ["px", "em", "rem", "%"],
+    "answer": 2,
+    "explanation": "rem = root em. Toujours relatif à <html>. em est relatif au PARENT (peut surprendre).",
+    "difficulty": 2
+  },
+  {
+    "theme": "css",
+    "type": "quiz",
+    "question": "Quelle est la différence entre Flexbox et Grid ?",
+    "choices": [
+      "Aucune",
+      "Flex est 1D (un axe), Grid est 2D (lignes ET colonnes)",
+      "Flex est obsolète",
+      "Grid ne marche que dans les tableaux"
+    ],
+    "answer": 1,
+    "explanation": "Flex aligne sur UN axe. Grid place dans une vraie grille 2D. Souvent on combine les deux.",
+    "difficulty": 2
+  },
+  {
+    "theme": "css",
+    "type": "quiz",
+    "question": "Que représente l'unité `fr` en CSS Grid ?",
+    "choices": [
+      "1 pixel",
+      "Une fraction de l'espace disponible",
+      "Une unité française",
+      "Une unité de typographie"
+    ],
+    "answer": 1,
+    "explanation": "1fr = 1 part. `200px 1fr 1fr` = 200px fixes + 2 colonnes qui se partagent le reste.",
+    "difficulty": 2
+  },
+  {
+    "theme": "css",
+    "type": "quiz",
+    "question": "Quelles propriétés sont les meilleures à animer pour 60 fps ?",
+    "choices": [
+      "width, height, top, left",
+      "transform et opacity",
+      "margin et padding",
+      "font-size et color"
+    ],
+    "answer": 1,
+    "explanation": "transform/opacity sont gérées par le compositeur GPU sans recalcul de layout. Les autres forcent un recalc coûteux.",
+    "difficulty": 2
+  },
+  {
+    "theme": "css",
+    "type": "challenge",
+    "prompt": "Écris specificity(selector) qui retourne la spécificité CSS sous forme [ids, classes, elements]. On compte les # (ids), . (classes/attrs/pseudo-classes), et balises (mots qui ne commencent pas par # ou .).\n\nExemple : specificity('#nav .item a') → [1, 1, 1]",
+    "starterCode": "function specificity(selector) {\n  // TODO : compte ids, classes/pseudo, balises\n  return [0, 0, 0];\n}",
+    "tests": [
+      { "label": "id seul", "input": ["#main"], "expected": [1, 0, 0] },
+      { "label": "classe et balise", "input": [".btn a"], "expected": [0, 1, 1] },
+      { "label": "combiné", "input": ["#nav .item a"], "expected": [1, 1, 1] }
+    ],
+    "hint": "Utilise des regex : (selector.match(/#[\\w-]+/g) || []).length pour les ids, etc. Pour les balises, sépare par espace et compte les tokens qui commencent par une lettre.",
+    "difficulty": 3
+  },
+  {
+    "theme": "css",
+    "type": "challenge",
+    "prompt": "Écris pxToRem(px, base = 16) qui convertit une valeur en pixels vers des rem (string avec l'unité). Base par défaut : 16px.\n\nExemples : pxToRem(32) → '2rem', pxToRem(24) → '1.5rem'",
+    "starterCode": "function pxToRem(px, base = 16) {\n  // TODO : retourne (px / base) + 'rem'\n  return '0rem';\n}",
+    "tests": [
+      { "label": "32px → 2rem", "input": [32], "expected": "2rem" },
+      { "label": "24px → 1.5rem", "input": [24], "expected": "1.5rem" },
+      { "label": "base custom", "input": [20, 10], "expected": "2rem" }
+    ],
+    "hint": "(px / base) + 'rem'. Pas besoin de toFixed sauf si tu veux 1.50rem.",
+    "difficulty": 1
+  },
+  {
+    "theme": "css",
+    "type": "challenge",
+    "prompt": "Écris parseColor(hex) qui prend une couleur HEX courte (#abc) ou longue (#aabbcc) et retourne [r, g, b] (0-255).\n\nExemples : parseColor('#fff') → [255, 255, 255], parseColor('#1a2b3c') → [26, 43, 60]",
+    "starterCode": "function parseColor(hex) {\n  // TODO : enlève le #, étend si format court (#abc → #aabbcc), parse en RGB\n  return [0, 0, 0];\n}",
+    "tests": [
+      { "label": "blanc court", "input": ["#fff"], "expected": [255, 255, 255] },
+      { "label": "noir long", "input": ["#000000"], "expected": [0, 0, 0] },
+      { "label": "couleur quelconque", "input": ["#1a2b3c"], "expected": [26, 43, 60] }
+    ],
+    "hint": "Slice le #. Si length=3, doublez chaque caractère (a → aa). Ensuite parseInt(slice(0,2), 16), etc.",
+    "difficulty": 2
+  },
+  {
+    "theme": "css",
+    "type": "challenge",
+    "prompt": "Écris contrastRatio(rgb1, rgb2) qui calcule le ratio de contraste WCAG entre 2 couleurs RGB. Formule simplifiée :\n\n1. Pour chaque couleur, calculer la luminance L = 0.299*r + 0.587*g + 0.114*b (sur 0-255), normalisée (/255).\n2. ratio = (max(L1, L2) + 0.05) / (min(L1, L2) + 0.05)\n3. Arrondi à 2 décimales.\n\nExemple : contrastRatio([0,0,0], [255,255,255]) → 21",
+    "starterCode": "function contrastRatio(rgb1, rgb2) {\n  // TODO : calcule luminance puis ratio WCAG simplifié\n  return 1;\n}",
+    "tests": [
+      { "label": "noir vs blanc", "input": [[0, 0, 0], [255, 255, 255]], "expected": 21 },
+      { "label": "même couleur", "input": [[100, 100, 100], [100, 100, 100]], "expected": 1 },
+      { "label": "blanc vs gris moyen", "input": [[128, 128, 128], [255, 255, 255]], "expected": 1.9 }
+    ],
+    "hint": "Luminance par canal puis somme pondérée, normalise /255. Ratio = (max+0.05)/(min+0.05). Math.round(x * 100) / 100.",
+    "difficulty": 3
+  }
+]

@@ -1,0 +1,520 @@
+[
+  {
+    "slug": "html-basics",
+    "theme": "html",
+    "title": "HTML : structure d'une page",
+    "summary": "Comprendre comment une page web est construite : doctype, head, body, balises essentielles.",
+    "level": 1,
+    "sections": [
+      {
+        "heading": "Qu'est-ce que HTML ?",
+        "body": "HTML signifie **HyperText Markup Language** — « langage de balisage hypertexte ». C'est le langage qu'utilise tout navigateur (Chrome, Firefox, Safari…) pour comprendre **ce qu'il doit afficher**.\n\nUne page HTML décrit la **structure** du contenu : où sont les titres, les paragraphes, les images, les liens. Elle ne décrit PAS l'apparence (c'est le rôle du CSS), ni le comportement (rôle du JavaScript)."
+      },
+      {
+        "heading": "Une balise : 3 parties",
+        "body": "Tout repose sur des **balises**. Une balise typique a 3 parties :\n• la balise ouvrante : `<p>`\n• le contenu : `Bonjour`\n• la balise fermante : `</p>`\n\nCertaines balises sont **auto-fermantes** (vides) : `<img />`, `<br />`, `<input />`. Elles n'ont pas de contenu et donc pas de balise fermante."
+      },
+      {
+        "heading": "Anatomie d'une balise complète",
+        "body": "Voilà comment lire une balise classique avec un attribut :",
+        "code": {
+          "lang": "html",
+          "value": "<a href=\"https://devboost.app\">DevBoost</a>\n\n<!--\n  <a>            balise ouvrante (ici : un lien)\n  href=\"...\"     attribut (paramètre de la balise)\n  DevBoost       contenu (le texte du lien)\n  </a>           balise fermante\n-->"
+        }
+      },
+      {
+        "heading": "Squelette minimal d'une page",
+        "body": "Toute page web suit la même structure de base. **Apprends-la par cœur** : tu vas la réécrire des centaines de fois.",
+        "code": {
+          "lang": "html",
+          "value": "<!DOCTYPE html>\n<html lang=\"fr\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\"\n          content=\"width=device-width, initial-scale=1.0\" />\n    <title>Titre de l'onglet</title>\n  </head>\n  <body>\n    <h1>Bonjour le monde</h1>\n    <p>Ma première page web.</p>\n  </body>\n</html>"
+        }
+      },
+      {
+        "heading": "<head> vs <body> : invisible vs visible",
+        "body": "• Le `<head>` contient les **méta-données** : titre de l'onglet, encodage, viewport, liens vers les feuilles CSS, scripts. Rien n'y est affiché à l'écran.\n• Le `<body>` contient tout ce que l'utilisateur voit : titres, paragraphes, images, boutons…\n\nLa balise `<meta charset=\"UTF-8\" />` est CRUCIALE : sans elle, les accents (é, à, ç) peuvent s'afficher comme `Ã©`. La balise viewport rend la page responsive sur mobile."
+      },
+      {
+        "heading": "Les balises de texte essentielles",
+        "body": "Apprends ces balises avant tout le reste :\n• `<h1>` à `<h6>` : titres, du plus important au moins important. Un seul `<h1>` par page.\n• `<p>` : paragraphe.\n• `<strong>` : texte important (typiquement gras).\n• `<em>` : texte mis en évidence (typiquement italique).\n• `<br />` : saut de ligne forcé (à utiliser avec parcimonie).\n• `<hr />` : séparateur horizontal.",
+        "code": {
+          "lang": "html",
+          "value": "<h1>Mon blog</h1>\n<h2>Article 1</h2>\n<p>Bienvenue sur <strong>DevBoost</strong>.\nC'est <em>vraiment</em> cool.</p>\n<hr />\n<p>Ligne 1<br />Ligne 2</p>"
+        }
+      },
+      {
+        "heading": "Les listes",
+        "body": "Trois types de listes :\n• `<ul>` (unordered list) : liste à puces.\n• `<ol>` (ordered list) : liste numérotée.\n• `<li>` (list item) : un élément de liste, à mettre dans un `<ul>` ou un `<ol>`.",
+        "code": {
+          "lang": "html",
+          "value": "<ul>\n  <li>Pomme</li>\n  <li>Banane</li>\n  <li>Cerise</li>\n</ul>\n\n<ol>\n  <li>Réveil</li>\n  <li>Café</li>\n  <li>Coder</li>\n</ol>"
+        }
+      },
+      {
+        "heading": "Les liens et l'attribut href",
+        "body": "Un lien = une balise `<a>` (anchor) avec un attribut `href` (HyperText Reference) qui pointe vers une URL.\n\n• URL absolue : commence par `https://` → renvoie vers un autre site.\n• URL relative : commence par `/` ou un nom → renvoie sur ton propre site.\n• `mailto:` : ouvre le client mail.\n• `target=\"_blank\"` ouvre dans un nouvel onglet (ajoute toujours `rel=\"noopener\"` pour la sécurité).",
+        "code": {
+          "lang": "html",
+          "value": "<a href=\"https://example.com\">Site externe</a>\n<a href=\"/contact\">Page contact</a>\n<a href=\"mailto:hi@x.fr\">Email</a>\n<a href=\"https://x.fr\"\n   target=\"_blank\"\n   rel=\"noopener\">Nouvel onglet</a>"
+        }
+      },
+      {
+        "heading": "Les images : <img />",
+        "body": "Balise auto-fermante avec **2 attributs obligatoires** :\n• `src` : l'adresse de l'image (URL absolue ou relative).\n• `alt` : un texte alternatif décrivant l'image, lu par les lecteurs d'écran et affiché si l'image ne charge pas.\n\nLaisser un `alt=\"\"` vide est OK pour une image purement décorative. Mais il ne faut JAMAIS oublier l'attribut.",
+        "code": {
+          "lang": "html",
+          "value": "<img src=\"/logo.png\" alt=\"Logo DevBoost\" />\n\n<!-- image décorative : alt vide -->\n<img src=\"/sep.png\" alt=\"\" />\n\n<!-- avec dimensions : evite les sauts de mise en page -->\n<img src=\"hero.jpg\"\n     alt=\"Vue de Paris\"\n     width=\"800\"\n     height=\"400\" />"
+        }
+      },
+      {
+        "heading": "Imbrication et indentation",
+        "body": "Les balises s'imbriquent comme des **poupées russes** : une balise ouverte doit être fermée AVANT d'en fermer une autre ouverte plus tard.\n\nPour rester lisible, **indente toujours** ton code (2 espaces par niveau d'imbrication). Ce n'est pas obligatoire pour le navigateur, mais essentiel pour toi et tes collègues.",
+        "code": {
+          "lang": "html",
+          "value": "<!-- ✅ Bonne imbrication -->\n<div>\n  <p>Bonjour <strong>Léa</strong>.</p>\n</div>\n\n<!-- ❌ Mauvaise imbrication : <strong> ferme apres </p> -->\n<div>\n  <p>Bonjour <strong>Léa</p></strong>\n</div>"
+        }
+      },
+      {
+        "heading": "Les pièges classiques du débutant",
+        "body": "• **Oublier le `<!DOCTYPE html>`** → le navigateur passe en « quirks mode » imprévisible.\n• **Oublier `meta charset`** → caractères accentués cassés.\n• **Oublier `alt`** sur une image → page non accessible.\n• **Plusieurs `<h1>`** sur une page → mauvaise structure pour le SEO.\n• Confondre **id** (unique sur la page) et **class** (réutilisable)."
+      },
+      {
+        "heading": "À retenir",
+        "body": "• Une page HTML = `<!DOCTYPE html>` + `<html>` + `<head>` + `<body>`.\n• Toujours mettre `<meta charset=\"UTF-8\" />` et le viewport.\n• Un seul `<h1>` par page, puis `<h2>`, `<h3>`...\n• Les images ont TOUJOURS un `alt`.\n• Indente ton code. Pour de vrai."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Que se passe-t-il si on oublie `<!DOCTYPE html>` au début d'une page ?",
+        "choices": [
+          "Rien, c'est optionnel",
+          "Le navigateur passe en mode 'quirks' avec un comportement imprévisible",
+          "La page ne s'affiche pas du tout",
+          "Les balises ne fonctionnent plus"
+        ],
+        "answer": 1,
+        "explanation": "Sans doctype, le navigateur utilise un mode legacy compatible avec les vieux sites — ça casse la mise en page de manière subtile."
+      },
+      {
+        "question": "Quelle balise est auto-fermante ?",
+        "choices": ["<p>", "<div>", "<img />", "<a>"],
+        "answer": 2,
+        "explanation": "<img> est une balise vide (sans contenu). Elle s'écrit <img src=\"...\" alt=\"...\" /> sans </img>."
+      },
+      {
+        "question": "Comment ouvrir un lien dans un nouvel onglet en toute sécurité ?",
+        "choices": [
+          "<a href=\"...\" newtab>",
+          "<a href=\"...\" target=\"_blank\">",
+          "<a href=\"...\" target=\"_blank\" rel=\"noopener\">",
+          "<a href=\"...\" external=\"true\">"
+        ],
+        "answer": 2,
+        "explanation": "target=\"_blank\" ouvre dans un nouvel onglet, mais sans rel=\"noopener\" la nouvelle page peut accéder à la page d'origine via window.opener (faille de sécurité)."
+      },
+      {
+        "question": "Combien de balises <h1> recommande-t-on par page ?",
+        "choices": ["Aucune", "Une seule", "Une par section", "Autant qu'on veut"],
+        "answer": 1,
+        "explanation": "Un seul <h1> = le titre principal de la page. Les autres niveaux (h2, h3...) structurent ensuite."
+      },
+      {
+        "question": "Quelle est la différence entre `id` et `class` ?",
+        "choices": [
+          "Aucune, c'est interchangeable",
+          "id sert au CSS, class au JavaScript",
+          "id est unique sur la page, class peut être réutilisé",
+          "id est obsolète"
+        ],
+        "answer": 2,
+        "explanation": "Un id ne doit apparaître qu'UNE fois dans la page (comme une carte d'identité). Une class peut être posée sur autant d'éléments qu'on veut."
+      }
+    ]
+  },
+  {
+    "slug": "html-formulaires",
+    "theme": "html",
+    "title": "Formulaires : récolter de la donnée",
+    "summary": "Inputs, labels, validation : tout ce qu'il faut pour faire des formulaires solides et accessibles.",
+    "level": 2,
+    "sections": [
+      {
+        "heading": "À quoi sert un formulaire ?",
+        "body": "Un formulaire (`<form>`) sert à **récolter des données** auprès de l'utilisateur : connexion, inscription, contact, recherche, paiement…\n\nLes données saisies sont envoyées à un serveur (PHP, Node, etc.) ou traitées en JavaScript directement dans la page."
+      },
+      {
+        "heading": "Squelette d'un formulaire",
+        "body": "Toujours dans cet ordre :",
+        "code": {
+          "lang": "html",
+          "value": "<form action=\"/contact\" method=\"POST\">\n  <label for=\"email\">Email</label>\n  <input id=\"email\"\n         name=\"email\"\n         type=\"email\"\n         required />\n  <button type=\"submit\">Envoyer</button>\n</form>"
+        }
+      },
+      {
+        "heading": "L'attribut name : essentiel",
+        "body": "C'est `name` (pas `id`) qui définit la **clé** sous laquelle la valeur sera envoyée au serveur.\n\nUn champ sans `name` → sa valeur n'est pas envoyée. C'est le piège #1 du débutant."
+      },
+      {
+        "heading": "L'attribut type : la règle d'or",
+        "body": "Toujours utiliser le **type le plus précis** disponible. Le navigateur fournira gratuitement :\n• le bon clavier sur mobile (numérique pour `tel`, email avec @ pour `email`)\n• une validation native (`type=\"email\"` refuse `pasunemail`)\n• des contrôles adaptés (date picker, color picker…)",
+        "code": {
+          "lang": "html",
+          "value": "<input type=\"text\" />      <!-- defaut -->\n<input type=\"email\" />\n<input type=\"password\" />\n<input type=\"number\" />\n<input type=\"tel\" />\n<input type=\"url\" />\n<input type=\"date\" />\n<input type=\"time\" />\n<input type=\"checkbox\" />\n<input type=\"radio\" />\n<input type=\"color\" />\n<input type=\"file\" />"
+        }
+      },
+      {
+        "heading": "Labels : indispensables pour l'accessibilité",
+        "body": "Toujours associer chaque champ à un `<label>` via `for` (qui correspond à `id` du champ). Bénéfices :\n• cliquer sur le label active le champ (confort)\n• les lecteurs d'écran annoncent le label\n• plus grosse zone cliquable sur mobile",
+        "code": {
+          "lang": "html",
+          "value": "<!-- ✅ Liaison explicite -->\n<label for=\"prenom\">Prénom</label>\n<input id=\"prenom\" name=\"prenom\" type=\"text\" />\n\n<!-- ✅ Variante : label englobant -->\n<label>\n  Prénom\n  <input name=\"prenom\" type=\"text\" />\n</label>"
+        }
+      },
+      {
+        "heading": "Validation native HTML",
+        "body": "Le navigateur peut valider le champ AVANT l'envoi du formulaire :\n• `required` : champ obligatoire\n• `minlength` / `maxlength` : longueur de la string\n• `min` / `max` : valeur numérique\n• `pattern=\"[A-Z]{3}\"` : regex personnalisée\n• `step=\"0.5\"` : pas pour un nombre",
+        "code": {
+          "lang": "html",
+          "value": "<input type=\"text\"\n       required\n       minlength=\"3\"\n       maxlength=\"30\" />\n\n<input type=\"number\" min=\"0\" max=\"100\" />\n\n<input type=\"text\"\n       pattern=\"[A-Z]{2}[0-9]{4}\"\n       title=\"2 lettres + 4 chiffres\" />"
+        }
+      },
+      {
+        "heading": "Textarea, select et options",
+        "body": "Au-delà de `<input>`, deux balises essentielles :",
+        "code": {
+          "lang": "html",
+          "value": "<!-- Texte multilignes -->\n<label for=\"msg\">Message</label>\n<textarea id=\"msg\" name=\"msg\" rows=\"4\"></textarea>\n\n<!-- Liste déroulante -->\n<label for=\"pays\">Pays</label>\n<select id=\"pays\" name=\"pays\">\n  <option value=\"fr\">France</option>\n  <option value=\"be\">Belgique</option>\n  <option value=\"ch\">Suisse</option>\n</select>"
+        }
+      },
+      {
+        "heading": "Checkboxes et radios",
+        "body": "• **Checkbox** : zéro, une ou plusieurs options. Chaque case est indépendante.\n• **Radio** : une seule option choisie parmi N. Tous les radios qui partagent le même `name` forment un groupe.",
+        "code": {
+          "lang": "html",
+          "value": "<!-- Checkbox : choix multiples -->\n<label>\n  <input type=\"checkbox\" name=\"hobbies\" value=\"code\" />\n  Coder\n</label>\n<label>\n  <input type=\"checkbox\" name=\"hobbies\" value=\"musique\" />\n  Musique\n</label>\n\n<!-- Radio : choix unique (memes name !) -->\n<label>\n  <input type=\"radio\" name=\"taille\" value=\"S\" />\n  S\n</label>\n<label>\n  <input type=\"radio\" name=\"taille\" value=\"M\" />\n  M\n</label>"
+        }
+      },
+      {
+        "heading": "placeholder ≠ label",
+        "body": "Le `placeholder` est un texte gris qui DISPARAÎT dès qu'on tape. Il sert à donner un exemple, **pas** à remplacer un label. Sans label, l'utilisateur oublie ce qu'on lui demande dès qu'il commence à taper.",
+        "code": {
+          "lang": "html",
+          "value": "<!-- ❌ placeholder seul : pas accessible -->\n<input type=\"email\"\n       placeholder=\"Votre email\" />\n\n<!-- ✅ label + placeholder en bonus -->\n<label for=\"email\">Email</label>\n<input id=\"email\"\n       type=\"email\"\n       placeholder=\"vous@exemple.fr\" />"
+        }
+      },
+      {
+        "heading": "Boutons d'un formulaire",
+        "body": "Trois `type` possibles :\n• `submit` : envoie le formulaire (par défaut si tu mets `<button>` dans un form !).\n• `reset` : remet tous les champs à leur valeur initiale (rarement utile).\n• `button` : ne fait rien d'automatique, à utiliser pour du JS custom.\n\n**Toujours préciser** `type=\"button\"` quand tu fais un bouton non-submit dans un form, sinon il submit par défaut au clic.",
+        "code": {
+          "lang": "html",
+          "value": "<form>\n  <button type=\"submit\">Envoyer</button>\n  <button type=\"button\" onclick=\"...\">\n    Action JS\n  </button>\n</form>"
+        }
+      },
+      {
+        "heading": "À retenir",
+        "body": "• Un `<form>` avec `action` (URL) et `method` (GET ou POST).\n• Chaque champ a un `name` (sinon il n'est pas envoyé).\n• Chaque champ a un `<label>` associé.\n• Utilise le `type` le plus précis (`email`, `tel`, `number`...).\n• Validation native : `required`, `min`, `max`, `pattern`.\n• `placeholder` ne remplace JAMAIS un label."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Quel attribut détermine la clé sous laquelle la valeur est envoyée au serveur ?",
+        "choices": ["id", "name", "type", "value"],
+        "answer": 1,
+        "explanation": "name est la clé. id sert pour le label et le CSS/JS. Sans name, le champ n'est pas envoyé."
+      },
+      {
+        "question": "Pourquoi `placeholder` ne remplace-t-il pas un `label` ?",
+        "choices": [
+          "Le placeholder n'est pas pris en charge par tous les navigateurs",
+          "Le placeholder disparaît quand on tape, l'utilisateur oublie ce qu'il faut saisir",
+          "Le placeholder ne marche que sur mobile",
+          "Aucune raison, c'est équivalent"
+        ],
+        "answer": 1,
+        "explanation": "De plus, les lecteurs d'écran ne lisent pas toujours le placeholder. Toujours fournir un label visible."
+      },
+      {
+        "question": "Comment forcer un champ à être obligatoire ?",
+        "choices": [
+          "<input mandatory />",
+          "<input required />",
+          "<input type=\"required\" />",
+          "<input must />"
+        ],
+        "answer": 1,
+        "explanation": "L'attribut `required` (sans valeur) suffit. Le navigateur empêche l'envoi si le champ est vide."
+      },
+      {
+        "question": "Comment grouper plusieurs boutons radio pour un choix unique ?",
+        "choices": [
+          "Les mettre dans un <fieldset>",
+          "Leur donner le même attribut `name`",
+          "Leur donner le même attribut `id`",
+          "Utiliser <radio-group>"
+        ],
+        "answer": 1,
+        "explanation": "Tous les radios partageant le même `name` forment un groupe : un seul peut être sélectionné à la fois."
+      },
+      {
+        "question": "Que se passe-t-il si on met un `<button>` dans un `<form>` sans préciser son type ?",
+        "choices": [
+          "Rien",
+          "Il agit comme `type=\"button\"` par défaut",
+          "Il agit comme `type=\"submit\"` par défaut et envoie le formulaire",
+          "Une erreur est jetée"
+        ],
+        "answer": 2,
+        "explanation": "Piège classique : le défaut d'un <button> dans un <form> est `submit`. Toujours préciser type=\"button\" si tu n'as pas l'intention de submit."
+      }
+    ]
+  },
+  {
+    "slug": "html-medias",
+    "theme": "html",
+    "title": "Images, audio, vidéo : intégrer des médias",
+    "summary": "Optimiser les images, intégrer du son et de la vidéo correctement.",
+    "level": 2,
+    "sections": [
+      {
+        "heading": "Pourquoi soigner les médias ?",
+        "body": "Les images, audio et vidéos représentent souvent **80 à 90 % du poids** d'une page web. Un site qui charge mal coûte des visiteurs, surtout sur mobile en 4G ou en zone rurale.\n\nApprendre à bien intégrer les médias = sites plus rapides, meilleur SEO, expérience utilisateur supérieure."
+      },
+      {
+        "heading": "Les formats d'image à connaître",
+        "body": "• **JPG (.jpg/.jpeg)** : photos, gradients. Compression avec perte. Pas de transparence.\n• **PNG** : illustrations, icônes, captures d'écran. Compression sans perte. Supporte la transparence.\n• **SVG** : logos, icônes vectorielles. Reste net à toutes les tailles. Très léger pour des formes simples.\n• **WebP** : format moderne, 25-35 % plus léger que JPG. Très bien supporté en 2025.\n• **AVIF** : encore plus léger, support partiel. À utiliser avec un fallback."
+      },
+      {
+        "heading": "Toujours préciser width et height",
+        "body": "C'est CRUCIAL pour éviter les **CLS** (Cumulative Layout Shift) : ces sauts de mise en page quand l'image charge après le texte.\n\nLe navigateur réserve l'espace à l'avance grâce aux dimensions, et le contenu ne saute pas.",
+        "code": {
+          "lang": "html",
+          "value": "<!-- ❌ pas de dimensions : la page saute au chargement -->\n<img src=\"hero.jpg\" alt=\"Hero\" />\n\n<!-- ✅ dimensions explicites : pas de saut -->\n<img src=\"hero.jpg\"\n     alt=\"Hero\"\n     width=\"1200\"\n     height=\"600\" />"
+        }
+      },
+      {
+        "heading": "Lazy loading natif",
+        "body": "Ajoute `loading=\"lazy\"` pour ne charger les images que lorsqu'elles s'approchent du viewport. Énorme gain de performance pour les longues pages.\n\nPour les images **hors écran initialement** uniquement. Ne pas mettre lazy sur ton image hero (la première visible).",
+        "code": {
+          "lang": "html",
+          "value": "<img src=\"galerie/01.jpg\"\n     alt=\"Photo 1\"\n     loading=\"lazy\" />\n\n<!-- L'image se chargera quand elle approchera de l'écran -->"
+        }
+      },
+      {
+        "heading": "Images responsives : srcset et sizes",
+        "body": "Plutôt que de servir une image 2000px à un téléphone (gaspillage), tu peux fournir plusieurs versions et laisser le navigateur choisir.",
+        "code": {
+          "lang": "html",
+          "value": "<img src=\"hero-800.jpg\"\n     srcset=\"hero-400.jpg 400w,\n             hero-800.jpg 800w,\n             hero-1600.jpg 1600w\"\n     sizes=\"(max-width: 600px) 400px,\n            (max-width: 1000px) 800px,\n            1600px\"\n     alt=\"Hero\" />\n\n<!--\n  srcset : les versions disponibles + leur largeur réelle\n  sizes : à quelle taille l'image va s'afficher\n         selon le viewport\n-->"
+        }
+      },
+      {
+        "heading": "L'élément <picture>",
+        "body": "Pour servir des **formats différents** selon les capacités du navigateur (WebP/AVIF avec fallback JPG) ou des images **complètement différentes** selon la taille (art direction).",
+        "code": {
+          "lang": "html",
+          "value": "<picture>\n  <source srcset=\"hero.avif\" type=\"image/avif\" />\n  <source srcset=\"hero.webp\" type=\"image/webp\" />\n  <img src=\"hero.jpg\"\n       alt=\"Hero\"\n       width=\"1200\"\n       height=\"600\" />\n</picture>\n\n<!-- Le navigateur choisit le 1er format qu'il sait lire -->"
+        }
+      },
+      {
+        "heading": "L'audio : <audio>",
+        "body": "Pour intégrer un fichier audio (mp3, ogg, wav). Toujours mettre `controls` pour que l'utilisateur puisse jouer/mettre en pause.\n\nÉvite `autoplay` (interdit par défaut sur mobile et bloqué par les navigateurs sans interaction).",
+        "code": {
+          "lang": "html",
+          "value": "<audio controls src=\"musique.mp3\">\n  Votre navigateur ne supporte pas l'audio.\n</audio>\n\n<!-- Plusieurs sources pour compatibilité -->\n<audio controls>\n  <source src=\"audio.opus\" type=\"audio/opus\" />\n  <source src=\"audio.mp3\" type=\"audio/mpeg\" />\n</audio>"
+        }
+      },
+      {
+        "heading": "La vidéo : <video>",
+        "body": "Même principe que `<audio>`, mais avec une image et plus d'attributs utiles :\n• `poster` : image affichée avant la lecture.\n• `controls` : barre de lecture native.\n• `muted` : son désactivé (obligatoire si tu veux `autoplay` sur mobile).\n• `playsinline` : jouer sur place sur iOS (sinon, plein écran auto).\n• `loop` : lecture en boucle.",
+        "code": {
+          "lang": "html",
+          "value": "<video controls\n       poster=\"thumb.jpg\"\n       width=\"800\"\n       height=\"450\">\n  <source src=\"video.webm\" type=\"video/webm\" />\n  <source src=\"video.mp4\" type=\"video/mp4\" />\n  Vidéo non supportée.\n</video>\n\n<!-- Hero video sans son, autoplay-friendly -->\n<video autoplay muted loop playsinline\n       src=\"hero.mp4\"></video>"
+        }
+      },
+      {
+        "heading": "Iframes : embed depuis une autre source",
+        "body": "Une `<iframe>` permet d'intégrer une autre page web (YouTube, Maps, formulaire externe…). Toujours préciser `title` pour l'accessibilité.",
+        "code": {
+          "lang": "html",
+          "value": "<iframe\n  src=\"https://www.youtube.com/embed/VIDEO_ID\"\n  title=\"Vidéo de démo DevBoost\"\n  width=\"560\"\n  height=\"315\"\n  allowfullscreen></iframe>"
+        }
+      },
+      {
+        "heading": "À retenir",
+        "body": "• Toujours `width` + `height` sur les images : zéro saut de mise en page.\n• `loading=\"lazy\"` pour les images hors écran initial.\n• `srcset` + `sizes` pour servir la bonne taille selon l'écran.\n• `<picture>` pour fournir WebP/AVIF avec fallback.\n• `<audio>` et `<video>` : toujours `controls` (sauf cas hero spécifique).\n• `playsinline` + `muted` pour autoplay vidéo sur mobile."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Quel format est idéal pour un logo simple qui doit rester net à toutes les tailles ?",
+        "choices": ["JPG", "PNG", "SVG", "WebP"],
+        "answer": 2,
+        "explanation": "SVG = vectoriel, infiniment scalable. PNG/JPG/WebP sont matriciels et pixelisent en agrandissant."
+      },
+      {
+        "question": "Pourquoi mettre width et height sur une <img /> ?",
+        "choices": [
+          "Pour respecter le ratio",
+          "Pour réserver l'espace et éviter les sauts de mise en page (CLS)",
+          "C'est obligatoire en HTML5",
+          "Pour le SEO uniquement"
+        ],
+        "answer": 1,
+        "explanation": "Sans dimensions, le navigateur ne sait pas quel espace réserver et la page 'saute' quand l'image charge — mauvaise UX et pénalité SEO."
+      },
+      {
+        "question": "Que fait `loading=\"lazy\"` ?",
+        "choices": [
+          "Réduit la qualité de l'image",
+          "Différer le chargement jusqu'à ce que l'image approche du viewport",
+          "Empêche l'image de charger",
+          "Charge l'image en basse résolution d'abord"
+        ],
+        "answer": 1,
+        "explanation": "Excellent pour les longues pages. Ne pas l'appliquer aux images visibles dès l'arrivée (hero, header)."
+      },
+      {
+        "question": "Pour qu'une vidéo s'autoplay sur iPhone, quels attributs faut-il combiner ?",
+        "choices": [
+          "autoplay seul suffit",
+          "autoplay + controls",
+          "autoplay + muted + playsinline",
+          "autoplay + loop"
+        ],
+        "answer": 2,
+        "explanation": "Sans `muted`, iOS bloque l'autoplay. Sans `playsinline`, la vidéo passe en plein écran automatiquement."
+      },
+      {
+        "question": "À quoi sert l'élément `<picture>` ?",
+        "choices": [
+          "À afficher plusieurs images côte à côte",
+          "À donner un titre à une image",
+          "À fournir plusieurs sources alternatives (formats ou tailles) pour une même image",
+          "À remplacer <img>"
+        ],
+        "answer": 2,
+        "explanation": "Le navigateur choisit la première source qu'il sait lire, et tombe sur le <img> en fallback. Idéal pour servir AVIF/WebP avec un JPG de secours."
+      }
+    ]
+  },
+  {
+    "slug": "html-semantique",
+    "theme": "html",
+    "title": "Sémantique & accessibilité",
+    "summary": "Au-delà de <div> : balises sémantiques, attributs ARIA, navigation clavier.",
+    "level": 3,
+    "sections": [
+      {
+        "heading": "Pourquoi être sémantique ?",
+        "body": "Un `<div>` ne dit RIEN sur son rôle. Une `<nav>`, un `<article>`, un `<main>` portent du **sens**. Cela aide :\n• les **lecteurs d'écran** (utilisateurs malvoyants) à comprendre la structure et naviguer\n• les **moteurs de recherche** à savoir quelle partie est principale, quelle partie est secondaire\n• tes **collègues** à lire ton code\n• les **navigateurs en mode lecture** (Reader View) à extraire l'essentiel"
+      },
+      {
+        "heading": "Les grandes zones d'une page",
+        "body": "Au lieu de `<div class=\"header\">`, `<div class=\"main\">`, etc., utilise les balises sémantiques HTML5 :",
+        "code": {
+          "lang": "html",
+          "value": "<body>\n  <header>\n    <!-- logo, titre, nav principale -->\n    <nav>...</nav>\n  </header>\n\n  <main>\n    <!-- contenu PRINCIPAL et UNIQUE de la page -->\n    <article>\n      <h1>Titre</h1>\n      <section>...</section>\n      <section>...</section>\n    </article>\n    <aside>\n      <!-- contenu en marge : sidebar, pub, related -->\n    </aside>\n  </main>\n\n  <footer>\n    <!-- copyright, liens secondaires -->\n  </footer>\n</body>"
+        }
+      },
+      {
+        "heading": "<article> vs <section> vs <div>",
+        "body": "Choix piégeur. La règle :\n• **`<article>`** : un contenu **autonome** qui aurait du sens hors du site (article de blog, post réseau social, fiche produit, commentaire).\n• **`<section>`** : un regroupement **thématique** à l'intérieur d'un document, AVEC un titre (h1-h6).\n• **`<div>`** : juste un conteneur sans signification, à utiliser quand aucune balise sémantique ne convient — typiquement pour le styling."
+      },
+      {
+        "heading": "Les balises sémantiques de texte",
+        "body": "• `<strong>` : texte important (ex : avertissement). PAS juste « gras ».\n• `<em>` : mise en évidence (ex : insistance). PAS juste « italique ».\n• `<mark>` : surlignage (ex : termes d'une recherche).\n• `<code>` : fragment de code inline.\n• `<kbd>` : touche du clavier (ex : `<kbd>Ctrl</kbd> + <kbd>C</kbd>`).\n• `<time datetime=\"2025-01-15\">` : date/heure machine-lisible.\n• `<abbr title=\"...\">HTML</abbr>` : abréviation avec son sens complet."
+      },
+      {
+        "heading": "Le bon élément pour la bonne action",
+        "body": "**Règle d'or** : un clic qui navigue → `<a href>`, un clic qui agit → `<button>`. JAMAIS `<div onclick>`.\n\nPourquoi ? Un `<a>` ou `<button>` est :\n• focusable au Tab (navigation clavier gratuite)\n• activable à Entrée / Espace\n• annoncé correctement par les lecteurs d'écran\n\nUn `<div onclick>` ne fait RIEN de ça nativement — il faudrait ajouter tabindex, role, key handlers… Pour ré-implémenter ce que `<button>` fait gratuitement.",
+        "code": {
+          "lang": "html",
+          "value": "<!-- ❌ Anti-pattern -->\n<div onclick=\"...\" class=\"btn\">Sauvegarder</div>\n\n<!-- ✅ Vrai bouton -->\n<button type=\"button\" onclick=\"...\">\n  Sauvegarder\n</button>\n\n<!-- ✅ Vrai lien -->\n<a href=\"/profil\">Mon profil</a>"
+        }
+      },
+      {
+        "heading": "L'attribut alt en détail",
+        "body": "Trois cas selon l'intention :\n• **Image informative** (illustre un contenu) : `alt=\"description courte et utile\"`.\n• **Image décorative** (séparateur, fond) : `alt=\"\"` (vide). Indispensable de mettre l'attribut vide, pas de l'omettre.\n• **Image qui est aussi un lien** : alt = description de la destination, pas de l'image.",
+        "code": {
+          "lang": "html",
+          "value": "<!-- Informative -->\n<img src=\"chart.png\" alt=\"Ventes 2024 : +15% sur 1 an\" />\n\n<!-- Décorative -->\n<img src=\"separator.png\" alt=\"\" />\n\n<!-- Lien : alt decrit la destination -->\n<a href=\"/contact\">\n  <img src=\"mail-icon.svg\" alt=\"Nous contacter\" />\n</a>"
+        }
+      },
+      {
+        "heading": "Aria-label et aria-hidden",
+        "body": "Quand le HTML natif ne suffit pas, deux attributs ARIA simples couvrent 80 % des cas :\n• **`aria-label=\"...\"`** : nom accessible pour un élément sans texte visible (bouton icône).\n• **`aria-hidden=\"true\"`** : cache l'élément aux lecteurs d'écran (icônes décoratives, emojis purement visuels).",
+        "code": {
+          "lang": "html",
+          "value": "<!-- Bouton icône : pas de texte visible → aria-label -->\n<button aria-label=\"Fermer la fenêtre\">\n  <span aria-hidden=\"true\">✕</span>\n</button>\n\n<!-- Icône décorative à côté d'un texte → aria-hidden -->\n<button>\n  <span aria-hidden=\"true\">📥</span>\n  Télécharger\n</button>"
+        }
+      },
+      {
+        "heading": "Navigation clavier : test rapide",
+        "body": "**Test ta page sans souris** : appuie sur `Tab` pour passer d'élément en élément. Tu dois :\n• voir clairement où est le focus (anneau visible)\n• pouvoir activer chaque bouton/lien à `Entrée` ou `Espace`\n• ne pas être 'piégé' dans une zone (modale sans échappatoire)\n\nSi `Tab` saute des éléments interactifs, c'est qu'ils ne sont probablement pas des `<button>` ou `<a>` — corrige ça."
+      },
+      {
+        "heading": "Contraste et lisibilité",
+        "body": "Le contraste entre texte et fond doit respecter le ratio **WCAG AA** :\n• Texte normal : ratio **4.5:1** minimum.\n• Texte large (≥ 18pt ou ≥ 14pt gras) : ratio **3:1** minimum.\n\nUn texte gris clair sur fond blanc = inaccessible pour les déficients visuels (≈ 8 % de la population). Outils gratuits : DevTools Chrome, contrastchecker.com."
+      },
+      {
+        "heading": "Skip link : raccourci pour le clavier",
+        "body": "Un lien tout en haut du body, invisible par défaut, qui apparaît au Tab. Permet aux utilisateurs clavier de sauter la navigation pour aller direct au contenu principal. Standard sur les sites bien faits.",
+        "code": {
+          "lang": "html",
+          "value": "<body>\n  <a href=\"#main\" class=\"skip-link\">\n    Aller au contenu principal\n  </a>\n  <header>...</header>\n  <main id=\"main\">...</main>\n</body>\n\n<!-- CSS -->\n<style>\n  .skip-link {\n    position: absolute;\n    left: -9999px;\n  }\n  .skip-link:focus {\n    left: 0;\n    top: 0;\n  }\n</style>"
+        }
+      },
+      {
+        "heading": "À retenir",
+        "body": "• Préfère `<nav>`, `<main>`, `<article>` à `<div>` quand tu peux.\n• `<button>` pour agir, `<a href>` pour naviguer. Jamais `<div onclick>`.\n• Tout `<input>` a un `<label>`.\n• Toute image a un `alt` (vide si décorative).\n• `aria-label` sur les boutons icônes.\n• Test au clavier (Tab) sur tes pages.\n• Contraste minimum 4.5:1 pour le texte normal."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Quelle balise convient le mieux pour un commentaire de blog (autonome) ?",
+        "choices": ["<div>", "<section>", "<article>", "<aside>"],
+        "answer": 2,
+        "explanation": "Un commentaire est un contenu autonome qui pourrait exister seul (RSS, syndication). C'est exactement le rôle d'<article>."
+      },
+      {
+        "question": "Pourquoi éviter `<div onclick>` ?",
+        "choices": [
+          "C'est interdit en HTML5",
+          "Ça ne marche pas avec React",
+          "Ce n'est pas focusable au clavier ni annoncé par les lecteurs d'écran",
+          "C'est plus lent"
+        ],
+        "answer": 2,
+        "explanation": "Un <div> n'est pas une zone interactive native. Tab le saute, Entrée ne l'active pas. Préfère <button> qui fait tout ça gratuitement."
+      },
+      {
+        "question": "Pour une icône poubelle DANS un bouton 'Supprimer', que faut-il faire ?",
+        "choices": [
+          "Mettre alt=\"poubelle\" sur l'icône",
+          "Marquer l'icône aria-hidden=\"true\" car le texte du bouton suffit",
+          "Mettre aria-label=\"poubelle\" sur l'icône",
+          "Utiliser title=\"poubelle\""
+        ],
+        "answer": 1,
+        "explanation": "Le texte 'Supprimer' est déjà annoncé. Si on annonce aussi 'poubelle', c'est redondant. aria-hidden cache aux lecteurs d'écran les éléments purement décoratifs."
+      },
+      {
+        "question": "Quel est le ratio de contraste minimum WCAG AA pour du texte normal ?",
+        "choices": ["2:1", "3:1", "4.5:1", "7:1"],
+        "answer": 2,
+        "explanation": "4.5:1 minimum pour le texte normal, 3:1 pour le gros texte. 7:1 = niveau AAA (excellent)."
+      },
+      {
+        "question": "À quoi sert un 'skip link' en haut de page ?",
+        "choices": [
+          "Sauter une publicité",
+          "Permettre aux utilisateurs clavier d'accéder directement au contenu principal sans tabber dans la nav",
+          "Naviguer plus vite à la souris",
+          "Activer un raccourci JavaScript"
+        ],
+        "answer": 1,
+        "explanation": "Un utilisateur clavier qui doit Tab à travers 30 liens de menu pour accéder au contenu, à chaque page, c'est l'enfer. Le skip link y répond."
+      }
+    ]
+  }
+]

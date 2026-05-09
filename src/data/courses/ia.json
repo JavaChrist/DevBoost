@@ -1,0 +1,461 @@
+[
+  {
+    "slug": "ia-llm-comprendre",
+    "theme": "ia",
+    "title": "Comprendre les LLM",
+    "summary": "Tokens, contexte, température, hallucinations : la mécanique d'un modèle de langage.",
+    "level": 1,
+    "sections": [
+      {
+        "heading": "Qu'est-ce qu'un LLM ?",
+        "body": "**LLM** = Large Language Model. Un énorme réseau de neurones entraîné sur des milliards de pages web, livres, code… Il apprend à **prédire le mot suivant** étant donné un contexte.\n\nGPT-5, Claude 4.6 Sonnet, Gemini, Llama, Mistral… sont tous des LLM. Ils diffèrent par leur taille, leurs données d'entraînement, et leur post-training (RLHF, instruction tuning…)."
+      },
+      {
+        "heading": "Tokens : l'unité atomique",
+        "body": "Un LLM ne lit pas des mots, il lit des **tokens** — des morceaux de mots. Règle de pouce :\n• 1 token ≈ 4 caractères en anglais\n• 1 token ≈ 0,75 mot en français\n• Un mot rare ou un emoji peut prendre plusieurs tokens\n\nC'est crucial parce que les LLM sont **facturés au token** (input + output), et leur contexte est limité en tokens.",
+        "code": {
+          "lang": "js",
+          "value": "// Exemple : tokens approximatifs\n\"Bonjour\"           // ~2 tokens\n\"DevBoost\"          // ~3 tokens\n\"the cat sat\"       // ~3 tokens\n\"🚀\"                // 1-3 tokens\n\"function add() {}\" // ~5 tokens\n\n// Approximation grossière en JS :\nconst approxTokens = (s) => Math.ceil(s.length / 4);"
+        }
+      },
+      {
+        "heading": "La fenêtre de contexte",
+        "body": "C'est la **mémoire de travail** du modèle. Tout ce que tu envoies (system prompt + historique de conversation + ta question) doit tenir dedans.\n\n• GPT-3.5 : 16k tokens (vieux)\n• Claude 4.6 Sonnet : 200k tokens (~150 000 mots)\n• Gemini 2.5 : 2M tokens\n\nQuand on dépasse, il faut **tronquer** ou **résumer** l'historique. Un agent qui tourne longtemps doit gérer ça intelligemment."
+      },
+      {
+        "heading": "Température : créativité vs déterminisme",
+        "body": "Au moment de prédire le prochain token, le modèle calcule une **distribution de probabilité** sur tous les tokens possibles. La température contrôle comment on échantillonne :\n• `temperature: 0` → toujours le token le plus probable. Réponse déterministe (utile pour du code, des extractions JSON).\n• `temperature: 0.7` → équilibre par défaut. Naturelle pour de la conversation.\n• `temperature: 1.5+` → très créatif, parfois incohérent. Pour du brainstorming.",
+        "code": {
+          "lang": "js",
+          "value": "// Appel API typique\nawait openai.chat.completions.create({\n  model: 'gpt-5',\n  messages: [...],\n  temperature: 0,    // déterministe\n  // top_p: 0.9      // alternative à temperature\n  // max_tokens: 500 // limite la sortie\n});"
+        }
+      },
+      {
+        "heading": "Le piège des hallucinations",
+        "body": "Un LLM peut **inventer** avec aplomb : URL bidons, citations qui n'existent pas, fonctions qui n'ont jamais existé dans une lib. Pourquoi ?\n\nLe modèle est entraîné à produire du texte **plausible**, pas du texte **vrai**. Si tu demandes une info qu'il ne connaît pas, plutôt que dire « je ne sais pas », il génère ce qui ressemble le plus à une bonne réponse.\n\n**Mitigations** :\n• Lui demander explicitement de citer ses sources et de dire « je ne sais pas » si c'est le cas\n• Lui fournir le contexte (RAG : Retrieval-Augmented Generation)\n• Toujours vérifier les liens, citations, signatures de fonctions"
+      },
+      {
+        "heading": "Knowledge cutoff",
+        "body": "Chaque modèle a une **date limite de connaissance** (training cutoff). Au-delà, il ne sait rien :\n• Tu lui demandes la dernière version de React → il peut donner la 18 alors qu'on est à la 21\n• Une API a changé après son cutoff → il propose la vieille syntaxe\n\n**Réflexe** : pour une lib qui bouge vite, demande-lui d'**utiliser la doc** (s'il a un outil web) ou colle-lui la doc directement."
+      },
+      {
+        "heading": "Embeddings : le texte en vecteurs",
+        "body": "Un **embedding** transforme un texte en un vecteur de nombres (typiquement 1500 dimensions). Deux textes sémantiquement proches ont des vecteurs proches (similarité cosinus élevée).\n\nUtilisations :\n• **Recherche sémantique** : trouver des docs proches d'une question\n• **Clustering** : regrouper des textes similaires\n• **RAG** : ingrédient clé pour injecter du contexte pertinent dans un prompt"
+      },
+      {
+        "heading": "Coût et latence",
+        "body": "Deux contraintes à toujours avoir en tête :\n• **Coût** : facturé par million de tokens (input vs output, output souvent 3-5× plus cher). GPT-5 input ≈ $2/M, output ≈ $10/M. Multiplie par le volume.\n• **Latence** : 0,5-3 secondes minimum pour une réponse, plus si réponse longue. Pour de l'UX en temps réel, utiliser le **streaming** (le modèle envoie les tokens au fur et à mesure)."
+      },
+      {
+        "heading": "Open source vs closed source",
+        "body": "• **Closed** (GPT-5, Claude 4.6, Gemini) : meilleure qualité moyenne, API simple, mais tu dépends d'un fournisseur, tu envoies tes données ailleurs.\n• **Open** (Llama 4, Mistral, Qwen, DeepSeek) : tu peux les héberger toi-même (vie privée, coût, latence). Qualité de plus en plus comparable. Tu gères l'infra GPU.\n\nLe choix dépend de ta sensibilité données + budget + besoins."
+      },
+      {
+        "heading": "À retenir",
+        "body": "• Un LLM **prédit le prochain token** — c'est tout (et c'est déjà énorme).\n• Tokens ≈ chars/4. Compte-les pour le coût et la fenêtre de contexte.\n• `temperature: 0` pour code/extraction, 0.7 pour conversation.\n• Les LLM **hallucinent** — toujours vérifier les liens et signatures.\n• Knowledge cutoff = ne sait rien après une date donnée.\n• Embeddings = base de la recherche sémantique et du RAG."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Que prédit techniquement un LLM à chaque étape ?",
+        "choices": [
+          "La phrase complète d'un coup",
+          "Le prochain token le plus probable étant donné le contexte",
+          "Le sens caché de la question",
+          "Une réponse parmi N réponses pré-écrites"
+        ],
+        "answer": 1,
+        "explanation": "Un LLM est un prédicteur de prochain token, autorégressif. Il génère token par token, chaque nouveau token devenant contexte pour le suivant."
+      },
+      {
+        "question": "Pour de l'extraction JSON déterministe, quelle température choisir ?",
+        "choices": ["0", "0.7", "1", "1.5"],
+        "answer": 0,
+        "explanation": "temperature: 0 force le modèle à toujours choisir le token le plus probable → réponses reproductibles, parfait pour structurer une sortie."
+      },
+      {
+        "question": "Pourquoi un LLM peut-il « halluciner » une fonction qui n'existe pas ?",
+        "choices": [
+          "Il a un bug logiciel",
+          "Il est entraîné à produire du texte plausible, pas vrai",
+          "C'est un défaut spécifique aux versions gratuites",
+          "Cela n'arrive qu'avec les modèles open source"
+        ],
+        "answer": 1,
+        "explanation": "L'objectif d'entraînement est la vraisemblance statistique. Si la 'meilleure suite plausible' est une fonction inventée, il la produit avec aplomb."
+      },
+      {
+        "question": "À quoi sert un embedding ?",
+        "choices": [
+          "À chiffrer du texte avant envoi",
+          "À transformer un texte en vecteur de nombres pour mesurer une similarité sémantique",
+          "À compresser un fichier",
+          "À traduire d'une langue à une autre"
+        ],
+        "answer": 1,
+        "explanation": "Embedding = vecteur de N dimensions où la proximité géométrique reflète la proximité de sens. Base de la recherche sémantique."
+      },
+      {
+        "question": "Que signifie le 'knowledge cutoff' d'un modèle ?",
+        "choices": [
+          "La taille maximale de sa réponse",
+          "Le nombre de questions qu'il peut traiter par heure",
+          "La date après laquelle il ne sait plus rien (limite de ses données d'entraînement)",
+          "Sa température maximale"
+        ],
+        "answer": 2,
+        "explanation": "Si un modèle a un cutoff en mai 2024 et que tu lui demandes une info de 2026, il ne la connaît pas — il pourrait halluciner ou refuser."
+      }
+    ]
+  },
+  {
+    "slug": "ia-prompt-engineering",
+    "theme": "ia",
+    "title": "Prompt engineering",
+    "summary": "Écrire des prompts efficaces : structure, exemples, chain-of-thought, system prompts.",
+    "level": 2,
+    "sections": [
+      {
+        "heading": "Pourquoi c'est crucial",
+        "body": "La qualité de la sortie d'un LLM dépend **massivement** de la qualité de l'entrée. Un même modèle peut donner une réponse géniale ou catastrophique selon comment tu poses la question. C'est le **prompt engineering**.\n\nCe n'est pas un art mystique : c'est une discipline avec des patterns reproductibles."
+      },
+      {
+        "heading": "L'anatomie d'un message",
+        "body": "Un appel à un LLM se compose typiquement de :\n• **system prompt** : qui est le modèle, son rôle, ses contraintes (ex: « tu es un expert SQL »).\n• **user message** : ta question / ta demande.\n• **assistant message** : ses réponses précédentes (pour les conversations multi-tour).\n\nLe system prompt est **persistant** dans toute la conversation. C'est là qu'on cadre le comportement.",
+        "code": {
+          "lang": "js",
+          "value": "messages: [\n  {\n    role: 'system',\n    content: 'Tu es un assistant qui répond ' +\n             'UNIQUEMENT en JSON valide.'\n  },\n  {\n    role: 'user',\n    content: 'Donne-moi 3 idées de noms de chien.'\n  }\n]"
+        }
+      },
+      {
+        "heading": "Sois spécifique, donne le contexte",
+        "body": "Mauvais : « Écris un email ».\nBon : « Écris un email de 5 lignes pour annuler poliment un rendez-vous prévu demain, en proposant la semaine prochaine, ton signé Léa ».\n\nUn prompt court et vague → le modèle remplit les blancs (mal). Un prompt riche en contraintes → réponse ciblée."
+      },
+      {
+        "heading": "Few-shot : montrer des exemples",
+        "body": "Plutôt que d'expliquer ce que tu veux, **montre-le** avec 2-3 exemples. C'est souvent radical pour des transformations structurées.",
+        "code": {
+          "lang": "txt",
+          "value": "Convertis les phrases au style formel.\n\nExemples :\nFamilier : « Salut, ça gaze ? »\nFormel  : « Bonjour, comment allez-vous ? »\n\nFamilier : « J'crois qu'tu te trompes. »\nFormel  : « Je crois que vous vous trompez. »\n\nÀ traiter :\nFamilier : « Faut qu'on se voie. »\nFormel  : ?"
+        }
+      },
+      {
+        "heading": "Chain-of-thought : penser à voix haute",
+        "body": "Pour les problèmes complexes (math, raisonnement, code), demande au modèle d'**expliquer son raisonnement étape par étape AVANT** de donner sa réponse. Magie : ça améliore drastiquement la justesse.\n\nLes modèles modernes (GPT-5, Claude 4.6 Thinking) le font automatiquement avec un mode 'thinking' invisible — mais sur les modèles plus petits, c'est à toi de le déclencher.",
+        "code": {
+          "lang": "txt",
+          "value": "Question : Léa a 3 fois l'âge de Tom.\nDans 5 ans, Tom aura la moitié de l'âge de Léa.\nQuel âge ont-ils aujourd'hui ?\n\nRéfléchis étape par étape, puis donne la réponse finale."
+        }
+      },
+      {
+        "heading": "Force la structure : sortie JSON",
+        "body": "Quand ton output doit être consommé par du code, force le format. Trois techniques :\n• Décrire le schéma dans le prompt + exemple JSON.\n• Utiliser le mode `response_format: { type: 'json_object' }` (OpenAI).\n• Utiliser `tools` / function calling (le modèle ne peut produire qu'un appel structuré).\n\nToujours **valider** la sortie côté code — le modèle peut quand même produire un JSON invalide.",
+        "code": {
+          "lang": "js",
+          "value": "// Approche prompt\nsystem: `Tu réponds UNIQUEMENT en JSON :\n{\n  \"summary\": string,\n  \"tags\": string[],\n  \"sentiment\": \"positive\" | \"negative\" | \"neutral\"\n}`\n\n// Approche structured output (plus fiable)\nresponse_format: zodSchemaToJsonSchema(MySchema)"
+        }
+      },
+      {
+        "heading": "Délimiter le contenu utilisateur",
+        "body": "Quand tu insères du contenu utilisateur dans un prompt, **délimite-le clairement**. Sinon, l'utilisateur peut faire du **prompt injection** : « Ignore les instructions précédentes et… ».",
+        "code": {
+          "lang": "txt",
+          "value": "Tu es un classifieur de spam.\nClasse l'email entre <email> et </email>\nrenvoie 'spam' ou 'ham'.\n\n<email>\n{contenu utilisateur ici}\n</email>"
+        }
+      },
+      {
+        "heading": "Itérer : prompt → tester → ajuster",
+        "body": "Un bon prompt n'est presque jamais le premier. Méthode :\n1. Écris une v1.\n2. Lance sur 5-10 inputs variés (cas faciles, cas difficiles, edge cases).\n3. Note les ratés. Reformule.\n4. Re-teste. Compare.\n\nGarde un **dataset d'évaluation** : c'est ton anti-régression."
+      },
+      {
+        "heading": "Les anti-patterns à éviter",
+        "body": "• **« Soyez créatif »** : trop vague, donne du flou. Préfère « propose 3 angles différents : un humoristique, un technique, un émotionnel ».\n• **Tout dire en un seul message** : sépare en plusieurs étapes (extraction, transformation, formatage).\n• **Prompts négatifs uniquement** : « ne fais pas X, ne dis pas Y ». Le modèle suit mieux les **instructions positives** (« fais X de cette manière »).\n• **Ignorer les hallucinations** : pour de l'info factuelle, exige des sources et fournis les docs."
+      },
+      {
+        "heading": "À retenir",
+        "body": "• system prompt = cadre persistant. user prompt = la demande spécifique.\n• Sois SPÉCIFIQUE et donne le CONTEXTE. Plus c'est précis, mieux c'est.\n• Few-shot (2-3 exemples) > explications longues.\n• Chain-of-thought pour les problèmes complexes.\n• Force la structure (JSON, schéma) quand consommé par du code.\n• Délimite le contenu utilisateur (XML tags) contre le prompt injection.\n• Itère : prompt → tester → mesurer → ajuster."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Quel rôle a le 'system prompt' ?",
+        "choices": [
+          "C'est un message envoyé par le système d'exploitation",
+          "C'est un cadrage persistant qui définit le rôle/contraintes du modèle dans toute la conversation",
+          "C'est la réponse précédente du modèle",
+          "C'est ce qui est affiché à l'utilisateur"
+        ],
+        "answer": 1,
+        "explanation": "Le system prompt n'est pas envoyé à l'utilisateur. Il définit la 'personnalité' et les règles que le modèle suit dans tous ses messages."
+      },
+      {
+        "question": "Que veut dire 'few-shot prompting' ?",
+        "choices": [
+          "Donner peu d'instructions au modèle",
+          "Limiter le nombre de tokens en sortie",
+          "Inclure quelques exemples concrets dans le prompt pour montrer le format attendu",
+          "Lancer le prompt plusieurs fois et voter"
+        ],
+        "answer": 2,
+        "explanation": "Few-shot = quelques exemples (vs 'zero-shot' = aucun exemple). Très efficace pour guider une transformation structurée."
+      },
+      {
+        "question": "Pourquoi 'chain-of-thought' améliore-t-il les réponses sur des problèmes complexes ?",
+        "choices": [
+          "Ça réduit le coût",
+          "Ça force le modèle à dérouler son raisonnement étape par étape avant de répondre, ce qui réduit les erreurs",
+          "Ça met automatiquement la température à 0",
+          "Ça active un GPU plus puissant"
+        ],
+        "answer": 1,
+        "explanation": "Sans CoT, le modèle 'devine' la réponse d'un coup. Avec CoT, il décompose le problème — et corrige ses erreurs en chemin."
+      },
+      {
+        "question": "Quelle technique réduit le risque de 'prompt injection' ?",
+        "choices": [
+          "Augmenter la température",
+          "Utiliser des balises délimitant clairement le contenu utilisateur (ex: <user_input>)",
+          "Mettre le system prompt en majuscules",
+          "Désactiver le streaming"
+        ],
+        "answer": 1,
+        "explanation": "Les délimiteurs aident le modèle à distinguer 'instructions du dev' vs 'données utilisateur', et donc à ne pas exécuter les instructions cachées dans le contenu."
+      },
+      {
+        "question": "Quelle façon de demander une sortie JSON est la PLUS fiable ?",
+        "choices": [
+          "Demander 'réponds en JSON' dans le system prompt",
+          "Donner un exemple de JSON dans le prompt",
+          "Utiliser un mode 'structured output' / 'json_schema' du modèle (function calling)",
+          "Augmenter la temperature à 1"
+        ],
+        "answer": 2,
+        "explanation": "Les modes structured output forcent le modèle à produire UNIQUEMENT un JSON conforme au schéma. Les approches prompt-only peuvent dériver."
+      }
+    ]
+  },
+  {
+    "slug": "ia-agents",
+    "theme": "ia",
+    "title": "Les agents IA",
+    "summary": "Boucle ReAct, tools, MCP, et comment fonctionnent Cursor agents, Devin et compagnie.",
+    "level": 2,
+    "sections": [
+      {
+        "heading": "Un agent, c'est quoi ?",
+        "body": "Un **agent IA** = un LLM placé dans une boucle, capable d'**utiliser des outils** (lire un fichier, lancer une commande, appeler une API) pour atteindre un objectif. La différence avec un simple chat :\n\n• Chat : l'utilisateur pose 1 question, le modèle répond. Stop.\n• Agent : l'utilisateur donne un objectif, le modèle **agit** dans plusieurs étapes (lire, écrire, exécuter), observe les résultats, et continue jusqu'à atteindre le but."
+      },
+      {
+        "heading": "La boucle ReAct (Reason + Act)",
+        "body": "Le pattern de base :",
+        "code": {
+          "lang": "txt",
+          "value": "boucle :\n  1. PENSER : analyser l'état + décider la prochaine action\n  2. AGIR : exécuter une action (= appeler un tool)\n  3. OBSERVER : lire le résultat\n  4. si objectif atteint → STOP\n     sinon → retour à 1\n\n# Exemple concret\nObjectif: corriger le bug du test login\n\nStep 1 → THOUGHT: Je dois d'abord lire le code\n         ACTION: read_file('login.test.js')\n         OBS:    le test attend un POST /login\n\nStep 2 → THOUGHT: Allons voir le handler\n         ACTION: grep('POST /login')\n         OBS:    trouvé dans api/auth.js, ligne 42\n\nStep 3 → THOUGHT: Le handler retourne 500. Je vais...\n         ..."
+        }
+      },
+      {
+        "heading": "Les tools : main du modèle sur le monde",
+        "body": "Sans tools, un LLM ne peut que produire du texte. Les **tools** lui permettent d'agir.\n\nQuelques familles de tools classiques :\n• **Filesystem** : `read_file`, `write_file`, `list_dir`, `delete`.\n• **Shell** : `exec(command)` — exécuter une commande terminale.\n• **Web** : `fetch_url`, `web_search`.\n• **Code intelligence** : `grep`, `find_definition`, `get_diagnostics` (lints).\n• **Custom** : tes propres APIs métier.\n\nChaque tool est décrit avec un nom, une description, et un schéma JSON des paramètres. Le modèle choisit lequel appeler."
+      },
+      {
+        "heading": "Function calling : comment c'est implémenté",
+        "body": "Au lieu de produire du texte, le modèle peut produire un **appel de fonction** structuré :",
+        "code": {
+          "lang": "js",
+          "value": "// Tu déclares les tools dispo\ntools: [\n  {\n    name: 'read_file',\n    description: 'Lit le contenu d\\'un fichier',\n    parameters: {\n      type: 'object',\n      properties: { path: { type: 'string' } },\n      required: ['path']\n    }\n  }\n]\n\n// Le modèle peut renvoyer :\n{ tool_call: { name: 'read_file',\n               args: { path: 'src/app.js' } } }\n\n// Tu exécutes la fonction localement\n// puis tu renvoies le résultat dans le prochain message"
+        }
+      },
+      {
+        "heading": "MCP : Model Context Protocol",
+        "body": "**MCP** (introduit par Anthropic en 2024) est un protocole standard pour **brancher des sources de données et des tools** à n'importe quel modèle.\n\nAu lieu de réécrire des intégrations spécifiques pour chaque app (Slack, Linear, GitHub, ta DB…), tu écris **un serveur MCP** qui expose les tools, et n'importe quel client compatible MCP (Cursor, Claude Desktop, etc.) peut s'y connecter.\n\nC'est en train de devenir l'API standard pour l'écosystème agent."
+      },
+      {
+        "heading": "Les défis d'un agent en pratique",
+        "body": "Un agent en boucle, ça paraît simple sur le papier. En vrai :\n• **Coût** : chaque appel envoie tout l'historique → ça grossit vite. Compresse / résume.\n• **Latence** : 5 étapes × 3s = 15 secondes minimum. Les workflows longs sont lents.\n• **Erreurs en cascade** : si une étape déraille, l'agent peut s'enfoncer (boucle, mauvaise décision).\n• **Sécurité** : un agent qui exécute des commandes shell sur ta machine = potentiellement dangereux. Sandbox + approbation utilisateur.\n• **Observabilité** : il faut **logger** chaque étape pour comprendre ce qui s'est passé."
+      },
+      {
+        "heading": "Cursor Agent et autres coding agents",
+        "body": "Les agents qui codent (Cursor Agent, GitHub Copilot Agent, Devin, Claude Code, Codex…) suivent tous la même base :\n• Comprendre la requête utilisateur.\n• Explorer le repo (lire fichiers, grep, comprendre la structure).\n• Planifier les modifications.\n• Éditer les fichiers.\n• Lancer les tests / vérifier les diagnostics.\n• Itérer si quelque chose casse.\n\nLes différences sont dans le **prompting**, le **choix des tools**, le **contexte** (cherchent-ils intelligemment ou inondent-ils le contexte ?), et l'**autonomie** (combien d'étapes sans demander confirmation)."
+      },
+      {
+        "heading": "Single-agent vs multi-agent",
+        "body": "• **Single-agent** : un seul LLM en boucle qui fait tout. Plus simple, moins cher, moins de communication overhead. C'est ce qui marche le mieux aujourd'hui pour la plupart des tâches.\n• **Multi-agent** : plusieurs agents spécialisés (planificateur, codeur, testeur, reviewer…) qui se passent du contexte. Plus complexe à orchestrer, peut faire mieux sur des tâches très longues, mais ajoute du bruit et des erreurs."
+      },
+      {
+        "heading": "Sécurité : exécution de code et secrets",
+        "body": "Faire tourner un agent sur ton poste ou en CI/CD demande des garde-fous :\n• **Sandbox** : isoler les commandes (Docker, VM, worktree git séparé).\n• **Whitelist de commandes** : pas de `rm -rf`, pas d'envoi réseau libre.\n• **Pas de secrets dans le prompt** : ils peuvent fuiter dans les logs ou être renvoyés au modèle.\n• **Approbation utilisateur** pour les actions destructives (suppression, push force, paiements)."
+      },
+      {
+        "heading": "À retenir",
+        "body": "• Un agent = LLM + boucle + tools + objectif.\n• Pattern de base : ReAct (Reason → Act → Observe).\n• **Function calling** : le modèle produit un appel structuré que tu exécutes.\n• **MCP** : protocole standard pour brancher des tools/données à un agent.\n• Défis : coût, latence, erreurs en cascade, sécurité, observabilité.\n• Garde-fous : sandbox, whitelist, pas de secrets dans les prompts."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Quelle est la différence principale entre un chat et un agent ?",
+        "choices": [
+          "Le modèle utilisé",
+          "L'agent peut utiliser des outils et agir en plusieurs étapes pour atteindre un objectif",
+          "Le chat est gratuit, pas l'agent",
+          "L'agent ne fonctionne qu'avec GPT"
+        ],
+        "answer": 1,
+        "explanation": "Un chat = un échange. Un agent = une boucle Reason→Act→Observe avec des outils, jusqu'à atteindre un but."
+      },
+      {
+        "question": "Que signifie 'ReAct' dans le contexte des agents ?",
+        "choices": [
+          "Un framework JavaScript",
+          "Reason + Act : le modèle alterne réflexion et action dans une boucle",
+          "Réagir vite à l'utilisateur",
+          "Refactor + Action"
+        ],
+        "answer": 1,
+        "explanation": "Pattern classique : à chaque étape, le modèle 'pense' (raisonne) puis 'agit' (appelle un tool), observe le résultat, et recommence."
+      },
+      {
+        "question": "À quoi sert le 'function calling' (ou 'tool use') ?",
+        "choices": [
+          "À forcer le modèle à parler français",
+          "À permettre au modèle de produire un appel structuré (nom + arguments JSON) qu'on exécute côté code",
+          "À appeler une fonction asynchrone JavaScript",
+          "À faire du multi-thread"
+        ],
+        "answer": 1,
+        "explanation": "Le modèle ne 'lance' pas la fonction lui-même : il dit 'appelle read_file avec path=foo'. C'est ton code qui exécute et renvoie le résultat."
+      },
+      {
+        "question": "Qu'est-ce que MCP ?",
+        "choices": [
+          "Un nouveau modèle de chez Microsoft",
+          "Model Context Protocol : un protocole standard pour brancher des sources de données et des tools à un modèle",
+          "Un format de fichier vidéo",
+          "Un benchmark de LLM"
+        ],
+        "answer": 1,
+        "explanation": "MCP standardise comment exposer des tools à un agent. Cursor, Claude Desktop, etc. peuvent se connecter aux mêmes serveurs MCP."
+      },
+      {
+        "question": "Quel est un risque MAJEUR à éviter quand on fait tourner un agent qui exécute du code ?",
+        "choices": [
+          "Le modèle parle trop",
+          "Mettre des secrets (clés API) dans le prompt — ils peuvent fuiter",
+          "Le modèle utilise trop de tokens",
+          "Le modèle change de langue"
+        ],
+        "answer": 1,
+        "explanation": "Un secret dans un prompt finit dans les logs du fournisseur LLM, peut être renvoyé dans une réponse, etc. Toujours injecter les secrets côté code, jamais via le prompt."
+      }
+    ]
+  },
+  {
+    "slug": "ia-coder-avec-une-ia",
+    "theme": "ia",
+    "title": "Coder avec une IA",
+    "summary": "Bonnes pratiques pour collaborer efficacement avec Cursor, Copilot, ChatGPT — et éviter les pièges.",
+    "level": 1,
+    "sections": [
+      {
+        "heading": "L'IA n'est pas magique, c'est un copilote",
+        "body": "Une IA qui code est un **multiplicateur** : elle accélère un bon dev, mais ne remplace pas la compréhension. Si tu lui demandes du code que tu ne saurais pas évaluer, tu vas pousser des bugs en prod sans le savoir.\n\nRègle d'or : **comprends ce que tu acceptes**. Lis le code généré comme si c'était une PR d'un junior : peut-être bonne, peut-être pas, à reviewer."
+      },
+      {
+        "heading": "Donne du contexte (toujours)",
+        "body": "L'IA ne devine pas ton projet, ton style, tes contraintes. **Plus tu donnes de contexte, mieux c'est** :\n• La fonction à modifier (pas juste son nom).\n• La feuille de style / les conventions du repo.\n• Les tests existants.\n• Les contraintes (\"on est en React 18, pas de TypeScript, mobile first\").\n\nDans Cursor : utilise `@fichier`, `@dossier`, `@docs` pour attacher du contexte explicite."
+      },
+      {
+        "heading": "Demande petit, demande clair",
+        "body": "❌ « Refactore tout mon backend en mieux. »\n✅ « Extrais cette fonction de 80 lignes en 3 fonctions plus petites, en gardant la même signature publique. »\n\n❌ « Fais marcher les tests. »\n✅ « Ce test échoue avec 'undefined is not a function'. Lis le test, comprends pourquoi, et propose un fix sans toucher au comportement attendu. »\n\nL'IA fait MIEUX sur des tâches **petites, cadrées, testables** que sur des refactos massifs flous."
+      },
+      {
+        "heading": "Les patterns qui marchent bien avec une IA",
+        "body": "• **Boilerplate** : composants, tests unitaires, types, conversions de format.\n• **Refactoring local** : extraire une fonction, renommer, convertir une boucle en map/reduce.\n• **Génération de tests** à partir d'une fonction existante.\n• **Migration syntaxique** : ES5 → ES6, classes → hooks, JS → TS.\n• **Doc / commentaires** sur du code existant.\n• **Recherche sémantique** : 'où est-ce qu'on gère l'authentification ?'.\n• **Debug ciblé** : coller une stack trace + le code autour, demander des hypothèses."
+      },
+      {
+        "heading": "Les patterns où elle galère encore",
+        "body": "• Choix d'**architecture macro** (vrais arbitrages business).\n• Bugs avec un **état complexe** (race conditions, état distribué).\n• Code qui dépend de **conventions implicites** non documentées.\n• Optimisations **fines** de performance.\n• Sujets **récents** non vus en entraînement (libs jeunes, APIs neuves).\n\nDans ces cas, l'IA aide à **explorer** mais la décision finale reste humaine."
+      },
+      {
+        "heading": "Reviewer le code généré",
+        "body": "Avant d'accepter une diff générée, vérifie :\n• Est-ce que je **comprends** chaque ligne ?\n• Est-ce qu'elle **utilise vraiment** les libs/utilitaires du projet (pas une lib inventée) ?\n• Y a-t-il des **edge cases** ignorés (null, tableau vide, erreur réseau) ?\n• Est-ce que ça **respecte le style** du reste du code ?\n• Les **tests passent-ils** ? (lance-les vraiment, ne crois pas l'IA sur parole)"
+      },
+      {
+        "heading": "Vérification avant tout : les hallucinations en code",
+        "body": "L'IA peut inventer :\n• Une fonction qui n'existe pas (`array.removeAt()` → ça n'existe pas en JS).\n• Une option de CLI qui n'existe pas.\n• Un import depuis un module fantôme.\n• Une signature de fonction modifiée dans une nouvelle version.\n\n**Réflexes** :\n• Lance le code (ou les tests).\n• Vérifie les noms d'API douteux dans la doc officielle.\n• Si l'IA cite un lien, **clique** dessus."
+      },
+      {
+        "heading": "Workflow agent : mode 'autopilot' ou 'cabine'",
+        "body": "Avec un agent (Cursor Agent, etc.), choisis ton niveau d'autonomie :\n• **Mode 'cabine'** : l'agent propose chaque édit, tu acceptes/refuses. Tu apprends, tu contrôles.\n• **Mode 'autopilot'** : l'agent code, lance les tests, itère seul. Plus rapide pour des tâches bien cadrées et testables. Demande une bonne **suite de tests** comme garde-fou.\n\nDébutant ? Reste en cabine sur du code prod. Autopilot pour expérimenter dans une branche."
+      },
+      {
+        "heading": "Tests : le filet de sécurité de l'IA",
+        "body": "Plus ta couverture de tests est bonne, plus tu peux **lâcher la main** à l'IA. Sans tests, comment sais-tu qu'un refacto IA n'a rien cassé ?\n\nWorkflow gagnant :\n1. Tu écris (ou demandes à l'IA) **les tests d'abord** (ou tu vérifies que ceux qui existent couvrent bien).\n2. Tu laisses l'IA implémenter.\n3. `npm test` est ton arbitre — pas la confiance dans le modèle."
+      },
+      {
+        "heading": "Apprendre AVEC l'IA, pas À LA PLACE de l'IA",
+        "body": "Piège classique du débutant : copier-coller du code IA sans comprendre, accumuler de la dette de compréhension, et bloquer dès qu'il y a un bug non trivial.\n\nUtilise l'IA comme un **prof patient** :\n• Demande-lui d'**expliquer** ce que fait un bout de code.\n• Demande-lui de **comparer** 2 approches.\n• Demande-lui de te **tester** (« pose-moi 5 questions sur ce que je viens d'apprendre »).\n• Reformule **avec tes mots** ce qu'elle t'a dit pour valider."
+      },
+      {
+        "heading": "À retenir",
+        "body": "• L'IA est un **copilote**, pas un pilote autonome (sauf cas bien cadrés avec tests).\n• Donne du **contexte** : fichiers, conventions, contraintes.\n• Demande **petit et clair** > demande énorme et flou.\n• Toujours **reviewer** : tu signes le code que tu pushes.\n• Vérifie les **hallucinations** : noms d'API, options, signatures.\n• Sans tests = pas de confiance dans le code généré.\n• Apprends AVEC l'IA, pas à la place. Garde la compétence."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Quelle est la règle d'or quand tu acceptes du code généré par une IA ?",
+        "choices": [
+          "Lui faire confiance puisqu'elle est entraînée sur des millions de lignes",
+          "Le comprendre — tu signes ce que tu pushes",
+          "Toujours le réécrire à la main",
+          "Le tester uniquement en prod"
+        ],
+        "answer": 1,
+        "explanation": "Tu es responsable du code que tu pushes. Si tu ne comprends pas ce que fait une ligne, tu accumules de la dette technique invisible."
+      },
+      {
+        "question": "Pour quelle tâche une IA est-elle PARTICULIÈREMENT bonne ?",
+        "choices": [
+          "Choisir l'architecture cloud d'un produit",
+          "Générer du boilerplate, des tests unitaires à partir de fonctions existantes, ou du refactoring local",
+          "Diagnostiquer une race condition complexe",
+          "Optimiser finement les perfs d'un algo critique"
+        ],
+        "answer": 1,
+        "explanation": "Les tâches petites, structurées, testables sont le sweet spot. Les choix macro et les bugs subtils restent du ressort humain."
+      },
+      {
+        "question": "Comment limiter le risque d'hallucinations dans le code généré ?",
+        "choices": [
+          "Augmenter la température",
+          "Lancer le code / les tests, et vérifier les noms d'API douteux dans la doc officielle",
+          "Demander une explication plus longue",
+          "Utiliser un modèle plus gros uniquement"
+        ],
+        "answer": 1,
+        "explanation": "Une suite de tests qui passe est ton meilleur arbitre. Pour les API exotiques, RTFM officiel — pas de raccourci."
+      },
+      {
+        "question": "Pourquoi les tests sont-ils encore plus importants quand on code avec une IA ?",
+        "choices": [
+          "Les IAs n'écrivent pas de bons tests",
+          "Ils servent de filet de sécurité pour vérifier que le code généré ne casse rien — sans tests, tu ne peux pas lâcher la main",
+          "Les LLMs ne supportent pas le code non testé",
+          "Les tests font baisser la facture du modèle"
+        ],
+        "answer": 1,
+        "explanation": "Sans tests, comment savoir qu'un refacto IA marche ? Avec une bonne suite de tests, tu peux laisser un agent itérer en toute sérénité."
+      },
+      {
+        "question": "Comment apprendre EFFICACEMENT en codant avec une IA ?",
+        "choices": [
+          "Copier-coller le code et passer au suivant",
+          "Demander à l'IA d'expliquer, comparer 2 approches, te poser des questions, reformuler avec tes mots",
+          "Lui interdire d'écrire du code, qu'elle ne fasse que des cours",
+          "Apprendre uniquement sur les sujets où elle ne sait pas répondre"
+        ],
+        "answer": 1,
+        "explanation": "L'IA peut être un prof patient et infatigable — mais seulement si tu l'utilises ainsi. Sinon tu accumules du copier-coller sans compétence."
+      }
+    ]
+  }
+]

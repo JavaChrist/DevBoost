@@ -1,0 +1,71 @@
+# DevBoost — Règles de projet Cursor
+
+Tu travailles sur **DevBoost**, une PWA d'entraînement pour développeurs (sessions courtes de Quiz + Challenges code, gamification, répétition espacée SM-2).
+
+## Stack imposée — ne pas dévier
+
+- React 18 + Vite + Tailwind CSS (pas de TypeScript pour le MVP, JSX uniquement)
+- vite-plugin-pwa (Workbox) pour la PWA
+- Dexie.js (IndexedDB) — toute la persistence locale
+- CodeMirror 6 (pas Monaco — trop lourd sur mobile)
+- Zustand (pas Redux)
+- Framer Motion pour les animations swipe
+- React Router 6
+- Algo SM-2 SuperMemo pour la répétition espacée
+
+## Règles de code
+
+- **Mobile-first** : `max-w-md` centré, dark mode par défaut, safe-area iOS
+- **Pas d'`eval()` dans le thread principal** : tout code utilisateur s'exécute dans un Web Worker isolé avec timeout 3 s
+- **Pas de fetch externe** pour le MVP : tout doit fonctionner offline 100 %
+- Préfère les **fonctions pures** dans `lib/` (sm2, sessionBuilder, runner)
+- Garde les composants courts (< 150 lignes), splitte si plus
+- Tailwind only — pas de CSS-in-JS, pas de styled-components
+- Imports avec alias `@/` (configure dans `vite.config.js`)
+
+## Conventions
+
+- Noms de fichiers : `PascalCase.jsx` pour composants, `camelCase.js` pour libs/hooks/stores
+- Hooks préfixés `use*`, stores Zustand préfixés `use*Store`
+- Une carte = `{id, theme, type, ...}` où `type ∈ {'quiz', 'challenge'}`
+- Couleurs tailwind canon : `slate-950` (bg), `emerald-400` (succès), `rose-400` (échec), `amber-400` (streak)
+
+## Structure attendue
+
+```
+src/
+├── pages/         # Dashboard, Session, Library, Stats, Settings
+├── components/    # cards/, ui/, layout/
+├── store/         # Zustand stores
+├── db/            # Dexie + seed
+├── lib/           # sm2.js, sessionBuilder.js, runner/
+├── data/cards/    # seed JSON par thème
+├── hooks/
+└── styles/
+```
+
+## Workflow attendu
+
+- Exécute les tâches **une étape à la fois**
+- À chaque étape, montre les fichiers créés/modifiés et attends validation
+- Si tu hésites entre 2 approches, propose les 2 et demande
+- Pour les composants critiques (Web Worker, SM-2), accompagne d'un mini test (`*.test.js` même sans framework)
+- Commits suggérés en français, format conventional : `feat:`, `fix:`, `refactor:`...
+
+## Critères d'acceptation MVP
+
+- Lighthouse PWA ≥ 90, Performance ≥ 85 sur mobile
+- 100 % offline après première visite
+- Installable sur écran d'accueil (Chrome desktop + Android)
+- Une session complète de 10 cartes (7 quiz + 3 challenges) sans bug
+- Streak qui s'incrémente correctement d'un jour à l'autre
+- Cartes ratées qui reviennent plus vite (SM-2)
+
+## Ce qu'il NE faut PAS faire
+
+- ❌ Ajouter TypeScript (le MVP doit être rapide)
+- ❌ Utiliser Monaco Editor (trop lourd sur mobile)
+- ❌ Utiliser Redux (Zustand suffit)
+- ❌ Faire des appels réseau pour le contenu (tout est local)
+- ❌ Mettre des `eval()` ou `Function()` dans le thread principal
+- ❌ Oublier le mode dark / safe-area iOS

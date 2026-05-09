@@ -1,0 +1,255 @@
+[
+  {
+    "theme": "html",
+    "type": "quiz",
+    "question": "À quoi sert la balise <h1> ?",
+    "choices": [
+      "Insérer une image",
+      "Indiquer le titre principal de la page",
+      "Créer un lien",
+      "Faire un commentaire"
+    ],
+    "answer": 1,
+    "explanation": "<h1> est le titre principal d'une page (niveau 1). Il existe <h1> à <h6> par ordre d'importance décroissante.",
+    "difficulty": 1
+  },
+  {
+    "theme": "html",
+    "type": "quiz",
+    "question": "Quelle balise est SELF-CLOSING (pas de balise fermante) ?",
+    "choices": ["<div>", "<img>", "<p>", "<span>"],
+    "answer": 1,
+    "explanation": "<img> est une balise vide (self-closing). On écrit <img src=\"...\" alt=\"...\" /> sans </img>.",
+    "difficulty": 1
+  },
+  {
+    "theme": "html",
+    "type": "quiz",
+    "question": "À quoi sert l'attribut alt sur une image ?",
+    "choices": [
+      "À donner l'URL de l'image",
+      "À forcer la taille de l'image",
+      "À fournir un texte alternatif (accessibilité, image cassée)",
+      "À choisir le format de l'image"
+    ],
+    "answer": 2,
+    "explanation": "alt décrit l'image pour les lecteurs d'écran et s'affiche si l'image ne charge pas. Indispensable pour l'accessibilité.",
+    "difficulty": 1
+  },
+  {
+    "theme": "html",
+    "type": "quiz",
+    "question": "Que se passe-t-il si on oublie `<!DOCTYPE html>` au début d'une page ?",
+    "choices": [
+      "Rien, c'est optionnel",
+      "Le navigateur passe en mode 'quirks' avec un comportement imprévisible",
+      "La page ne s'affiche pas",
+      "Une erreur est jetée dans la console"
+    ],
+    "answer": 1,
+    "explanation": "Sans doctype, le navigateur utilise un mode legacy compatible avec les vieux sites — ça casse subtilement la mise en page.",
+    "difficulty": 1
+  },
+  {
+    "theme": "html",
+    "type": "quiz",
+    "question": "Quelle est la différence entre id et class ?",
+    "choices": [
+      "Aucune, c'est interchangeable",
+      "id sert au CSS, class au JavaScript",
+      "id doit être unique sur la page, class peut être réutilisé",
+      "id est obsolète"
+    ],
+    "answer": 2,
+    "explanation": "Un id = unique (carte d'identité). Une class peut être appliquée à autant d'éléments qu'on veut.",
+    "difficulty": 1
+  },
+  {
+    "theme": "html",
+    "type": "quiz",
+    "question": "Quelle est la différence entre <div> et <section> ?",
+    "choices": [
+      "Aucune, c'est exactement pareil",
+      "<section> a une signification sémantique (regroupement thématique), <div> n'en a pas",
+      "<div> est obsolète",
+      "<section> ne marche que dans <body>"
+    ],
+    "answer": 1,
+    "explanation": "Les balises sémantiques (<section>, <article>, <nav>...) aident le navigateur, les lecteurs d'écran et le SEO à comprendre la structure.",
+    "difficulty": 2
+  },
+  {
+    "theme": "html",
+    "type": "quiz",
+    "question": "Que fait l'attribut `for` sur un <label> ?",
+    "choices": [
+      "Boucler sur un tableau",
+      "Lier le label à un input par son id (cliquer sur le label focus l'input)",
+      "Créer une liste",
+      "Définir une fonction"
+    ],
+    "answer": 1,
+    "explanation": "<label for=\"email\">Email</label><input id=\"email\" /> : cliquer sur le label active l'input. Bon pour l'accessibilité.",
+    "difficulty": 2
+  },
+  {
+    "theme": "html",
+    "type": "quiz",
+    "question": "Quel attribut détermine la clé sous laquelle un champ de formulaire est envoyé au serveur ?",
+    "choices": ["id", "name", "type", "value"],
+    "answer": 1,
+    "explanation": "name est la clé. Sans name, le champ n'est pas envoyé. id sert au label et au CSS/JS.",
+    "difficulty": 2
+  },
+  {
+    "theme": "html",
+    "type": "quiz",
+    "question": "Que se passe-t-il si on met un `<button>` dans un `<form>` sans préciser son `type` ?",
+    "choices": [
+      "Rien",
+      "Il agit comme type=\"button\" par défaut",
+      "Il agit comme type=\"submit\" par défaut et envoie le formulaire",
+      "Une erreur est jetée"
+    ],
+    "answer": 2,
+    "explanation": "Piège classique : le défaut d'un <button> dans un <form> est `submit`. Toujours préciser type=\"button\" si tu n'as pas l'intention de submit.",
+    "difficulty": 2
+  },
+  {
+    "theme": "html",
+    "type": "quiz",
+    "question": "Pour qu'une vidéo s'autoplay sur iPhone, quels attributs sont nécessaires ?",
+    "choices": [
+      "autoplay seul",
+      "autoplay + controls",
+      "autoplay + muted + playsinline",
+      "autoplay + loop"
+    ],
+    "answer": 2,
+    "explanation": "Sans `muted`, iOS bloque l'autoplay. Sans `playsinline`, la vidéo passe en plein écran automatiquement.",
+    "difficulty": 2
+  },
+  {
+    "theme": "html",
+    "type": "quiz",
+    "question": "Quel format est idéal pour un logo qui doit rester net à toutes les tailles ?",
+    "choices": ["JPG", "PNG", "SVG", "WebP"],
+    "answer": 2,
+    "explanation": "SVG = vectoriel, infiniment scalable. PNG/JPG/WebP sont matriciels et pixelisent en agrandissant.",
+    "difficulty": 2
+  },
+  {
+    "theme": "html",
+    "type": "quiz",
+    "question": "Pourquoi éviter `<div onclick>` au profit d'un `<button>` ?",
+    "choices": [
+      "C'est interdit en HTML5",
+      "Le <div> n'est pas focusable au clavier ni annoncé comme interactif par les lecteurs d'écran",
+      "Ça ne marche pas avec React",
+      "C'est plus lent"
+    ],
+    "answer": 1,
+    "explanation": "Un <div> est un conteneur, pas une zone interactive. <button> est focusable, activable au clavier, annoncé correctement — gratuit.",
+    "difficulty": 3
+  },
+  {
+    "theme": "html",
+    "type": "challenge",
+    "prompt": "Écris makeLink(url, text) qui retourne une chaîne HTML représentant un lien cliquable. Exemple : makeLink('https://x.com', 'X') → '<a href=\"https://x.com\">X</a>'",
+    "starterCode": "function makeLink(url, text) {\n  // TODO : retourne la balise <a> correspondante\n  return '';\n}",
+    "tests": [
+      {
+        "label": "lien simple",
+        "input": ["https://devboost.app", "DevBoost"],
+        "expected": "<a href=\"https://devboost.app\">DevBoost</a>"
+      },
+      {
+        "label": "texte vide",
+        "input": ["https://x.fr", ""],
+        "expected": "<a href=\"https://x.fr\"></a>"
+      },
+      {
+        "label": "url relative",
+        "input": ["/contact", "Contact"],
+        "expected": "<a href=\"/contact\">Contact</a>"
+      }
+    ],
+    "hint": "Utilise les template literals : `<a href=\"${url}\">${text}</a>`",
+    "difficulty": 1
+  },
+  {
+    "theme": "html",
+    "type": "challenge",
+    "prompt": "Écris makeList(items) qui prend un tableau de strings et retourne une <ul> avec un <li> pour chaque item. Exemple : makeList(['un','deux']) → '<ul><li>un</li><li>deux</li></ul>'",
+    "starterCode": "function makeList(items) {\n  // TODO : retourne le HTML d'une liste à puces\n  return '<ul></ul>';\n}",
+    "tests": [
+      {
+        "label": "deux items",
+        "input": [["un", "deux"]],
+        "expected": "<ul><li>un</li><li>deux</li></ul>"
+      },
+      {
+        "label": "liste vide",
+        "input": [[]],
+        "expected": "<ul></ul>"
+      },
+      {
+        "label": "trois items",
+        "input": [["a", "b", "c"]],
+        "expected": "<ul><li>a</li><li>b</li><li>c</li></ul>"
+      }
+    ],
+    "hint": "items.map(i => `<li>${i}</li>`).join('') puis emballe dans <ul>...</ul>.",
+    "difficulty": 1
+  },
+  {
+    "theme": "html",
+    "type": "challenge",
+    "prompt": "Écris escapeHtml(str) qui échappe les caractères HTML dangereux pour éviter les injections XSS : & < > \" ' deviennent &amp; &lt; &gt; &quot; &#39;",
+    "starterCode": "function escapeHtml(str) {\n  // TODO : remplace les 5 caractères dangereux par leurs entités HTML\n  return str;\n}",
+    "tests": [
+      {
+        "label": "balise script",
+        "input": ["<script>"],
+        "expected": "&lt;script&gt;"
+      },
+      {
+        "label": "ampersand et guillemets",
+        "input": ["A & \"B\""],
+        "expected": "A &amp; &quot;B&quot;"
+      },
+      {
+        "label": "apostrophe",
+        "input": ["it's"],
+        "expected": "it&#39;s"
+      }
+    ],
+    "hint": "Remplace & EN PREMIER (sinon il rééchappe les autres). Tu peux chaîner str.replace(/&/g, '&amp;').replace(/</g, '&lt;')...",
+    "difficulty": 2
+  },
+  {
+    "theme": "html",
+    "type": "challenge",
+    "prompt": "Écris makeImage({src, alt, width, height, lazy}) qui retourne une balise <img /> bien formée. lazy=true ajoute loading=\"lazy\".\n\nExemple : makeImage({src:'a.jpg', alt:'A', width:100, height:50}) → '<img src=\"a.jpg\" alt=\"A\" width=\"100\" height=\"50\" />'",
+    "starterCode": "function makeImage({ src, alt, width, height, lazy }) {\n  // TODO : assemble la balise <img /> avec les attributs fournis\n  return '<img />';\n}",
+    "tests": [
+      {
+        "label": "image standard",
+        "input": [{ "src": "a.jpg", "alt": "A", "width": 100, "height": 50 }],
+        "expected": "<img src=\"a.jpg\" alt=\"A\" width=\"100\" height=\"50\" />"
+      },
+      {
+        "label": "image lazy",
+        "input": [{ "src": "b.png", "alt": "B", "width": 200, "height": 100, "lazy": true }],
+        "expected": "<img src=\"b.png\" alt=\"B\" width=\"200\" height=\"100\" loading=\"lazy\" />"
+      },
+      {
+        "label": "alt vide (decorative)",
+        "input": [{ "src": "sep.png", "alt": "", "width": 10, "height": 10 }],
+        "expected": "<img src=\"sep.png\" alt=\"\" width=\"10\" height=\"10\" />"
+      }
+    ],
+    "hint": "Construis avec des template literals. Conditionne loading=\"lazy\" avec ${lazy ? ' loading=\"lazy\"' : ''}.",
+    "difficulty": 2
+  }
+]

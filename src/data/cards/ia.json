@@ -1,0 +1,274 @@
+[
+  {
+    "theme": "ia",
+    "type": "quiz",
+    "question": "Que signifie 'LLM' ?",
+    "choices": [
+      "Local Language Memory",
+      "Large Language Model",
+      "Logic Learning Machine",
+      "Linear Layer Module"
+    ],
+    "answer": 1,
+    "explanation": "LLM = Large Language Model. Un gros réseau de neurones entraîné à prédire le prochain token étant donné un contexte.",
+    "difficulty": 1
+  },
+  {
+    "theme": "ia",
+    "type": "quiz",
+    "question": "Approximativement, combien de tokens représente le mot 'DevBoost' (en anglais) ?",
+    "choices": ["1 token", "2-3 tokens", "8 tokens (1 par caractère)", "Aucun, c'est un mot inventé"],
+    "answer": 1,
+    "explanation": "Règle de pouce : 1 token ≈ 4 caractères. 'DevBoost' (8 chars) ≈ 2-3 tokens. Les mots rares ou inventés sont coupés en sous-tokens.",
+    "difficulty": 1
+  },
+  {
+    "theme": "ia",
+    "type": "quiz",
+    "question": "Tu veux que ton appel LLM produise un JSON STRICTEMENT déterministe pour de l'extraction. Quelle température choisir ?",
+    "choices": ["0", "0.7", "1", "Aucune importance"],
+    "answer": 0,
+    "explanation": "temperature: 0 force le modèle à toujours prendre le token le plus probable → réponses reproductibles, idéal pour du code/extraction structurée.",
+    "difficulty": 1
+  },
+  {
+    "theme": "ia",
+    "type": "quiz",
+    "question": "Pourquoi un LLM peut-il inventer une fonction qui n'existe pas dans une lib ?",
+    "choices": [
+      "C'est un bug du modèle",
+      "Il est entraîné à produire du texte plausible, pas du texte vrai (hallucinations)",
+      "C'est interdit par le RGPD",
+      "Cela arrive uniquement aux modèles open-source"
+    ],
+    "answer": 1,
+    "explanation": "Le modèle optimise la vraisemblance, pas la vérité. Si une fonction inventée 'ressemble' à ce qui existe, il la propose avec aplomb.",
+    "difficulty": 1
+  },
+  {
+    "theme": "ia",
+    "type": "quiz",
+    "question": "À quoi sert un 'system prompt' lors d'un appel à un LLM ?",
+    "choices": [
+      "C'est l'erreur système du modèle",
+      "C'est un cadrage persistant qui définit le rôle/contraintes du modèle dans toute la conversation",
+      "C'est ce que voit l'utilisateur",
+      "C'est le résumé de la conversation"
+    ],
+    "answer": 1,
+    "explanation": "Le system prompt est invisible pour l'utilisateur. Il définit la 'personnalité' du modèle et les règles qu'il doit suivre dans tous ses messages.",
+    "difficulty": 1
+  },
+  {
+    "theme": "ia",
+    "type": "quiz",
+    "question": "Que veut dire 'few-shot prompting' ?",
+    "choices": [
+      "Limiter le nombre de tokens en sortie",
+      "Inclure quelques exemples concrets dans le prompt pour montrer le format attendu",
+      "Lancer le prompt plusieurs fois et voter la meilleure réponse",
+      "Réduire le coût d'inference"
+    ],
+    "answer": 1,
+    "explanation": "Few-shot = quelques exemples (vs zero-shot = aucun). Souvent plus efficace que de longues explications pour guider la sortie.",
+    "difficulty": 2
+  },
+  {
+    "theme": "ia",
+    "type": "quiz",
+    "question": "Pourquoi 'chain-of-thought' aide-t-il sur les problèmes complexes ?",
+    "choices": [
+      "Ça active des GPUs plus puissants",
+      "Ça force le modèle à dérouler son raisonnement étape par étape AVANT de répondre, ce qui réduit les erreurs",
+      "Ça baisse automatiquement la température",
+      "Ça met le mode anglais"
+    ],
+    "answer": 1,
+    "explanation": "Sans CoT, le modèle 'devine' la réponse d'un coup. Avec CoT, il décompose le problème et corrige ses erreurs en chemin.",
+    "difficulty": 2
+  },
+  {
+    "theme": "ia",
+    "type": "quiz",
+    "question": "Qu'est-ce qu'un 'embedding' ?",
+    "choices": [
+      "Un format de stockage chiffré",
+      "Un vecteur de nombres représentant un texte, où la proximité géométrique reflète la proximité sémantique",
+      "Une intégration JavaScript externe",
+      "Un type de tokenizer"
+    ],
+    "answer": 1,
+    "explanation": "Embedding = vecteur (souvent 1024-3072 dimensions). Base de la recherche sémantique et du RAG (Retrieval-Augmented Generation).",
+    "difficulty": 2
+  },
+  {
+    "theme": "ia",
+    "type": "quiz",
+    "question": "Un agent IA, c'est :",
+    "choices": [
+      "Un chatbot qui répond plus vite",
+      "Un LLM dans une boucle qui peut utiliser des outils (lire fichier, lancer commande...) pour atteindre un objectif",
+      "Un humain qui parle à une IA",
+      "Une nouvelle version d'un LLM"
+    ],
+    "answer": 1,
+    "explanation": "Un agent = LLM + boucle Reason→Act→Observe + tools + objectif. Bien plus qu'un simple chat.",
+    "difficulty": 2
+  },
+  {
+    "theme": "ia",
+    "type": "quiz",
+    "question": "À quoi sert le 'function calling' (tool use) ?",
+    "choices": [
+      "À forcer une langue spécifique",
+      "À permettre au modèle de produire un appel structuré (nom + args JSON) qu'on exécute côté code",
+      "À paralléliser plusieurs LLMs",
+      "À compresser le contexte"
+    ],
+    "answer": 1,
+    "explanation": "Le modèle dit 'appelle read_file avec path=foo'. C'est ton code qui exécute la fonction et renvoie le résultat dans le contexte.",
+    "difficulty": 2
+  },
+  {
+    "theme": "ia",
+    "type": "quiz",
+    "question": "Que signifie MCP dans l'écosystème agent ?",
+    "choices": [
+      "Multi-Core Processor",
+      "Model Context Protocol — protocole standard pour brancher des sources de données et tools à un modèle",
+      "Machine Code Pipeline",
+      "Modular Cloud Platform"
+    ],
+    "answer": 1,
+    "explanation": "MCP (Anthropic, 2024) est devenu le standard de facto. Cursor, Claude Desktop, etc. peuvent se connecter aux mêmes serveurs MCP.",
+    "difficulty": 2
+  },
+  {
+    "theme": "ia",
+    "type": "quiz",
+    "question": "Quel est le risque MAJEUR à éviter quand un agent exécute du code sur ton poste ?",
+    "choices": [
+      "Le modèle parle trop",
+      "Mettre des secrets (clés API) dans le prompt — ils peuvent fuiter dans les logs ou les réponses",
+      "L'agent va trop vite",
+      "Le modèle change de langue"
+    ],
+    "answer": 1,
+    "explanation": "Un secret dans un prompt = secret dans les logs du fournisseur LLM. Toujours injecter les credentials côté code, jamais via le prompt.",
+    "difficulty": 3
+  },
+  {
+    "theme": "ia",
+    "type": "challenge",
+    "prompt": "Écris approxTokens(text) qui retourne une approximation grossière du nombre de tokens d'un texte. Règle simple : Math.ceil(length / 4). Utilisée partout pour estimer le coût AVANT d'appeler une API.\n\nExemples :\n• approxTokens('') → 0\n• approxTokens('Hello') → 2\n• approxTokens('Bonjour le monde') → 4",
+    "starterCode": "function approxTokens(text) {\n  // TODO : retourne Math.ceil(text.length / 4), 0 pour vide\n  return 0;\n}",
+    "tests": [
+      { "label": "chaîne vide", "input": [""], "expected": 0 },
+      { "label": "Hello (5 chars)", "input": ["Hello"], "expected": 2 },
+      { "label": "Bonjour le monde (16 chars)", "input": ["Bonjour le monde"], "expected": 4 },
+      { "label": "longue phrase", "input": ["The quick brown fox jumps over the lazy dog"], "expected": 11 }
+    ],
+    "hint": "if (!text) return 0; return Math.ceil(text.length / 4);",
+    "difficulty": 1
+  },
+  {
+    "theme": "ia",
+    "type": "challenge",
+    "prompt": "Écris buildPrompt({ system, user }) qui assemble une string formatée pour un LLM. Format :\n\n[SYSTEM]\\n{system}\\n\\n[USER]\\n{user}\n\nSi system est vide ou absent, ne mets PAS la section SYSTEM (juste [USER]\\n{user}).\n\nExemple : buildPrompt({system:'Tu es expert SQL.', user:'SELECT *'}) → '[SYSTEM]\\nTu es expert SQL.\\n\\n[USER]\\nSELECT *'",
+    "starterCode": "function buildPrompt({ system, user }) {\n  // TODO : assemble [SYSTEM]\\n... [USER]\\n... en sautant SYSTEM si vide\n  return '';\n}",
+    "tests": [
+      {
+        "label": "system + user",
+        "input": [{ "system": "Tu es expert SQL.", "user": "SELECT *" }],
+        "expected": "[SYSTEM]\nTu es expert SQL.\n\n[USER]\nSELECT *"
+      },
+      {
+        "label": "user seul (system vide)",
+        "input": [{ "system": "", "user": "Bonjour" }],
+        "expected": "[USER]\nBonjour"
+      },
+      {
+        "label": "user seul (system absent)",
+        "input": [{ "user": "Salut" }],
+        "expected": "[USER]\nSalut"
+      }
+    ],
+    "hint": "const parts = []; if (system) parts.push(`[SYSTEM]\\n${system}`); parts.push(`[USER]\\n${user}`); return parts.join('\\n\\n');",
+    "difficulty": 2
+  },
+  {
+    "theme": "ia",
+    "type": "challenge",
+    "prompt": "Écris extractJson(text) qui extrait le PREMIER bloc JSON d'une string et le parse. Cas typique : un LLM répond avec du texte autour d'un JSON. Tu dois trouver { ... } équilibré et le parser.\n\nReturn null si pas de JSON valide trouvé.\n\nExemples :\n• extractJson('Voici : {\"a\":1} merci') → {a:1}\n• extractJson('rien ici') → null",
+    "starterCode": "function extractJson(text) {\n  // TODO : trouve un { equilibre, JSON.parse, retourne l'objet (ou null si rien/erreur)\n  return null;\n}",
+    "tests": [
+      {
+        "label": "JSON entouré de texte",
+        "input": ["Voici la réponse : {\"a\":1,\"b\":2} fin"],
+        "expected": { "a": 1, "b": 2 }
+      },
+      {
+        "label": "pas de JSON",
+        "input": ["Désolé, je ne sais pas."],
+        "expected": null
+      },
+      {
+        "label": "JSON imbriqué",
+        "input": ["Réponse : {\"user\":{\"name\":\"Léa\",\"age\":25}}"],
+        "expected": { "user": { "name": "Léa", "age": 25 } }
+      }
+    ],
+    "hint": "Compte les accolades ouvrantes/fermantes pour trouver la fin du bloc équilibré, puis JSON.parse dans un try/catch.",
+    "difficulty": 3
+  },
+  {
+    "theme": "ia",
+    "type": "challenge",
+    "prompt": "Écris truncateMessages(messages, maxTokens) qui garde les derniers messages d'un historique sans dépasser maxTokens. Chaque message a {role, content}. On approxime tokens = Math.ceil(content.length / 4). Garde toujours le 1er message s'il a role 'system'.\n\nExemple : si on a 5 messages totalisant 2000 tokens et maxTokens=500, on garde le system (s'il existe) + autant de messages récents que possible.",
+    "starterCode": "function truncateMessages(messages, maxTokens) {\n  // TODO : preserve le system message en tete s'il existe,\n  // garde les messages les plus recents tant que le total <= maxTokens\n  return messages;\n}",
+    "tests": [
+      {
+        "label": "tient tout dans la limite",
+        "input": [
+          [
+            { "role": "user", "content": "abcd" },
+            { "role": "assistant", "content": "efgh" }
+          ],
+          100
+        ],
+        "expected": [
+          { "role": "user", "content": "abcd" },
+          { "role": "assistant", "content": "efgh" }
+        ]
+      },
+      {
+        "label": "garde system + le plus recent",
+        "input": [
+          [
+            { "role": "system", "content": "system" },
+            { "role": "user", "content": "old message ancien" },
+            { "role": "user", "content": "new" }
+          ],
+          5
+        ],
+        "expected": [
+          { "role": "system", "content": "system" },
+          { "role": "user", "content": "new" }
+        ]
+      },
+      {
+        "label": "pas de system : juste les recents",
+        "input": [
+          [
+            { "role": "user", "content": "trop long" },
+            { "role": "user", "content": "ok" }
+          ],
+          1
+        ],
+        "expected": [{ "role": "user", "content": "ok" }]
+      }
+    ],
+    "hint": "Sépare le system (s'il est en tête), parcours le reste depuis la fin en accumulant des tokens, puis recompose : [system?, ...keptReverse.reverse()].",
+    "difficulty": 3
+  }
+]

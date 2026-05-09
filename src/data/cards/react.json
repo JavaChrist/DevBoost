@@ -1,0 +1,260 @@
+[
+  {
+    "theme": "react",
+    "type": "quiz",
+    "question": "Qu'est-ce que JSX ?",
+    "choices": [
+      "Un nouveau langage qui remplace HTML",
+      "Une syntaxe qui ressemble à HTML mais qui décrit du JavaScript",
+      "Un framework concurrent de React",
+      "Une base de données"
+    ],
+    "answer": 1,
+    "explanation": "JSX est du sucre syntaxique transpilé en appels React.createElement. Sous le capot, c'est du JS qui décrit l'arbre d'éléments à rendre.",
+    "difficulty": 1
+  },
+  {
+    "theme": "react",
+    "type": "quiz",
+    "question": "À quoi sert useState ?",
+    "choices": [
+      "À faire un appel HTTP",
+      "À mémoriser une valeur qui peut changer et déclencher un re-render",
+      "À styler un composant",
+      "À naviguer entre les pages"
+    ],
+    "answer": 1,
+    "explanation": "useState ajoute un 'état local' à un composant fonctionnel. Quand setState est appelé, React re-render le composant.",
+    "difficulty": 1
+  },
+  {
+    "theme": "react",
+    "type": "quiz",
+    "question": "Que se passe-t-il si on appelle directement une variable d'état au lieu de son setter ? `count = count + 1`",
+    "choices": [
+      "Le composant se met à jour",
+      "Rien : il faut utiliser setCount pour que React voie le changement",
+      "Une erreur est jetée",
+      "L'état est sauvegardé pour le prochain render"
+    ],
+    "answer": 1,
+    "explanation": "L'état React doit être mis à jour via le setter (setCount). Sinon React ne sait pas qu'il faut re-render.",
+    "difficulty": 1
+  },
+  {
+    "theme": "react",
+    "type": "quiz",
+    "question": "Quand la fonction de cleanup de useEffect est-elle appelée ?",
+    "choices": [
+      "Avant chaque re-render et au unmount",
+      "Uniquement au unmount",
+      "Avant le premier render",
+      "Jamais en mode strict"
+    ],
+    "answer": 0,
+    "explanation": "Le cleanup est exécuté avant le prochain effet (donc avant chaque re-render qui ré-exécute l'effet) et lors du unmount.",
+    "difficulty": 2
+  },
+  {
+    "theme": "react",
+    "type": "quiz",
+    "question": "Quel hook utilises-tu pour mémoriser une fonction passée en prop afin d'éviter des re-renders inutiles d'un enfant memoïsé ?",
+    "choices": ["useMemo", "useRef", "useCallback", "useEffect"],
+    "answer": 2,
+    "explanation": "useCallback retourne une référence stable de la fonction tant que ses dépendances ne changent pas.",
+    "difficulty": 2
+  },
+  {
+    "theme": "react",
+    "type": "quiz",
+    "question": "Pourquoi les listes ont besoin d'une prop key ?",
+    "choices": [
+      "Pour le SEO",
+      "Pour aider le réconciliateur à identifier les éléments entre les renders",
+      "Pour styliser les éléments",
+      "C'est juste un avertissement, ça ne sert à rien"
+    ],
+    "answer": 1,
+    "explanation": "key permet à React de réutiliser, déplacer ou supprimer les bons nœuds DOM lors du diff.",
+    "difficulty": 1
+  },
+  {
+    "theme": "react",
+    "type": "quiz",
+    "question": "Comment doit s'appeler une variable de composant React ?",
+    "choices": [
+      "En minuscule (button)",
+      "En majuscule (Button) — sinon traité comme balise HTML",
+      "Préfixé par 'React'",
+      "Avec un underscore"
+    ],
+    "answer": 1,
+    "explanation": "<button> = balise HTML, <Button> = composant. Sans majuscule, ton composant est ignoré.",
+    "difficulty": 1
+  },
+  {
+    "theme": "react",
+    "type": "quiz",
+    "question": "En JSX, comment s'écrit l'attribut 'class' ?",
+    "choices": ["class", "Class", "className", "classes"],
+    "answer": 2,
+    "explanation": "class est réservé en JS. JSX utilise className. De même for → htmlFor, tabindex → tabIndex.",
+    "difficulty": 1
+  },
+  {
+    "theme": "react",
+    "type": "quiz",
+    "question": "Que se passe-t-il si tu écris `<button onClick={handleClick()}>` avec les parenthèses ?",
+    "choices": [
+      "C'est correct",
+      "handleClick est APPELÉE au render, et son retour (souvent undefined) devient le handler",
+      "Erreur de compilation",
+      "Ça marche au clic"
+    ],
+    "answer": 1,
+    "explanation": "Avec () tu APPELLES la fn immédiatement. Pour passer la référence : onClick={handleClick}.",
+    "difficulty": 2
+  },
+  {
+    "theme": "react",
+    "type": "quiz",
+    "question": "Comment ajouter un item à un tableau dans un useState SANS muter ?",
+    "choices": [
+      "items.push(x); setItems(items)",
+      "setItems([...items, x]) ou setItems(prev => [...prev, x])",
+      "setItems(items.add(x))",
+      "items[items.length] = x"
+    ],
+    "answer": 1,
+    "explanation": "Spread crée une nouvelle référence. push() mute → React voit la même réf et ne re-render pas.",
+    "difficulty": 2
+  },
+  {
+    "theme": "react",
+    "type": "quiz",
+    "question": "Pourquoi `useEffect(async () => {...}, [])` pose-t-il problème ?",
+    "choices": [
+      "Il est plus lent",
+      "useEffect attend une fonction de cleanup en retour, pas une Promise",
+      "C'est interdit",
+      "Async ne marche pas dans React"
+    ],
+    "answer": 1,
+    "explanation": "Une fn async retourne une Promise — pas une fonction de cleanup. Définis async fn DEDANS et appelle-la.",
+    "difficulty": 3
+  },
+  {
+    "theme": "react",
+    "type": "quiz",
+    "question": "Quand préférer useReducer à useState ?",
+    "choices": [
+      "Toujours",
+      "Quand l'état est complexe avec plusieurs sous-champs et types de mutations",
+      "Pour les performances brutes",
+      "Pour les fetchs"
+    ],
+    "answer": 1,
+    "explanation": "useReducer centralise les transitions dans une fn pure, plus testable et lisible quand l'état grossit.",
+    "difficulty": 3
+  },
+  {
+    "theme": "react",
+    "type": "challenge",
+    "prompt": "Écris updateAt(arr, index, value) qui renvoie un NOUVEAU tableau dans lequel l'élément à `index` est remplacé par `value`. Le tableau original ne doit PAS être modifié. C'est le pattern classique pour mettre à jour un useState contenant une liste.\n\nExemple : updateAt([1, 2, 3], 1, 99) → [1, 99, 3]",
+    "starterCode": "function updateAt(arr, index, value) {\n  // TODO : retourne un nouveau tableau avec value à la position index\n  return arr;\n}",
+    "tests": [
+      {
+        "label": "remplace au milieu",
+        "input": [[1, 2, 3], 1, 99],
+        "expected": [1, 99, 3]
+      },
+      {
+        "label": "remplace au début",
+        "input": [["a", "b"], 0, "z"],
+        "expected": ["z", "b"]
+      },
+      {
+        "label": "ne mute pas l'original",
+        "input": [[1, 2, 3], 2, 0],
+        "expected": [1, 2, 0]
+      }
+    ],
+    "hint": "arr.map((v, i) => i === index ? value : v) — ou bien [...arr.slice(0, index), value, ...arr.slice(index + 1)].",
+    "difficulty": 1
+  },
+  {
+    "theme": "react",
+    "type": "challenge",
+    "prompt": "Écris classNames(...args) qui prend une liste de classes CSS et renvoie une seule chaîne, séparées par un espace. Tu dois IGNORER toutes les valeurs falsy (false, null, undefined, '', 0). C'est ce que font les libs `clsx` ou `classnames`.\n\nExemple : classNames('btn', false, null, '', 'primary') → 'btn primary'",
+    "starterCode": "function classNames(...args) {\n  // TODO : filtre les valeurs falsy puis joins avec un espace\n  return '';\n}",
+    "tests": [
+      {
+        "label": "ignore les falsy",
+        "input": ["btn", false, null, "", 0, "primary"],
+        "expected": "btn primary"
+      },
+      {
+        "label": "rien ne reste",
+        "input": [false, null],
+        "expected": ""
+      },
+      {
+        "label": "une seule classe",
+        "input": ["only"],
+        "expected": "only"
+      }
+    ],
+    "hint": "args.filter(Boolean).join(' ') — Boolean en tant que callback fait le job.",
+    "difficulty": 2
+  },
+  {
+    "theme": "react",
+    "type": "challenge",
+    "prompt": "Écris removeById(arr, id) qui retourne un nouveau tableau sans l'élément ayant cet id. Pattern classique pour supprimer un item d'un useState liste.\n\nExemple : removeById([{id:1},{id:2},{id:3}], 2) → [{id:1},{id:3}]",
+    "starterCode": "function removeById(arr, id) {\n  // TODO : filter ceux dont id !== id\n  return arr;\n}",
+    "tests": [
+      {
+        "label": "supprime au milieu",
+        "input": [[{ "id": 1 }, { "id": 2 }, { "id": 3 }], 2],
+        "expected": [{ "id": 1 }, { "id": 3 }]
+      },
+      {
+        "label": "id absent → inchangé",
+        "input": [[{ "id": 1 }, { "id": 2 }], 99],
+        "expected": [{ "id": 1 }, { "id": 2 }]
+      },
+      {
+        "label": "tableau vide",
+        "input": [[], 1],
+        "expected": []
+      }
+    ],
+    "hint": "arr.filter(item => item.id !== id). Renvoie une nouvelle référence, parfait pour setState.",
+    "difficulty": 1
+  },
+  {
+    "theme": "react",
+    "type": "challenge",
+    "prompt": "Écris mergeProps(defaults, overrides) qui fusionne 2 objets de props : les valeurs de `overrides` gagnent SAUF si elles sont null (alors on garde celles de defaults). Pratique pour des composants UI à valeurs par défaut.\n\nExemple : mergeProps({size:'md', color:'red'}, {color:null, weight:700}) → {size:'md', color:'red', weight:700}",
+    "starterCode": "function mergeProps(defaults, overrides) {\n  // TODO : commence par {...defaults}, puis pour chaque clé de overrides non-null, écrase\n  return {};\n}",
+    "tests": [
+      {
+        "label": "override garde defaults si null",
+        "input": [{ "size": "md", "color": "red" }, { "color": null, "weight": 700 }],
+        "expected": { "size": "md", "color": "red", "weight": 700 }
+      },
+      {
+        "label": "override écrase",
+        "input": [{ "a": 1 }, { "a": 2 }],
+        "expected": { "a": 2 }
+      },
+      {
+        "label": "objet vide",
+        "input": [{ "x": 1 }, {}],
+        "expected": { "x": 1 }
+      }
+    ],
+    "hint": "const out = {...defaults}; for (const k in overrides) if (overrides[k] !== null) out[k] = overrides[k]; return out;",
+    "difficulty": 2
+  }
+]

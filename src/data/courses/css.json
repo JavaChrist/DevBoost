@@ -1,0 +1,508 @@
+[
+  {
+    "slug": "css-basics",
+    "theme": "css",
+    "title": "Sélecteurs, propriétés, box model",
+    "summary": "Les fondations de CSS : comment cibler des éléments, comment leur boîte fonctionne.",
+    "level": 1,
+    "sections": [
+      {
+        "heading": "Le rôle de CSS",
+        "body": "CSS (Cascading Style Sheets) décrit COMMENT les éléments HTML sont affichés : couleurs, tailles, positions, polices, animations. HTML structure le contenu, CSS lui donne sa forme.\n\nUne règle CSS = un **sélecteur** + un bloc de **propriétés:valeurs**.",
+        "code": {
+          "lang": "css",
+          "value": "/* sélecteur */\nh1 {\n  /* propriété : valeur */\n  color: navy;\n  font-size: 2rem;\n  margin-bottom: 16px;\n}"
+        }
+      },
+      {
+        "heading": "Trois manières d'appliquer du CSS",
+        "body": "• **Externe** : une feuille `.css` liée via `<link rel=\"stylesheet\" href=\"styles.css\" />`. **À privilégier** : séparation des préoccupations, cache navigateur.\n• **Interne** : balises `<style>` dans le `<head>`. Pour des cas spécifiques.\n• **Inline** : attribut `style=\"...\"` sur l'élément. À éviter (sauf JS dynamique) car non réutilisable et hyper-spécifique."
+      },
+      {
+        "heading": "Les sélecteurs de base",
+        "body": "• Par balise : `p { ... }` cible tous les `<p>`.\n• Par classe : `.btn { ... }` cible `class=\"btn\"`. Réutilisable.\n• Par ID : `#logo { ... }` cible `id=\"logo\"`. Unique.\n• Universel : `* { ... }` cible TOUT.\n• Par attribut : `input[type=\"email\"] { ... }`.",
+        "code": {
+          "lang": "css",
+          "value": ".btn { background: emerald; }\n#logo { width: 120px; }\ninput[required] { border-color: red; }\n* { box-sizing: border-box; }"
+        }
+      },
+      {
+        "heading": "Combinateurs",
+        "body": "On compose des sélecteurs pour cibler plus précisément :\n• `nav a` (descendant) : tout `<a>` dans un `<nav>`.\n• `nav > a` (enfant direct) : seulement les `<a>` directement dans `<nav>`, pas dans une `<ul>` imbriquée.\n• `h1 + p` (frère adjacent) : le `<p>` JUSTE après un `<h1>`.\n• `h1 ~ p` (frère général) : tous les `<p>` après un `<h1>`."
+      },
+      {
+        "heading": "Pseudo-classes",
+        "body": "Préfixées par `:`, elles ciblent un état ou une position :\n• `:hover` : survol souris.\n• `:focus` / `:focus-visible` : élément focusé.\n• `:active` : élément cliqué.\n• `:disabled`, `:checked` : états des inputs.\n• `:first-child`, `:last-child`, `:nth-child(2n)` : position dans le parent.\n• `:not(.actif)` : tout sauf...",
+        "code": {
+          "lang": "css",
+          "value": ".btn:hover { background: emerald-light; }\n.btn:focus-visible {\n  outline: 2px solid skyblue;\n}\nli:nth-child(odd) { background: #f3f4f6; }"
+        }
+      },
+      {
+        "heading": "Le box model — la base de la mise en page",
+        "body": "Chaque élément est une BOÎTE composée de :\n• **content** : le contenu lui-même (texte, image).\n• **padding** : espace INTÉRIEUR (entre le contenu et la bordure).\n• **border** : la bordure.\n• **margin** : espace EXTÉRIEUR (entre la bordure et les voisins).\n\nLargeur réelle par défaut = content + 2×padding + 2×border (`box-sizing: content-box`).\n\nAvec `box-sizing: border-box`, padding et border sont INCLUS dans la largeur définie. Beaucoup plus prévisible.",
+        "code": {
+          "lang": "css",
+          "value": "/* Reset universel : à mettre dans toute base CSS */\n*, *::before, *::after {\n  box-sizing: border-box;\n}\n\n.card {\n  width: 300px;\n  padding: 20px;\n  border: 2px solid;\n  /* avec border-box : largeur réelle = 300px */\n}"
+        }
+      },
+      {
+        "heading": "La cascade : qui gagne ?",
+        "body": "Si plusieurs règles s'appliquent au même élément, c'est la **spécificité** qui décide :\n• Inline `style=\"...\"` (poids 1000)\n• `#id` (poids 100)\n• `.class`, `[attr]`, `:pseudo-class` (poids 10)\n• `balise`, `::pseudo-element` (poids 1)\n\nÀ spécificité égale, la dernière règle déclarée gagne. **`!important`** force tout (à éviter — vrai dernier recours)."
+      },
+      {
+        "heading": "Unités : px, em, rem, %",
+        "body": "• **px** : pixels CSS, absolu. Précis mais ne s'adapte pas à la taille de police utilisateur.\n• **%** : relatif au parent (largeur/hauteur).\n• **em** : relatif à la **font-size du parent**. Compose, parfois piégeux.\n• **rem** : relatif à la font-size de `<html>` (root). **Le plus prévisible** pour les tailles.\n• **vh / vw** : 1% de la hauteur/largeur du viewport.\n• **vmin / vmax** : le plus petit/grand des deux."
+      },
+      {
+        "heading": "Couleurs",
+        "body": "Plusieurs syntaxes :\n• Nom : `red`, `cornflowerblue`.\n• Hex : `#ff0066`, `#f06` (court = double chaque char).\n• `rgb(255, 0, 102)`, `rgba(255, 0, 102, 0.5)` avec alpha.\n• `hsl(340, 100%, 50%)` : Teinte, Saturation, Luminosité — souvent plus intuitif pour des variations.\n• Modernes : `oklch(...)`, `color-mix(...)`."
+      },
+      {
+        "heading": "À retenir",
+        "body": "• `link` externe > `<style>` interne > `style=\"\"` inline.\n• Sélecteurs : tag, `.class`, `#id`, `[attr]`, `:pseudo`.\n• Combinateurs : ` ` (descendant), `>` (enfant direct), `+` `~` (frères).\n• `box-sizing: border-box` partout.\n• Spécificité : inline > id > class > tag.\n• `rem` pour les tailles de police, `px` pour les bordures fines.\n• Évite `!important`."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Comment cibler tous les liens à l'intérieur d'un <nav> ?",
+        "choices": ["nav, a { }", "nav.a { }", "nav a { }", "nav > a { }"],
+        "answer": 2,
+        "explanation": "L'espace = sélecteur descendant. `nav a` cible tous les <a> dans un <nav>, peu importe la profondeur."
+      },
+      {
+        "question": "Que fait `box-sizing: border-box` ?",
+        "choices": [
+          "Affiche un cadre autour de l'élément",
+          "Inclut padding et border DANS la largeur définie, plus prévisible pour la mise en page",
+          "Active les bordures arrondies",
+          "Centre l'élément"
+        ],
+        "answer": 1,
+        "explanation": "Sans border-box, .card { width: 300px; padding: 20px } fait en réalité 340px de large. Avec border-box, c'est 300px exactement."
+      },
+      {
+        "question": "Quelle règle gagne entre `#main p` et `.intro p` sur un même élément ?",
+        "choices": [
+          "Aucune, conflit",
+          "#main p (id pèse plus que class)",
+          ".intro p (déclarée plus tard typiquement)",
+          "Les deux fusionnent"
+        ],
+        "answer": 1,
+        "explanation": "Spécificité : id (100) > class (10). #main p (101) bat .intro p (11) peu importe l'ordre de déclaration."
+      },
+      {
+        "question": "Quelle unité s'adapte à la taille de police de l'élément racine <html> ?",
+        "choices": ["px", "em", "rem", "%"],
+        "answer": 2,
+        "explanation": "rem = root em. Toujours relatif à <html>. em est relatif au PARENT direct, ce qui compose et peut surprendre."
+      },
+      {
+        "question": "Pourquoi éviter `!important` ?",
+        "choices": [
+          "C'est obsolète",
+          "Ça écrase la spécificité normale et rend la cascade impossible à raisonner",
+          "Ça fait planter le navigateur",
+          "C'est interdit en CSS strict"
+        ],
+        "answer": 1,
+        "explanation": "Une fois qu'on en met un, on est obligé d'en remettre pour surcharger. Spirale infernale. Réserve aux utilities critiques type Tailwind."
+      }
+    ]
+  },
+  {
+    "slug": "css-flex",
+    "theme": "css",
+    "title": "Flexbox : la mise en page 1D",
+    "summary": "Aligner, distribuer, organiser sur un axe. Le modèle de layout le plus utilisé.",
+    "level": 2,
+    "sections": [
+      {
+        "heading": "Pourquoi Flexbox ?",
+        "body": "Avant Flexbox, centrer un élément verticalement en CSS demandait des hacks (`position: absolute; top: 50%; transform: translateY(-50%)` ou table-cell…).\n\nFlexbox a tout simplifié : sur le PARENT, on active `display: flex`, et ses **enfants directs** deviennent flexibles, alignables le long d'un axe."
+      },
+      {
+        "heading": "Activer Flexbox",
+        "body": "Tout commence sur le parent :",
+        "code": {
+          "lang": "css",
+          "value": ".container {\n  display: flex;\n  /* axe principal horizontal par défaut\n     (flex-direction: row) */\n}"
+        }
+      },
+      {
+        "heading": "Les 2 axes",
+        "body": "• **Axe principal** (main axis) : sens du `flex-direction`. `row` = horizontal (défaut), `column` = vertical.\n• **Axe perpendiculaire** (cross axis) : l'autre.\n\nC'est CRUCIAL : `justify-content` agit sur l'axe principal, `align-items` sur l'axe perpendiculaire. Si tu passes en `flex-direction: column`, ils s'inversent."
+      },
+      {
+        "heading": "justify-content : alignement axe principal",
+        "body": "Valeurs courantes :\n• `flex-start` : groupe les enfants au début (défaut).\n• `flex-end` : à la fin.\n• `center` : centre le groupe.\n• `space-between` : 1er au début, dernier à la fin, espace entre les autres.\n• `space-around` : espace égal autour de chacun.\n• `space-evenly` : espace exactement égal partout (y compris bords).",
+        "code": {
+          "lang": "css",
+          "value": ".navbar {\n  display: flex;\n  justify-content: space-between;\n  /* logo à gauche, menu à droite */\n}"
+        }
+      },
+      {
+        "heading": "align-items : alignement axe perpendiculaire",
+        "body": "• `stretch` (défaut) : étire les enfants à toute la hauteur du parent.\n• `flex-start` : aligne en haut.\n• `flex-end` : aligne en bas.\n• `center` : centre verticalement.\n• `baseline` : aligne sur la ligne de base typographique.",
+        "code": {
+          "lang": "css",
+          "value": "/* Centrage parfait, le snippet le plus utile : */\n.center {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  min-height: 100vh;\n}"
+        }
+      },
+      {
+        "heading": "gap : espacement entre items",
+        "body": "Plutôt que des `margin-right` ou `margin-bottom` sur chaque enfant, utilise **`gap`** sur le parent. Plus simple, plus propre, fonctionne aussi en grid.",
+        "code": {
+          "lang": "css",
+          "value": ".toolbar {\n  display: flex;\n  gap: 12px;\n  /* row-gap et column-gap si tu veux\n     des valeurs différentes */\n}"
+        }
+      },
+      {
+        "heading": "flex-direction et flex-wrap",
+        "body": "• `flex-direction: row` (défaut) | `column` | `row-reverse` | `column-reverse`.\n• `flex-wrap: nowrap` (défaut, tout sur 1 ligne) | `wrap` (passe à la ligne si pas de place).\n• Raccourci `flex-flow: row wrap`.",
+        "code": {
+          "lang": "css",
+          "value": ".gallery {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 16px;\n}\n.gallery > * {\n  flex: 1 1 200px; /* min 200px, grandit */\n}"
+        }
+      },
+      {
+        "heading": "Sur les enfants : flex-grow, flex-shrink, flex-basis",
+        "body": "• `flex-grow: 1` : l'enfant prend l'espace disponible. Si tous valent 1, ils se partagent à parts égales.\n• `flex-shrink: 1` : l'enfant peut être réduit si manque de place.\n• `flex-basis: 200px` : taille de départ avant calcul.\n• Raccourci `flex: 1 1 200px;` (= grow shrink basis).\n\nUsage typique : `flex: 1` = prend tout l'espace disponible.",
+        "code": {
+          "lang": "css",
+          "value": ".sidebar { flex: 0 0 240px; } /* taille fixe */\n.main    { flex: 1; }          /* prend le reste */"
+        }
+      },
+      {
+        "heading": "Cas d'usage classiques",
+        "body": "Patterns à mémoriser :\n• Centrer un seul enfant : `display: flex; justify-content: center; align-items: center`.\n• Navigation logo + menu : `display: flex; justify-content: space-between; align-items: center`.\n• Empiler verticalement avec espacement : `display: flex; flex-direction: column; gap: 16px`.\n• Pousser un élément à la fin : `margin-left: auto` sur l'élément (les flex absorbent margin auto)."
+      },
+      {
+        "heading": "À retenir",
+        "body": "• `display: flex` sur le PARENT, jamais sur l'enfant.\n• `justify-content` = axe principal, `align-items` = axe perpendiculaire.\n• `gap` plutôt que margins entre items.\n• `flex: 1` sur un enfant = il prend tout l'espace dispo.\n• `flex-direction: column` pour empiler vertical.\n• `margin-left: auto` pour pousser à droite."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Sur quel élément applique-t-on `display: flex` ?",
+        "choices": [
+          "Sur l'enfant qu'on veut centrer",
+          "Sur le parent (le conteneur)",
+          "Sur <body>",
+          "Sur n'importe lequel des deux"
+        ],
+        "answer": 1,
+        "explanation": "Toujours sur le PARENT. Ce sont ses enfants directs qui deviennent flex items et obéissent à justify/align."
+      },
+      {
+        "question": "Comment centrer parfaitement un enfant dans son parent ?",
+        "choices": [
+          "text-align: center sur le parent",
+          "margin: auto sur l'enfant",
+          "display: flex; justify-content: center; align-items: center sur le parent",
+          "position: center"
+        ],
+        "answer": 2,
+        "explanation": "Le snippet à connaître par cœur. Marche pour n'importe quel enfant, sans hack."
+      },
+      {
+        "question": "Comment espacer également des items horizontalement ?",
+        "choices": [
+          "justify-content: space-between",
+          "align-items: center",
+          "flex-direction: row",
+          "gap: auto"
+        ],
+        "answer": 0,
+        "explanation": "space-between : 1er à gauche, dernier à droite, espace entre les autres. Idéal pour une navbar."
+      },
+      {
+        "question": "Que fait `flex: 1` sur un enfant flex ?",
+        "choices": [
+          "Lui donne 1px de largeur",
+          "Lui dit de prendre tout l'espace disponible (et de partager équitablement avec les autres en flex: 1)",
+          "Le cache",
+          "L'aligne à droite"
+        ],
+        "answer": 1,
+        "explanation": "flex: 1 = flex-grow: 1 — étend l'enfant. Si plusieurs enfants ont flex: 1, ils se partagent l'espace à parts égales."
+      },
+      {
+        "question": "Comment 'pousser' un élément à droite dans une row flex ?",
+        "choices": [
+          "float: right",
+          "margin-left: auto sur l'élément",
+          "position: absolute",
+          "text-align: right"
+        ],
+        "answer": 1,
+        "explanation": "Les enfants flex absorbent margin auto. margin-left: auto pousse l'élément à droite et tout ce qui est avant lui à gauche."
+      }
+    ]
+  },
+  {
+    "slug": "css-grid",
+    "theme": "css",
+    "title": "CSS Grid : la mise en page 2D",
+    "summary": "Quand Flexbox ne suffit plus : grilles, alignement sur 2 axes, layouts complexes.",
+    "level": 2,
+    "sections": [
+      {
+        "heading": "Flex vs Grid : quel choix ?",
+        "body": "• **Flexbox** : layout 1D — sur UN axe (ligne OU colonne). Idéal pour navigation, toolbars, liste d'items qui wrap.\n• **Grid** : layout 2D — colonnes ET lignes simultanément. Idéal pour des layouts en grille (cards, tableaux, page entière).\n\nIls se complètent. Souvent : Grid pour le layout global de la page, Flex pour les composants à l'intérieur."
+      },
+      {
+        "heading": "Activer Grid",
+        "body": "Comme Flex : sur le parent.",
+        "code": {
+          "lang": "css",
+          "value": ".container {\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n  /* 3 colonnes égales */\n  gap: 16px;\n}"
+        }
+      },
+      {
+        "heading": "L'unité fr (fraction)",
+        "body": "**`fr`** = unité magique de Grid. 1 fr = 1 part de l'espace disponible APRÈS calcul des tailles fixes.\n\n• `1fr 1fr 1fr` = 3 colonnes égales.\n• `2fr 1fr` = la 1ère prend 2× plus que la 2nde.\n• `200px 1fr` = colonne fixe de 200px, le reste prend tout l'espace.",
+        "code": {
+          "lang": "css",
+          "value": ".dashboard {\n  display: grid;\n  grid-template-columns: 240px 1fr;\n  /* sidebar fixe + contenu fluide */\n}"
+        }
+      },
+      {
+        "heading": "repeat() et minmax()",
+        "body": "Pour ne pas répéter, utilise `repeat()`. Avec `minmax(min, max)` tu bornes une taille.\n\nLe combo magique pour des **grilles responsives sans media query** :",
+        "code": {
+          "lang": "css",
+          "value": ".cards {\n  display: grid;\n  grid-template-columns:\n    repeat(auto-fill, minmax(220px, 1fr));\n  gap: 16px;\n}\n\n/*\n  - chaque colonne fait au minimum 220px\n  - autant de colonnes que la place le permet\n  - chaque colonne s'étire pour combler l'espace\n  → magie sans media query\n*/"
+        }
+      },
+      {
+        "heading": "grid-template-rows et auto-rows",
+        "body": "On peut aussi définir les LIGNES :\n• `grid-template-rows: auto auto 200px` : hauteur explicite.\n• `grid-auto-rows: minmax(80px, auto)` : hauteur minimum pour TOUTES les lignes implicites.",
+        "code": {
+          "lang": "css",
+          "value": ".grid {\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n  grid-auto-rows: 200px;\n  gap: 16px;\n}"
+        }
+      },
+      {
+        "heading": "Placer un item explicitement",
+        "body": "Sur n'importe quel enfant :",
+        "code": {
+          "lang": "css",
+          "value": ".hero {\n  /* prend les colonnes 1 a 4 (donc 3 colonnes) */\n  grid-column: 1 / 4;\n  /* ou : grid-column: span 3; */\n  grid-row: 1;\n}\n\n.sidebar {\n  /* derniere colonne, lignes 2 a la fin */\n  grid-column: -2 / -1;\n  grid-row: 2 / -1;\n}"
+        }
+      },
+      {
+        "heading": "grid-template-areas : layout par nom",
+        "body": "Très lisible pour des layouts de page :",
+        "code": {
+          "lang": "css",
+          "value": ".layout {\n  display: grid;\n  grid-template-columns: 240px 1fr;\n  grid-template-rows: 60px 1fr 40px;\n  grid-template-areas:\n    \"header header\"\n    \"sidebar main\"\n    \"footer footer\";\n}\n\n.app-header  { grid-area: header; }\n.app-sidebar { grid-area: sidebar; }\n.app-main    { grid-area: main; }\n.app-footer  { grid-area: footer; }"
+        }
+      },
+      {
+        "heading": "Aligner dans une cellule",
+        "body": "Comme Flex, mais en 2D :\n• `justify-items` / `align-items` sur le PARENT : alignement par défaut de TOUS les enfants.\n• `justify-self` / `align-self` sur l'ENFANT : surcharge pour cet enfant uniquement.\n• `place-items: center` : raccourci pour center les deux.\n• `place-content: center` : centre TOUTE la grille dans son conteneur.",
+        "code": {
+          "lang": "css",
+          "value": ".card {\n  display: grid;\n  place-items: center;\n  /* centre le contenu, parfait pour\n     un texte centré sur 2 axes */\n}"
+        }
+      },
+      {
+        "heading": "Quand utiliser Grid plutôt que Flex",
+        "body": "• Layouts de page (header / sidebar / main / footer).\n• Galeries de cards qui doivent rester alignées en colonnes ET en lignes.\n• Tableaux de données stylisés.\n• Tout ce qui a une vraie dimension 2D.\n\nFlex reste meilleur pour : navigation horizontale, toolbar, wrap d'items qui ne doivent pas s'aligner verticalement."
+      },
+      {
+        "heading": "À retenir",
+        "body": "• Flex = 1D, Grid = 2D. Souvent on combine les deux.\n• `1fr` = unité magique pour partager l'espace.\n• `repeat(auto-fill, minmax(220px, 1fr))` = grille responsive sans media query.\n• `grid-template-areas` = layout lisible avec des noms.\n• `place-items: center` = centrage parfait en 1 ligne."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Quelle est la différence principale entre Flex et Grid ?",
+        "choices": [
+          "Aucune, ce sont des alias",
+          "Flex est 1D (un axe), Grid est 2D (lignes ET colonnes simultanées)",
+          "Flex est obsolète",
+          "Grid ne marche que sur les tableaux"
+        ],
+        "answer": 1,
+        "explanation": "Flex aligne sur UN axe. Grid place dans une vraie grille 2D. Souvent on combine : Grid pour le layout global, Flex pour les composants."
+      },
+      {
+        "question": "Que représente l'unité `fr` ?",
+        "choices": [
+          "Frame, équivalent à 1px",
+          "Une fraction de l'espace disponible après calcul des tailles fixes",
+          "Une unité de typographie",
+          "Une unité française"
+        ],
+        "answer": 1,
+        "explanation": "1fr = 1 part de l'espace restant. `200px 1fr 1fr` = 200px fixes + 2 colonnes qui se partagent le reste."
+      },
+      {
+        "question": "Quel snippet crée une grille responsive de cards de 220px MINIMUM, sans media query ?",
+        "choices": [
+          "grid-template-columns: 1fr 1fr 1fr",
+          "grid-template-columns: repeat(3, 220px)",
+          "grid-template-columns: repeat(auto-fill, minmax(220px, 1fr))",
+          "grid-template-columns: auto auto auto"
+        ],
+        "answer": 2,
+        "explanation": "auto-fill + minmax = autant de colonnes qu'il y a de place, chaque colonne fait au moins 220px et étire pour combler. Magie."
+      },
+      {
+        "question": "Comment placer un élément sur les colonnes 1 à 4 (3 colonnes) ?",
+        "choices": [
+          "grid-column: 3",
+          "grid-column: 1 / 4 (ou grid-column: span 3)",
+          "grid-template-columns: 3",
+          "place-self: span 3"
+        ],
+        "answer": 1,
+        "explanation": "grid-column: 1 / 4 = de la ligne 1 à la ligne 4. Ou span 3 = sur 3 colonnes à partir de la position courante."
+      },
+      {
+        "question": "Comment centrer parfaitement le contenu d'une cellule de grille ?",
+        "choices": [
+          "text-align: center",
+          "place-items: center sur le parent",
+          "margin: auto",
+          "vertical-align: middle"
+        ],
+        "answer": 1,
+        "explanation": "place-items = raccourci justify-items + align-items. Centre tous les enfants en 2D."
+      }
+    ]
+  },
+  {
+    "slug": "css-responsive-anim",
+    "theme": "css",
+    "title": "Responsive design & animations",
+    "summary": "Mobile first, media queries, transitions et keyframes pour des UI vivantes.",
+    "level": 2,
+    "sections": [
+      {
+        "heading": "Le principe mobile-first",
+        "body": "Plutôt que designer pour desktop puis 'adapter' pour mobile, on commence par le **petit écran** (le plus contraint), puis on ENRICHIT avec des media queries quand l'écran s'agrandit.\n\nAvantage : ton CSS de base est simple, et les media queries n'ajoutent que ce qui est nécessaire pour les grands écrans."
+      },
+      {
+        "heading": "Le viewport meta tag",
+        "body": "Sans cette balise, ton site sera affiché 'zoomé out' sur mobile. À mettre sur TOUTES tes pages :",
+        "code": {
+          "lang": "html",
+          "value": "<meta name=\"viewport\"\n      content=\"width=device-width, initial-scale=1.0\" />"
+        }
+      },
+      {
+        "heading": "Media queries",
+        "body": "Syntaxe : `@media (condition) { règles }`. Conditions courantes :\n• `min-width: 768px` : applique si écran AU MOINS 768px.\n• `max-width: 767px` : applique si écran AU PLUS 767px.\n• `prefers-color-scheme: dark` : si l'utilisateur préfère le mode sombre.\n• `prefers-reduced-motion: reduce` : pour les utilisateurs qui n'aiment pas les animations.",
+        "code": {
+          "lang": "css",
+          "value": "/* Mobile first : base mobile */\n.layout {\n  display: flex;\n  flex-direction: column;\n}\n\n/* Tablette et + */\n@media (min-width: 768px) {\n  .layout {\n    flex-direction: row;\n  }\n}\n\n/* Desktop large */\n@media (min-width: 1280px) {\n  .layout { gap: 32px; }\n}"
+        }
+      },
+      {
+        "heading": "Les breakpoints classiques",
+        "body": "Pas de standard officiel, mais des conventions répandues (alignées sur Tailwind) :\n• **sm** ≥ 640px (téléphones paysage / petites tablettes)\n• **md** ≥ 768px (tablettes)\n• **lg** ≥ 1024px (laptops)\n• **xl** ≥ 1280px (desktops)\n• **2xl** ≥ 1536px\n\nMais le mieux c'est de définir tes breakpoints sur **ton design**, pas sur des tailles de devices."
+      },
+      {
+        "heading": "Images et médias responsives",
+        "body": "Toujours en 'fluide' :",
+        "code": {
+          "lang": "css",
+          "value": "img, video, picture {\n  max-width: 100%;\n  height: auto;\n  /* l'image ne dépasse jamais son parent */\n}"
+        }
+      },
+      {
+        "heading": "Transitions : interpoler entre 2 états",
+        "body": "Pour animer un changement d'état (hover, classes ajoutées en JS), `transition` est le plus simple :",
+        "code": {
+          "lang": "css",
+          "value": ".btn {\n  background: emerald;\n  transition: background 200ms ease,\n              transform 150ms ease;\n}\n\n.btn:hover {\n  background: emerald-light;\n  transform: scale(1.05);\n}"
+        }
+      },
+      {
+        "heading": "Quelles propriétés sont 'cheap' à animer ?",
+        "body": "Pour des animations FLUIDES (60fps), n'anime que :\n• `transform` (translate, scale, rotate)\n• `opacity`\n\nÉvite d'animer `width`, `height`, `top`, `left`, `margin` → ils déclenchent un **layout recalc** très coûteux."
+      },
+      {
+        "heading": "Keyframes : animations multi-étapes",
+        "body": "Pour des animations qui ne sont pas juste 'd'un état à l'autre' :",
+        "code": {
+          "lang": "css",
+          "value": "@keyframes pulse {\n  0%   { transform: scale(1); opacity: 1; }\n  50%  { transform: scale(1.1); opacity: 0.8; }\n  100% { transform: scale(1); opacity: 1; }\n}\n\n.notification {\n  animation: pulse 1.2s ease-in-out infinite;\n}"
+        }
+      },
+      {
+        "heading": "Respecter prefers-reduced-motion",
+        "body": "Certains utilisateurs ont des troubles vestibulaires : les animations leur donnent la nausée. Toujours respecter leur préférence :",
+        "code": {
+          "lang": "css",
+          "value": "@media (prefers-reduced-motion: reduce) {\n  *,\n  *::before,\n  *::after {\n    animation-duration: 0.01ms !important;\n    animation-iteration-count: 1 !important;\n    transition-duration: 0.01ms !important;\n  }\n}"
+        }
+      },
+      {
+        "heading": "À retenir",
+        "body": "• Mobile-first : commence simple, enrichis avec `min-width`.\n• Toujours mettre la balise `<meta viewport>`.\n• Images : `max-width: 100%; height: auto`.\n• Anime `transform` et `opacity` (fluide), pas `width`/`height` (coûteux).\n• Respecte `prefers-reduced-motion`.\n• Définis les breakpoints sur ton design, pas sur des devices."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Que signifie 'mobile-first' ?",
+        "choices": [
+          "Designer uniquement pour mobile",
+          "Concevoir d'abord pour le petit écran, puis ENRICHIR via media queries pour les grands écrans",
+          "Tester d'abord sur mobile",
+          "Utiliser des frameworks mobile"
+        ],
+        "answer": 1,
+        "explanation": "On part du cas le plus contraint (mobile) et on ajoute du CSS pour les grands écrans avec @media (min-width: ...)."
+      },
+      {
+        "question": "Quelles propriétés sont les MEILLEURES à animer pour avoir 60 fps ?",
+        "choices": [
+          "width, height, top, left",
+          "transform et opacity",
+          "margin et padding",
+          "font-size et color"
+        ],
+        "answer": 1,
+        "explanation": "transform et opacity sont gérées par le compositeur GPU sans recalculer le layout. Animer width/height force un recalc à chaque frame."
+      },
+      {
+        "question": "Comment styler une image pour qu'elle ne déborde JAMAIS de son parent ?",
+        "choices": [
+          "img { width: 100% }",
+          "img { max-width: 100%; height: auto }",
+          "img { object-fit: cover }",
+          "img { display: block }"
+        ],
+        "answer": 1,
+        "explanation": "max-width: 100% laisse l'image plus petite que son parent quand l'image est petite. height: auto préserve le ratio."
+      },
+      {
+        "question": "Pour quelle raison respecter `prefers-reduced-motion` ?",
+        "choices": [
+          "Économiser la batterie",
+          "Certains utilisateurs ont des troubles vestibulaires : les animations leur donnent des vertiges/nausées",
+          "C'est plus rapide",
+          "C'est obligatoire en RGPD"
+        ],
+        "answer": 1,
+        "explanation": "Une question d'accessibilité. Désactiver/atténuer les animations quand l'utilisateur l'a demandé dans son OS."
+      },
+      {
+        "question": "Sans la balise <meta viewport>, que se passe-t-il sur mobile ?",
+        "choices": [
+          "Rien",
+          "La page s'affiche zoomée out, comme une mini version desktop",
+          "La page ne s'affiche pas",
+          "Les media queries ne fonctionnent pas"
+        ],
+        "answer": 1,
+        "explanation": "Sans viewport, le navigateur mobile rend la page comme un écran 980px et zoome out. Toutes les media queries sont 'décalées'."
+      }
+    ]
+  }
+]

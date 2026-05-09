@@ -1,0 +1,202 @@
+[
+  {
+    "theme": "javascript",
+    "type": "quiz",
+    "question": "Comment déclare-t-on une variable qui ne change PAS en JavaScript moderne ?",
+    "choices": ["var nom = 'Léa'", "let nom = 'Léa'", "const nom = 'Léa'", "name = 'Léa'"],
+    "answer": 2,
+    "explanation": "const sert pour une valeur qu'on n'a pas l'intention de réassigner. let pour une variable, var est l'ancien mot-clé à éviter.",
+    "difficulty": 1
+  },
+  {
+    "theme": "javascript",
+    "type": "quiz",
+    "question": "Que vaut 'a' + 1 en JavaScript ?",
+    "choices": ["NaN", "Erreur", "'a1'", "1"],
+    "answer": 2,
+    "explanation": "Avec +, si l'un des opérandes est une string, JS convertit l'autre en string et concatène. Donc 'a' + 1 → 'a1'.",
+    "difficulty": 1
+  },
+  {
+    "theme": "javascript",
+    "type": "quiz",
+    "question": "Comment écrit-on une fonction fléchée qui double un nombre ?",
+    "choices": [
+      "function (n) => n * 2",
+      "n => n * 2",
+      "n -> n * 2",
+      "(n) : n * 2"
+    ],
+    "answer": 1,
+    "explanation": "Les fonctions fléchées s'écrivent (params) => expression. Avec un seul paramètre les parenthèses sont optionnelles.",
+    "difficulty": 1
+  },
+  {
+    "theme": "javascript",
+    "type": "quiz",
+    "question": "Que renvoie typeof null en JavaScript ?",
+    "choices": ["\"null\"", "\"object\"", "\"undefined\"", "\"number\""],
+    "answer": 1,
+    "explanation": "C'est un bug historique du langage gardé pour compatibilité : typeof null === 'object'.",
+    "difficulty": 1
+  },
+  {
+    "theme": "javascript",
+    "type": "quiz",
+    "question": "Quelle est la différence entre == et === ?",
+    "choices": [
+      "Aucune, ce sont des alias",
+      "== compare les types, === compare les valeurs",
+      "=== compare les types ET les valeurs (pas de coercition)",
+      "== est plus rapide que ==="
+    ],
+    "answer": 2,
+    "explanation": "=== (strict equality) ne fait pas de coercition de type. À utiliser par défaut.",
+    "difficulty": 1
+  },
+  {
+    "theme": "javascript",
+    "type": "quiz",
+    "question": "Quelle déclaration est hoistée mais pas initialisée (TDZ) ?",
+    "choices": ["var", "let", "function", "Aucune"],
+    "answer": 1,
+    "explanation": "let et const sont hoistés mais en Temporal Dead Zone : y accéder avant la déclaration jette ReferenceError.",
+    "difficulty": 2
+  },
+  {
+    "theme": "javascript",
+    "type": "quiz",
+    "question": "Quelle méthode TRANSFORME chaque élément d'un tableau dans un nouveau tableau ?",
+    "choices": ["filter", "find", "map", "reduce"],
+    "answer": 2,
+    "explanation": "map(fn) transforme chaque élément. Le tableau résultat a la même taille que l'original.",
+    "difficulty": 1
+  },
+  {
+    "theme": "javascript",
+    "type": "quiz",
+    "question": "Que renvoie [1, 2, 3].reduce((acc, n) => acc + n, 0) ?",
+    "choices": ["[1, 2, 3]", "6", "[6]", "0"],
+    "answer": 1,
+    "explanation": "reduce 'replie' le tableau : 0+1=1, 1+2=3, 3+3=6.",
+    "difficulty": 2
+  },
+  {
+    "theme": "javascript",
+    "type": "quiz",
+    "question": "Que retourne TOUJOURS une fonction `async` ?",
+    "choices": ["Sa valeur de retour directement", "Une Promise", "undefined", "Un Observable"],
+    "answer": 1,
+    "explanation": "Même `return 42` dans un async donne Promise<42>. Il faut await ou .then pour récupérer la valeur.",
+    "difficulty": 2
+  },
+  {
+    "theme": "javascript",
+    "type": "quiz",
+    "question": "Comment paralléliser fetchA et fetchB ?",
+    "choices": [
+      "await fetchA(); await fetchB();",
+      "await Promise.all([fetchA(), fetchB()])",
+      "Promise.race(...)",
+      "for await...of"
+    ],
+    "answer": 1,
+    "explanation": "Promise.all lance en parallèle. Total = max des temps. await en série fait la SOMME des temps.",
+    "difficulty": 2
+  },
+  {
+    "theme": "javascript",
+    "type": "quiz",
+    "question": "Quelle différence entre `??` et `||` pour un fallback ?",
+    "choices": [
+      "Aucune",
+      "?? ne fait fallback QUE pour null/undefined ; || aussi pour 0, '', false",
+      "?? est obsolète",
+      "|| est plus rapide"
+    ],
+    "answer": 1,
+    "explanation": "Piège : count || 0 transforme count = 0 en 0 (vrai bug). count ?? 0 garde 0. Préfère ?? pour valeurs numériques.",
+    "difficulty": 2
+  },
+  {
+    "theme": "javascript",
+    "type": "quiz",
+    "question": "Que fait `const { name, age } = user` ?",
+    "choices": [
+      "Crée un objet avec name et age",
+      "Extrait user.name et user.age dans 2 variables locales (destructuring)",
+      "Mute user",
+      "Renomme user"
+    ],
+    "answer": 1,
+    "explanation": "Destructuring : déclare 2 variables locales en piochant dans user. Très utile dans les params de fonction.",
+    "difficulty": 2
+  },
+  {
+    "theme": "javascript",
+    "type": "challenge",
+    "prompt": "Écris reverse(str) qui renvoie la chaîne `str` à l'envers, SANS utiliser la méthode .reverse() de Array.\n\nExemple : reverse('hello') → 'olleh'",
+    "starterCode": "function reverse(str) {\n  // TODO : retourne la chaîne inversée\n  return '';\n}",
+    "tests": [
+      { "label": "hello → olleh", "input": ["hello"], "expected": "olleh" },
+      { "label": "chaîne vide", "input": [""], "expected": "" },
+      { "label": "un seul caractère", "input": ["a"], "expected": "a" }
+    ],
+    "hint": "Boucle for de str.length-1 à 0, ou bien [...str].reduce((acc, c) => c + acc, '').",
+    "difficulty": 1
+  },
+  {
+    "theme": "javascript",
+    "type": "challenge",
+    "prompt": "Écris flatten(arr) qui aplatit un tableau de tableaux d'UN SEUL niveau, SANS utiliser la méthode .flat().\n\nExemple : flatten([[1, 2], [3]]) → [1, 2, 3]",
+    "starterCode": "function flatten(arr) {\n  // TODO : retourne un nouveau tableau aplati d'un niveau\n  return [];\n}",
+    "tests": [
+      { "label": "[[1,2],[3]] → [1,2,3]", "input": [[[1, 2], [3]]], "expected": [1, 2, 3] },
+      { "label": "tableau vide", "input": [[]], "expected": [] },
+      {
+        "label": "3 sous-tableaux",
+        "input": [[[1], [2, 3], [4, 5, 6]]],
+        "expected": [1, 2, 3, 4, 5, 6]
+      }
+    ],
+    "hint": "[].concat(...arr) — ou arr.reduce((acc, sub) => acc.concat(sub), []).",
+    "difficulty": 2
+  },
+  {
+    "theme": "javascript",
+    "type": "challenge",
+    "prompt": "Écris groupBy(arr, key) qui groupe les éléments d'un tableau d'objets par la valeur de la propriété `key`. Retourne un objet { valeur: [items...] }.\n\nExemple : groupBy([{t:'a',v:1},{t:'b',v:2},{t:'a',v:3}], 't') → { a: [{t:'a',v:1},{t:'a',v:3}], b: [{t:'b',v:2}] }",
+    "starterCode": "function groupBy(arr, key) {\n  // TODO : utilise reduce vers un objet\n  return {};\n}",
+    "tests": [
+      {
+        "label": "groupe par t",
+        "input": [[{ "t": "a", "v": 1 }, { "t": "b", "v": 2 }, { "t": "a", "v": 3 }], "t"],
+        "expected": {
+          "a": [{ "t": "a", "v": 1 }, { "t": "a", "v": 3 }],
+          "b": [{ "t": "b", "v": 2 }]
+        }
+      },
+      { "label": "tableau vide", "input": [[], "x"], "expected": {} },
+      {
+        "label": "une seule clé",
+        "input": [[{ "t": "z", "v": 1 }, { "t": "z", "v": 2 }], "t"],
+        "expected": { "z": [{ "t": "z", "v": 1 }, { "t": "z", "v": 2 }] }
+      }
+    ],
+    "hint": "arr.reduce((acc, item) => { const k = item[key]; (acc[k] = acc[k] || []).push(item); return acc; }, {}).",
+    "difficulty": 2
+  },
+  {
+    "theme": "javascript",
+    "type": "challenge",
+    "prompt": "Écris chunk(arr, size) qui découpe `arr` en sous-tableaux de taille `size` (le dernier peut être plus court).\n\nExemples :\nchunk([1,2,3,4,5], 2) → [[1,2],[3,4],[5]]\nchunk([], 3) → []\nchunk([1,2,3], 5) → [[1,2,3]]",
+    "starterCode": "function chunk(arr, size) {\n  // TODO : itère par pas de `size` et pousse arr.slice(i, i+size)\n  const result = [];\n  return result;\n}",
+    "tests": [
+      { "label": "découpe par 2", "input": [[1, 2, 3, 4, 5], 2], "expected": [[1, 2], [3, 4], [5]] },
+      { "label": "tableau vide", "input": [[], 3], "expected": [] },
+      { "label": "size > arr.length", "input": [[1, 2, 3], 5], "expected": [[1, 2, 3]] }
+    ],
+    "hint": "for (let i = 0; i < arr.length; i += size) result.push(arr.slice(i, i + size)).",
+    "difficulty": 2
+  }
+]

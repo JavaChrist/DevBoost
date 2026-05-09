@@ -1,0 +1,502 @@
+[
+  {
+    "slug": "js-basics",
+    "theme": "javascript",
+    "title": "Variables, types & fonctions",
+    "summary": "Les fondations du JavaScript moderne : let/const, types, fonctions et portée.",
+    "level": 1,
+    "sections": [
+      {
+        "heading": "Pourquoi JavaScript ?",
+        "body": "JavaScript est LE langage du web. Tout navigateur l'exécute nativement. C'est aussi un langage côté serveur (Node.js, Deno, Bun), mobile (React Native), desktop (Electron), embarqué…\n\nIl est dynamiquement typé, multi-paradigme (impératif, fonctionnel, OO), et hyper expressif. Et c'est le langage que tu utilises dans cette PWA, dans le runner de Challenges."
+      },
+      {
+        "heading": "Déclarer une variable : let, const, (var)",
+        "body": "• **`const`** : valeur qui ne sera pas réassignée. **À utiliser PAR DÉFAUT**.\n• **`let`** : valeur qui peut changer (compteur, accumulateur).\n• **`var`** : ancienne syntaxe, portée fonctionnelle, pleine de pièges. **À ÉVITER** en code moderne.\n\nNote : `const` empêche la réassignation, mais ne rend PAS l'objet immutable. `const o = {}; o.x = 1` est légal.",
+        "code": {
+          "lang": "js",
+          "value": "const PI = 3.14159;        // valeur fixe\nlet score = 0;             // mutable\nscore += 10;\n\nconst user = { name: 'Léa' };\nuser.name = 'Mia';         // OK — on mute la PROPRIÉTÉ\n// user = {} ;             // ERREUR — réassignation interdite"
+        }
+      },
+      {
+        "heading": "Les 7 types primitifs",
+        "body": "• `string` : `'hello'`, `\"hi\"`, `` `template ${x}` ``\n• `number` : `42`, `3.14`, `-7`, `NaN`, `Infinity`. Pas de distinction int/float.\n• `boolean` : `true`, `false`.\n• `undefined` : variable déclarée sans valeur.\n• `null` : absence intentionnelle de valeur (à toi d'écrire `null`).\n• `bigint` : entiers arbitrairement grands : `42n`.\n• `symbol` : identifiants uniques (rare en début de carrière).\n\nTout le reste est un **objet** (tableau, fonction, date, etc.)."
+      },
+      {
+        "heading": "Coercition et égalité",
+        "body": "JS convertit automatiquement entre types — source de beaucoup de bugs :\n• `'5' + 3` → `'53'` (string : concaténation)\n• `'5' - 3` → `2` (number : soustraction)\n• `'' == 0` → `true`, `null == undefined` → `true`, `[] == false` → `true`\n\nUtilise **TOUJOURS** `===` et `!==` (égalité stricte, sans coercition). Réserve `==` aux cas très spécifiques.",
+        "code": {
+          "lang": "js",
+          "value": "0 == '0'      // true (coerce)\n0 === '0'     // false (types différents)\n\nnull == undefined   // true\nnull === undefined  // false\n\n// → utilise === sauf raison précise"
+        }
+      },
+      {
+        "heading": "Truthy / falsy",
+        "body": "Dans un `if`, JS coerce vers boolean. Sont **falsy** :\n`false`, `0`, `''`, `null`, `undefined`, `NaN`.\n\nTout le reste est **truthy**, y compris `'0'`, `'false'`, `[]`, `{}`.",
+        "code": {
+          "lang": "js",
+          "value": "if ([]) console.log('truthy');     // affiche\nif ({}) console.log('truthy');     // affiche\nif (0) console.log('jamais');\n\n// Pour vérifier 'la valeur existe' :\nif (value != null) { /* ni null ni undefined */ }"
+        }
+      },
+      {
+        "heading": "Fonctions : declaration vs expression vs arrow",
+        "body": "Trois syntaxes pour 'la même chose' (presque) :",
+        "code": {
+          "lang": "js",
+          "value": "// 1. declaration : 'hoistée' (utilisable avant)\nfunction add(a, b) { return a + b; }\n\n// 2. expression\nconst add2 = function (a, b) { return a + b; };\n\n// 3. arrow function (la plus courante en moderne)\nconst add3 = (a, b) => a + b;\n\n// One-liner sans return\nconst double = x => x * 2;\n\n// Multi-lignes : besoin de { } et return\nconst greet = (name) => {\n  const msg = `Hello ${name}`;\n  return msg;\n};"
+        }
+      },
+      {
+        "heading": "Arguments par défaut, rest, spread",
+        "body": "• **Default** : valeur si argument manquant.\n• **Rest (`...`)** : capture le reste des arguments dans un tableau.\n• **Spread (`...`)** : étale un tableau/objet.",
+        "code": {
+          "lang": "js",
+          "value": "function greet(name = 'inconnu') {\n  return `Salut ${name}`;\n}\n\nfunction sum(...nums) {\n  return nums.reduce((a, b) => a + b, 0);\n}\nsum(1, 2, 3, 4); // 10\n\n// Spread\nconst arr = [1, 2, 3];\nconst arr2 = [0, ...arr, 4]; // [0,1,2,3,4]\n\nconst user = { name: 'Léa' };\nconst clone = { ...user, age: 30 };"
+        }
+      },
+      {
+        "heading": "Portée (scope) et hoisting",
+        "body": "• `let` et `const` ont une portée **de bloc** (`{ }`).\n• `var` a une portée **de fonction** (piège classique des boucles).\n• Les `function` declarations sont 'hoistées' (remontées en haut du scope).\n• Les `let`/`const` sont en 'temporal dead zone' avant leur déclaration : accès = erreur.\n\nRègle d'or : déclare TES variables AU PLUS PROCHE de leur usage."
+      },
+      {
+        "heading": "Closures (notion clé)",
+        "body": "Une fonction CAPTURE les variables du scope où elle a été créée. Même après sortie du scope, ces variables restent vivantes :",
+        "code": {
+          "lang": "js",
+          "value": "function makeCounter() {\n  let count = 0;\n  return () => ++count;\n  // la fonction retournée 'capture' count\n}\n\nconst c = makeCounter();\nc(); // 1\nc(); // 2\nc(); // 3"
+        }
+      },
+      {
+        "heading": "À retenir",
+        "body": "• `const` par défaut, `let` si réassignation, JAMAIS `var`.\n• Toujours `===` (sauf `value != null` pour 'pas null/undefined').\n• Falsy : `false 0 '' null undefined NaN`. Le reste est truthy.\n• Arrow function pour les callbacks et 1-liners.\n• Spread `...` pour cloner / fusionner sans muter l'original.\n• Closure = fonction qui se souvient de son scope de création."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Quel mot-clé utiliser PAR DÉFAUT pour déclarer une variable en JS moderne ?",
+        "choices": ["var", "let", "const", "static"],
+        "answer": 2,
+        "explanation": "const par défaut (signale l'intention de ne pas réassigner). let si tu dois réassigner. Évite var."
+      },
+      {
+        "question": "Que vaut `'5' + 3` en JavaScript ?",
+        "choices": ["8", "'53'", "Erreur", "NaN"],
+        "answer": 1,
+        "explanation": "Avec un string, + concatène. Tout est converti en string. '5' - 3 fait 2 par contre."
+      },
+      {
+        "question": "Quel opérateur d'égalité utiliser quasi systématiquement ?",
+        "choices": ["==", "===", "=", "!="],
+        "answer": 1,
+        "explanation": "=== compare valeur ET type sans coercition. == coerce et provoque des surprises (0 == '' == false)."
+      },
+      {
+        "question": "Lequel n'est PAS falsy ?",
+        "choices": ["0", "''", "[]", "null"],
+        "answer": 2,
+        "explanation": "[] est truthy (c'est un objet) ! Falsy : false, 0, '', null, undefined, NaN. Tout le reste y compris [] et {} est truthy."
+      },
+      {
+        "question": "Que fait `[...arr1, ...arr2]` ?",
+        "choices": [
+          "Concatène les deux tableaux dans un nouveau",
+          "Mute arr1",
+          "Renvoie un objet",
+          "Erreur de syntaxe"
+        ],
+        "answer": 0,
+        "explanation": "Le spread étale chaque tableau dans un nouveau, sans muter l'original. Équivalent fonctionnel à arr1.concat(arr2)."
+      }
+    ]
+  },
+  {
+    "slug": "js-arrays",
+    "theme": "javascript",
+    "title": "Tableaux & méthodes fonctionnelles",
+    "summary": "map, filter, reduce, find — la trousse à outils pour manipuler des données.",
+    "level": 2,
+    "sections": [
+      {
+        "heading": "Pourquoi maîtriser ces méthodes ?",
+        "body": "90 % de la logique d'une app moderne, c'est : transformer une liste, filtrer une liste, calculer un total. Les méthodes `map`, `filter`, `reduce`, `find` sont **immutables** (elles ne modifient pas l'original) — ce qui colle parfaitement avec React, Redux, et le style fonctionnel."
+      },
+      {
+        "heading": "map : transformer chaque élément",
+        "body": "Renvoie un NOUVEAU tableau de même taille, où chaque élément a été transformé.",
+        "code": {
+          "lang": "js",
+          "value": "const nums = [1, 2, 3];\n\nconst doubled = nums.map(n => n * 2);\n// [2, 4, 6]\n\nconst users = [{ name: 'Léa' }, { name: 'Mia' }];\nconst names = users.map(u => u.name);\n// ['Léa', 'Mia']"
+        }
+      },
+      {
+        "heading": "filter : garder selon un prédicat",
+        "body": "Renvoie un NOUVEAU tableau (potentiellement plus petit) avec les éléments qui satisfont la condition.",
+        "code": {
+          "lang": "js",
+          "value": "const nums = [1, 2, 3, 4, 5];\n\nconst evens = nums.filter(n => n % 2 === 0);\n// [2, 4]\n\nconst adults = users.filter(u => u.age >= 18);"
+        }
+      },
+      {
+        "heading": "reduce : accumuler une valeur",
+        "body": "L'outil le plus puissant : 'replie' un tableau vers UNE valeur (nombre, objet, autre tableau…).\n\nSignature : `arr.reduce((accumulateur, item, index) => nouvelAcc, valeurInitiale)`.\n\n**Toujours fournir** la valeur initiale (sinon piège sur tableaux vides).",
+        "code": {
+          "lang": "js",
+          "value": "const nums = [1, 2, 3, 4];\n\n// Somme\nconst total = nums.reduce((acc, n) => acc + n, 0);\n// 10\n\n// Compter par catégorie (vers un objet)\nconst items = ['a', 'b', 'a', 'c', 'a'];\nconst counts = items.reduce((acc, x) => {\n  acc[x] = (acc[x] || 0) + 1;\n  return acc;\n}, {});\n// { a: 3, b: 1, c: 1 }"
+        }
+      },
+      {
+        "heading": "find / findIndex : trouver UN élément",
+        "body": "Renvoie le PREMIER élément qui satisfait la condition (ou `undefined`). `findIndex` renvoie son index (ou `-1`).",
+        "code": {
+          "lang": "js",
+          "value": "const users = [\n  { id: 1, name: 'Léa' },\n  { id: 2, name: 'Mia' }\n];\n\nconst u = users.find(u => u.id === 2);\n// { id: 2, name: 'Mia' }\n\nconst i = users.findIndex(u => u.id === 99);\n// -1 (pas trouvé)"
+        }
+      },
+      {
+        "heading": "some / every : test booléen",
+        "body": "• `some(pred)` : `true` si au moins un élément satisfait.\n• `every(pred)` : `true` si TOUS satisfont.",
+        "code": {
+          "lang": "js",
+          "value": "[1, 2, 3].some(n => n > 2);   // true\n[1, 2, 3].every(n => n > 0);  // true\n[1, 2, 3].every(n => n > 1);  // false"
+        }
+      },
+      {
+        "heading": "Chaînage : la vraie puissance",
+        "body": "On peut enchaîner ces méthodes pour composer une transformation lisible :",
+        "code": {
+          "lang": "js",
+          "value": "const orders = [\n  { user: 'Léa', total: 30, paid: true },\n  { user: 'Mia', total: 50, paid: false },\n  { user: 'Léa', total: 20, paid: true }\n];\n\nconst totalLeaPaid = orders\n  .filter(o => o.user === 'Léa' && o.paid)\n  .map(o => o.total)\n  .reduce((s, t) => s + t, 0);\n// 50"
+        }
+      },
+      {
+        "heading": "Méthodes mutables vs immutables",
+        "body": "**ATTENTION** — certaines méthodes MUTENT l'original (à éviter en React) :\n• Mutent : `push`, `pop`, `shift`, `unshift`, `splice`, `sort`, `reverse`.\n• N'mutent pas : `map`, `filter`, `slice`, `concat`, `flat`, `flatMap`, **`toSorted`**, **`toReversed`** (ES2023).\n\nEn React/Redux/Zustand : préfère TOUJOURS les versions immutables.",
+        "code": {
+          "lang": "js",
+          "value": "const arr = [3, 1, 2];\n\n// MUTE (mauvais en React)\narr.sort();      // arr est maintenant [1, 2, 3]\n\n// IMMUTABLE (bon)\nconst sorted = [...arr].sort();\n// ou : arr.toSorted();"
+        }
+      },
+      {
+        "heading": "Pièges classiques à éviter",
+        "body": "• `map` qui ne return rien → tableau de `undefined`. Toujours retourner.\n• `forEach` au lieu de `map` → tu ne peux pas chaîner. Si tu transformes, c'est `map`.\n• `reduce` sans valeur initiale + tableau vide → erreur.\n• Confondre `find` (élément) et `filter` (tableau).\n• Muter via `splice`/`sort` puis se demander pourquoi React ne re-render pas."
+      },
+      {
+        "heading": "À retenir",
+        "body": "• **map** : transformer chaque item, taille préservée.\n• **filter** : garder ceux qui passent un test.\n• **reduce** : accumuler vers une valeur unique. TOUJOURS valeur initiale.\n• **find** : 1er élément, **findIndex** : son index.\n• Préfère `toSorted`/`toReversed` ou `[...arr].sort()` à `sort` direct.\n• Chaîne les méthodes pour exprimer une intention claire."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Quelle méthode TRANSFORME chaque élément en un nouveau tableau ?",
+        "choices": ["filter", "find", "map", "reduce"],
+        "answer": 2,
+        "explanation": "map(fn) transforme chaque élément. Le tableau résultat a la même taille que l'original."
+      },
+      {
+        "question": "Que renvoie `[1, 2, 3].reduce((acc, n) => acc + n, 0)` ?",
+        "choices": ["[1, 2, 3]", "6", "[6]", "0"],
+        "answer": 1,
+        "explanation": "reduce 'replie' le tableau : 0+1=1, 1+2=3, 3+3=6. La somme."
+      },
+      {
+        "question": "Quelle méthode MUTE l'original ?",
+        "choices": ["map", "filter", "sort", "slice"],
+        "answer": 2,
+        "explanation": "sort() mute le tableau original ! Pour ne pas muter : [...arr].sort() ou arr.toSorted()."
+      },
+      {
+        "question": "Quelle est la différence entre `find` et `filter` ?",
+        "choices": [
+          "Aucune",
+          "find renvoie 1 élément (ou undefined), filter renvoie un tableau",
+          "find est plus rapide que filter",
+          "filter est asynchrone"
+        ],
+        "answer": 1,
+        "explanation": "find = premier match ou undefined. filter = TOUS les matchs dans un nouveau tableau."
+      },
+      {
+        "question": "Pourquoi toujours fournir la valeur initiale à reduce ?",
+        "choices": [
+          "C'est plus rapide",
+          "Sinon, sur un tableau vide, ça lève une TypeError",
+          "C'est obligatoire en TypeScript",
+          "Sinon ça mute"
+        ],
+        "answer": 1,
+        "explanation": "Sans valeur initiale, le 1er élément est utilisé comme accumulateur. Sur [] = TypeError. Avec valeur initiale = 0 (ou {} ou []), aucun risque."
+      }
+    ]
+  },
+  {
+    "slug": "js-async",
+    "theme": "javascript",
+    "title": "Asynchrone : promesses & async/await",
+    "summary": "Comprendre le code asynchrone, gérer les erreurs, paralléliser des appels.",
+    "level": 2,
+    "sections": [
+      {
+        "heading": "Pourquoi de l'asynchrone ?",
+        "body": "JavaScript est **single-threaded** : une seule chose s'exécute à la fois. Si un appel réseau prenait 2 secondes en bloquant, ton UI gèlerait pendant 2s.\n\nL'asynchrone permet de 'lancer' une opération longue (fetch, lecture de fichier, timer) et de continuer à exécuter le reste du code, en revenant traiter le résultat plus tard."
+      },
+      {
+        "heading": "Callbacks : l'ancien monde",
+        "body": "Les callbacks fonctionnent mais imbriqués, ils créent le 'callback hell' :",
+        "code": {
+          "lang": "js",
+          "value": "// L'enfer des callbacks\nfetchUser((user) => {\n  fetchOrders(user.id, (orders) => {\n    fetchInvoice(orders[0].id, (inv) => {\n      console.log(inv);\n      // imbrication infinie...\n    });\n  });\n});"
+        }
+      },
+      {
+        "heading": "Une Promise, c'est quoi ?",
+        "body": "Un **objet** qui représente une opération **future** avec 3 états :\n• `pending` (en cours)\n• `fulfilled` (réussie, avec une valeur)\n• `rejected` (échouée, avec une erreur)\n\nTu lui attaches `.then()` pour la réussite, `.catch()` pour l'échec.",
+        "code": {
+          "lang": "js",
+          "value": "fetch('/api/user')\n  .then(res => res.json())\n  .then(user => console.log(user))\n  .catch(err => console.error(err));"
+        }
+      },
+      {
+        "heading": "async / await : la version moderne",
+        "body": "Sucre syntaxique sur les Promises. **Lit comme du code synchrone**, mais reste non-bloquant. À utiliser **par défaut** aujourd'hui.\n\n• Une fonction `async` retourne TOUJOURS une Promise.\n• `await` 'attend' qu'une Promise se résolve, et renvoie sa valeur.",
+        "code": {
+          "lang": "js",
+          "value": "async function loadUser() {\n  const res = await fetch('/api/user');\n  const user = await res.json();\n  return user;\n}\n\n// Appel\nconst u = await loadUser(); // dans un autre async\n// ou\nloadUser().then(u => console.log(u));"
+        }
+      },
+      {
+        "heading": "Gérer les erreurs avec try/catch",
+        "body": "Avec async/await, on revient au try/catch classique :",
+        "code": {
+          "lang": "js",
+          "value": "async function loadUser() {\n  try {\n    const res = await fetch('/api/user');\n    if (!res.ok) {\n      throw new Error(`HTTP ${res.status}`);\n    }\n    return await res.json();\n  } catch (err) {\n    console.error('Erreur:', err);\n    return null; // valeur par défaut\n  }\n}"
+        }
+      },
+      {
+        "heading": "Paralléliser : Promise.all",
+        "body": "Si tu fais plusieurs `await` en série, ça prend la SOMME des temps. Pour PARALLÉLISER, utilise `Promise.all`.",
+        "code": {
+          "lang": "js",
+          "value": "// SÉRIE (lent : 200 + 200 + 200 = 600ms)\nconst a = await fetchA(); // 200ms\nconst b = await fetchB(); // 200ms\nconst c = await fetchC(); // 200ms\n\n// PARALLÈLE (rapide : 200ms total)\nconst [a, b, c] = await Promise.all([\n  fetchA(),\n  fetchB(),\n  fetchC()\n]);"
+        }
+      },
+      {
+        "heading": "Promise.allSettled",
+        "body": "`Promise.all` rejette si UN SEUL appel échoue. Si tu veux tous les résultats même partiels :",
+        "code": {
+          "lang": "js",
+          "value": "const results = await Promise.allSettled([\n  fetchA(),\n  fetchB(),\n  fetchC()\n]);\n\nresults.forEach(r => {\n  if (r.status === 'fulfilled') {\n    console.log('OK:', r.value);\n  } else {\n    console.log('ERR:', r.reason);\n  }\n});"
+        }
+      },
+      {
+        "heading": "Pièges classiques",
+        "body": "• Oublier `await` → tu manipules une Promise au lieu de sa valeur (`[object Promise]`).\n• `forEach` + `await` ne marche pas comme tu crois (forEach n'est pas conscient des Promises). Utilise `for...of` ou `Promise.all(arr.map(...))`.\n• `await` au top-level n'est dispo qu'en module ES (ou en async function).\n• Toujours `try/catch` ou `.catch()` autour des `await` qui peuvent échouer.",
+        "code": {
+          "lang": "js",
+          "value": "// MAUVAIS — forEach n'attend pas\nusers.forEach(async (u) => {\n  await save(u);\n});\nconsole.log('done'); // s'affiche AVANT la fin des saves\n\n// BON\nfor (const u of users) {\n  await save(u);  // séquentiel\n}\n// OU\nawait Promise.all(users.map(u => save(u))); // parallèle"
+        }
+      },
+      {
+        "heading": "Annulation : AbortController",
+        "body": "Pour annuler un fetch en cours (ex. : utilisateur change d'écran) :",
+        "code": {
+          "lang": "js",
+          "value": "const controller = new AbortController();\n\nfetch('/api/data', { signal: controller.signal })\n  .then(res => res.json())\n  .catch(err => {\n    if (err.name === 'AbortError') {\n      console.log('Annulé');\n    }\n  });\n\n// Plus tard :\ncontroller.abort();"
+        }
+      },
+      {
+        "heading": "À retenir",
+        "body": "• Préfère `async/await` aux `.then()` chaînés.\n• Toujours `try/catch` autour des `await` qui peuvent échouer.\n• `Promise.all` pour paralléliser des appels indépendants.\n• `Promise.allSettled` si tu veux tous les résultats même en cas d'échec.\n• `forEach` ne marche pas avec `await` → utilise `for...of` ou `Promise.all(arr.map(...))`.\n• `AbortController` pour annuler un fetch."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Que retourne TOUJOURS une fonction `async` ?",
+        "choices": [
+          "Sa valeur de retour directement",
+          "Une Promise",
+          "Un Observable",
+          "undefined"
+        ],
+        "answer": 1,
+        "explanation": "Même si tu fais `return 42` dans une async, tu obtiens `Promise<42>`. Il faut await ou .then pour récupérer la valeur."
+      },
+      {
+        "question": "Comment paralléliser fetchA, fetchB, fetchC ?",
+        "choices": [
+          "await fetchA(); await fetchB(); await fetchC();",
+          "await Promise.all([fetchA(), fetchB(), fetchC()])",
+          "Promise.race(...)",
+          "for...of avec await"
+        ],
+        "answer": 1,
+        "explanation": "Promise.all lance tout en parallèle et attend que TOUS soient résolus. Le total = max des temps, pas la somme."
+      },
+      {
+        "question": "Que se passe-t-il si tu oublies `await` devant un appel async ?",
+        "choices": [
+          "Erreur de compilation",
+          "Tu manipules la Promise elle-même au lieu de sa valeur résolue",
+          "Le code attend quand même",
+          "Plante en runtime systématiquement"
+        ],
+        "answer": 1,
+        "explanation": "Sans await, tu as un objet Promise (souvent en 'pending'). console.log donne `Promise { <pending> }` ou `[object Promise]`."
+      },
+      {
+        "question": "Pourquoi `users.forEach(async u => await save(u))` est-il problématique ?",
+        "choices": [
+          "Erreur de syntaxe",
+          "forEach ne 'attend' pas les Promises retournées : la fonction continue sans attendre",
+          "Trop lent",
+          "Mute l'array"
+        ],
+        "answer": 1,
+        "explanation": "forEach ignore la valeur de retour. Utilise for...of pour séquentiel, ou Promise.all(users.map(...)) pour parallèle."
+      },
+      {
+        "question": "Quelle différence entre Promise.all et Promise.allSettled ?",
+        "choices": [
+          "Aucune",
+          "all rejette dès qu'une promise échoue ; allSettled attend toutes et donne leur statut",
+          "all est plus rapide",
+          "allSettled est obsolète"
+        ],
+        "answer": 1,
+        "explanation": "Promise.all = échec collectif si UN échoue. Promise.allSettled = tableau {status, value/reason} pour chaque, jamais ne rejette."
+      }
+    ]
+  },
+  {
+    "slug": "js-objects",
+    "theme": "javascript",
+    "title": "Objets, destructuring & modules",
+    "summary": "Manipuler des objets élégamment, organiser son code en modules ES.",
+    "level": 2,
+    "sections": [
+      {
+        "heading": "Créer et accéder à un objet",
+        "body": "Un objet = collection de paires clé/valeur.",
+        "code": {
+          "lang": "js",
+          "value": "const user = {\n  name: 'Léa',\n  age: 28,\n  isAdmin: false\n};\n\nuser.name        // 'Léa' (notation point)\nuser['name']     // 'Léa' (notation crochet, utile si clé dynamique)\n\nconst key = 'age';\nuser[key]        // 28"
+        }
+      },
+      {
+        "heading": "Shorthand & computed properties",
+        "body": "Raccourcis modernes pour construire des objets :",
+        "code": {
+          "lang": "js",
+          "value": "const name = 'Léa';\nconst age = 28;\n\n// Shorthand : même nom de var et clé\nconst user = { name, age };\n// équivaut à { name: name, age: age }\n\n// Computed property : clé dynamique\nconst key = 'role';\nconst u = { name, [key]: 'admin' };\n// { name: 'Léa', role: 'admin' }"
+        }
+      },
+      {
+        "heading": "Spread & rest pour objets",
+        "body": "Comme pour les tableaux, mais avec des objets :",
+        "code": {
+          "lang": "js",
+          "value": "const user = { name: 'Léa', age: 28 };\n\n// Cloner (peu profond)\nconst clone = { ...user };\n\n// Mettre à jour de manière immutable\nconst older = { ...user, age: 29 };\n// { name: 'Léa', age: 29 }\n\n// Fusionner\nconst defaults = { theme: 'dark' };\nconst settings = { ...defaults, theme: 'light' };\n// { theme: 'light' } (plus à droite gagne)"
+        }
+      },
+      {
+        "heading": "Destructuring : extraire en une ligne",
+        "body": "Affecter plusieurs variables depuis un objet/tableau :",
+        "code": {
+          "lang": "js",
+          "value": "const user = { name: 'Léa', age: 28, role: 'admin' };\n\n// Destructuring objet\nconst { name, age } = user;\n// name = 'Léa', age = 28\n\n// Renommer + valeur par défaut\nconst { name: prenom, country = 'FR' } = user;\n\n// Rest : récupérer 'le reste'\nconst { name, ...others } = user;\n// others = { age: 28, role: 'admin' }\n\n// Tableaux\nconst [first, second] = [10, 20, 30];\n// first=10, second=20"
+        }
+      },
+      {
+        "heading": "Destructuring dans les paramètres de fonction",
+        "body": "Très pratique pour des fonctions qui prennent un objet d'options :",
+        "code": {
+          "lang": "js",
+          "value": "function greet({ name, formal = false }) {\n  return formal ? `Bonjour ${name}` : `Salut ${name}`;\n}\n\ngreet({ name: 'Léa' });               // 'Salut Léa'\ngreet({ name: 'Léa', formal: true }); // 'Bonjour Léa'"
+        }
+      },
+      {
+        "heading": "Optional chaining et nullish coalescing",
+        "body": "Deux opérateurs essentiels en JS moderne :\n• `?.` : accès sans planter si null/undefined.\n• `??` : valeur de fallback **uniquement si null/undefined** (pas pour 0 ou '').",
+        "code": {
+          "lang": "js",
+          "value": "// Sans ?.\nconst city = user && user.address && user.address.city;\n\n// Avec ?.\nconst city = user?.address?.city;\n// undefined si user ou address absent, sans erreur\n\n// ?? — différent de ||\nconst count = data.count ?? 0;     // 0 si null/undefined\nconst count2 = data.count || 0;    // 0 aussi si data.count = 0 (piège)"
+        }
+      },
+      {
+        "heading": "Object.keys / values / entries",
+        "body": "Pour itérer sur un objet :",
+        "code": {
+          "lang": "js",
+          "value": "const user = { name: 'Léa', age: 28 };\n\nObject.keys(user);    // ['name', 'age']\nObject.values(user);  // ['Léa', 28]\nObject.entries(user); // [['name', 'Léa'], ['age', 28]]\n\n// Iter pratique\nObject.entries(user).forEach(([k, v]) => {\n  console.log(`${k} = ${v}`);\n});\n\n// Reconstruire\nObject.fromEntries([['a', 1], ['b', 2]]); // { a: 1, b: 2 }"
+        }
+      },
+      {
+        "heading": "Modules ES : import / export",
+        "body": "Le standard moderne pour découper son code en fichiers.",
+        "code": {
+          "lang": "js",
+          "value": "// math.js\nexport function add(a, b) { return a + b; }\nexport const PI = 3.14;\nexport default function multiply(a, b) { return a * b; }\n\n// app.js\nimport multiply, { add, PI } from './math.js';\n\n// import * as math from './math.js';\n// math.add(...), math.PI, math.default\n\n// renommer\nimport { add as plus } from './math.js';"
+        }
+      },
+      {
+        "heading": "Default vs named exports",
+        "body": "• **Default** (`export default`) : UN par fichier, importable sous N'IMPORTE quel nom.\n• **Named** (`export const x`) : autant qu'on veut, importables sous LEUR nom (sauf `as`).\n\nConvention : préfère les **named exports** (refactoring plus sûr, autocomplétion meilleure). Default pour les composants React principaux d'un fichier."
+      },
+      {
+        "heading": "À retenir",
+        "body": "• Shorthand `{ name }` quand var et clé portent le même nom.\n• Spread `{ ...obj }` pour cloner / mettre à jour sans muter.\n• Destructuring pour extraire proprement (params de fonction inclus).\n• `?.` pour accès sûr, `??` pour fallback null/undefined uniquement.\n• `Object.entries` + `forEach` ou `map` pour itérer un objet.\n• Préfère les **named exports** ; un seul `default` par fichier."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Que fait `const { name, age } = user` ?",
+        "choices": [
+          "Crée un objet avec name et age",
+          "Extrait user.name et user.age dans des variables locales name et age",
+          "Renomme les propriétés",
+          "Mute user"
+        ],
+        "answer": 1,
+        "explanation": "Destructuring : déclare 2 variables locales en piochant dans l'objet. Très pratique pour les params de fonction."
+      },
+      {
+        "question": "Quelle est la différence entre `??` et `||` pour un fallback ?",
+        "choices": [
+          "Aucune",
+          "?? ne fait fallback que pour null/undefined ; || fait fallback aussi pour 0, '' (falsy)",
+          "?? est obsolète",
+          "|| est plus rapide"
+        ],
+        "answer": 1,
+        "explanation": "Piège classique : count || 0 transforme count = 0 en 0 (pas le bug). count ?? 0 garde 0. Préfère ?? pour les valeurs numériques/booléennes."
+      },
+      {
+        "question": "Comment cloner un objet de manière peu profonde ?",
+        "choices": [
+          "Object.copy(obj)",
+          "{ ...obj }",
+          "obj.slice()",
+          "[].concat(obj)"
+        ],
+        "answer": 1,
+        "explanation": "Le spread { ...obj } clone les propriétés au 1er niveau. Pour clone profond, utilise structuredClone(obj)."
+      },
+      {
+        "question": "Que retourne `user?.address?.city` si user est undefined ?",
+        "choices": ["TypeError", "undefined (sans erreur)", "null", "''"],
+        "answer": 1,
+        "explanation": "L'optional chaining ?. court-circuite à undefined dès qu'un maillon est null/undefined. Évite les erreurs 'Cannot read property X of undefined'."
+      },
+      {
+        "question": "Quelle différence entre default export et named export ?",
+        "choices": [
+          "Aucune",
+          "Default : un par fichier, importable sous n'importe quel nom. Named : multiples, importé sous le nom exact.",
+          "Default est obsolète",
+          "Named est plus lent"
+        ],
+        "answer": 1,
+        "explanation": "Default pratique mais sujet aux fautes de frappe. Préfère named exports : autocomplétion meilleure, refactoring (rename) plus sûr."
+      }
+    ]
+  }
+]

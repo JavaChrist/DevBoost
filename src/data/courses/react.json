@@ -1,0 +1,517 @@
+[
+  {
+    "slug": "react-basics",
+    "theme": "react",
+    "title": "Composants & JSX",
+    "summary": "Le mental model React : composants, props, JSX, et flux de données descendant.",
+    "level": 1,
+    "sections": [
+      {
+        "heading": "Pourquoi React ?",
+        "body": "React permet de construire des UI **réactives** : ton interface est une **fonction de l'état**. Quand l'état change, React met à jour le DOM efficacement (via un Virtual DOM diffé).\n\nAvantages :\n• **Composabilité** : on assemble des composants comme des Lego.\n• **Déclaratif** : tu décris CE QUE tu veux voir, pas comment l'obtenir.\n• **Écosystème géant** : routing, state, animations, tout existe."
+      },
+      {
+        "heading": "Un composant React, c'est juste une fonction",
+        "body": "Une **fonction** qui renvoie du JSX. Le nom commence par une **majuscule** (sinon React croit que c'est une balise HTML).",
+        "code": {
+          "lang": "jsx",
+          "value": "function Welcome() {\n  return <h1>Bonjour DevBoost</h1>;\n}\n\n// Utilisation comme une balise\n<Welcome />"
+        }
+      },
+      {
+        "heading": "JSX : du HTML dans du JS",
+        "body": "JSX ressemble à du HTML mais c'est du JS sucré. Quelques différences :\n• `class` → **`className`**.\n• `for` → **`htmlFor`**.\n• Les attributs sont en **camelCase** : `onclick` → `onClick`, `tabindex` → `tabIndex`.\n• Tout doit être enveloppé dans un seul élément racine (ou un Fragment `<> </>`).\n• `{ }` insère une expression JS.",
+        "code": {
+          "lang": "jsx",
+          "value": "function Card({ user }) {\n  const today = new Date().toLocaleDateString();\n  return (\n    <article className=\"card\">\n      <h2>{user.name}</h2>\n      <p>Vu le {today}</p>\n    </article>\n  );\n}"
+        }
+      },
+      {
+        "heading": "Props : les paramètres d'un composant",
+        "body": "Les props sont **passées du parent à l'enfant** comme des arguments. Elles sont en **lecture seule** côté enfant — jamais à muter.",
+        "code": {
+          "lang": "jsx",
+          "value": "function Greeting({ name, age = 18 }) {\n  return (\n    <p>{name} a {age} ans</p>\n  );\n}\n\n// Parent\n<Greeting name=\"Léa\" age={28} />"
+        }
+      },
+      {
+        "heading": "children : le contenu imbriqué",
+        "body": "Tout ce que tu mets ENTRE les balises d'un composant est passé via la prop spéciale `children`.",
+        "code": {
+          "lang": "jsx",
+          "value": "function Box({ title, children }) {\n  return (\n    <section className=\"box\">\n      <h3>{title}</h3>\n      <div>{children}</div>\n    </section>\n  );\n}\n\n// Usage\n<Box title=\"Astuce\">\n  <p>Préfère const par défaut.</p>\n  <button>OK</button>\n</Box>"
+        }
+      },
+      {
+        "heading": "Rendu conditionnel",
+        "body": "Pas de directive `if` en JSX, on utilise des **expressions** :",
+        "code": {
+          "lang": "jsx",
+          "value": "function Status({ user }) {\n  return (\n    <div>\n      {/* ternaire */}\n      {user ? <p>Salut {user.name}</p> : <p>Connecte-toi</p>}\n\n      {/* &&  : affiche si vrai */}\n      {user?.isAdmin && <span>Admin</span>}\n\n      {/* JAMAIS user && ... si user est 0 ou '' (afficherait 0) */}\n      {Boolean(user) && <p>Connecté</p>}\n    </div>\n  );\n}"
+        }
+      },
+      {
+        "heading": "Rendu de listes : map + key",
+        "body": "Pour rendre une liste, on `map` vers du JSX. **Toujours fournir une `key` UNIQUE** par item — sinon React ne peut pas optimiser correctement les diffs.",
+        "code": {
+          "lang": "jsx",
+          "value": "function TodoList({ items }) {\n  return (\n    <ul>\n      {items.map(item => (\n        <li key={item.id}>{item.text}</li>\n      ))}\n    </ul>\n  );\n}\n\n// JAMAIS key={index} si la liste peut être réordonnée/insérée — utilise un id stable.\n// L'index est OK seulement pour des listes statiques jamais modifiées."
+        }
+      },
+      {
+        "heading": "Gérer les événements",
+        "body": "On passe une fonction (pas une chaîne) en prop d'événement :",
+        "code": {
+          "lang": "jsx",
+          "value": "function Button() {\n  function handleClick(e) {\n    e.preventDefault();\n    console.log('Cliqué');\n  }\n\n  return <button onClick={handleClick}>OK</button>;\n}\n\n// Inline pour la simplicité\n<button onClick={() => alert('hi')}>Inline</button>\n\n// JAMAIS onClick={handleClick()} — ça APPELLE la fonction au render !"
+        }
+      },
+      {
+        "heading": "Composition : préfère composer plutôt qu'hériter",
+        "body": "React ne pousse PAS l'héritage. On compose :\n• Petits composants spécialisés.\n• Composants génériques qui prennent `children` ou des **render props**.\n• Hooks pour partager du COMPORTEMENT (vu plus loin).\n\nUn composant > 200 lignes ? Découpe."
+      },
+      {
+        "heading": "À retenir",
+        "body": "• Composant = fonction qui retourne du JSX, nom en **MAJUSCULE**.\n• `className` (pas `class`), événements en **camelCase**.\n• Props en lecture seule, données descendantes (parent → enfant).\n• Liste = `map` + **`key` unique** (id stable, jamais l'index si dynamique).\n• Conditionnel : ternaire `?:` ou `&&` (attention aux falsy 0/'').\n• `{ }` = expression JS dans le JSX."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Comment doit s'appeler une variable de composant React ?",
+        "choices": [
+          "En minuscule (button)",
+          "En majuscule (Button) — sinon React la traite comme une balise HTML",
+          "Préfixée par 'React'",
+          "Avec un underscore"
+        ],
+        "answer": 1,
+        "explanation": "<button> est traité comme balise HTML, <Button> comme composant React. Si tu écris <button> mais c'est ton composant : il sera ignoré."
+      },
+      {
+        "question": "En JSX, comment écrit-on l'attribut 'class' ?",
+        "choices": ["class", "Class", "className", "classes"],
+        "answer": 2,
+        "explanation": "class est un mot réservé en JS, donc JSX utilise className. De même : for → htmlFor, tabindex → tabIndex."
+      },
+      {
+        "question": "Pourquoi est-il important de fournir une `key` unique aux éléments d'une liste ?",
+        "choices": [
+          "Sinon ça crash",
+          "Pour permettre à React de tracer chaque élément lors des re-renders et optimiser les diffs",
+          "Pour le SEO",
+          "C'est purement décoratif"
+        ],
+        "answer": 1,
+        "explanation": "Sans key (ou avec index sur liste réordonnable), React peut ré-utiliser le mauvais composant et perdre l'état. Toujours un id STABLE."
+      },
+      {
+        "question": "Que se passe-t-il si tu écris `<button onClick={handleClick()}>` ?",
+        "choices": [
+          "Rien, c'est correct",
+          "handleClick est APPELÉE au render, et son retour (souvent undefined) est passé comme handler",
+          "Erreur de compilation",
+          "handleClick s'exécute au clic"
+        ],
+        "answer": 1,
+        "explanation": "Avec les parenthèses, tu APPELLES la fonction immédiatement. Pour passer la référence : onClick={handleClick}."
+      },
+      {
+        "question": "Que désigne la prop spéciale `children` ?",
+        "choices": [
+          "Les composants enfants définis dans le composant",
+          "Le contenu JSX placé ENTRE les balises ouvrante et fermante du composant",
+          "L'état du composant",
+          "Les hooks"
+        ],
+        "answer": 1,
+        "explanation": "<Box>contenu</Box> → 'contenu' arrive dans la prop children de Box. Permet la composition générique."
+      }
+    ]
+  },
+  {
+    "slug": "react-state",
+    "theme": "react",
+    "title": "useState : l'état local",
+    "summary": "Faire vivre tes composants : état, mises à jour, formulaires contrôlés.",
+    "level": 2,
+    "sections": [
+      {
+        "heading": "Pourquoi un état ?",
+        "body": "Une variable JS classique change, mais React ne le sait pas — il ne re-render pas. **L'état** est une variable spéciale dont la mise à jour DÉCLENCHE un re-render."
+      },
+      {
+        "heading": "useState : signature",
+        "body": "Hook fondamental. Renvoie un tableau `[valeur, setter]`.",
+        "code": {
+          "lang": "jsx",
+          "value": "import { useState } from 'react';\n\nfunction Counter() {\n  const [count, setCount] = useState(0);\n  // count = valeur courante\n  // setCount = fonction pour mettre à jour\n\n  return (\n    <button onClick={() => setCount(count + 1)}>\n      {count}\n    </button>\n  );\n}"
+        }
+      },
+      {
+        "heading": "Règles des hooks",
+        "body": "• **Au TOP** d'un composant fonctionnel.\n• **Pas dans un `if`/`for`/callback**.\n• **Toujours dans le même ordre** entre les renders.\n\nReact se base sur l'ordre d'appel pour identifier chaque hook. Si tu en sautes un, tout casse."
+      },
+      {
+        "heading": "Setter avec callback : crucial pour les mises à jour basées sur l'état précédent",
+        "body": "Si la prochaine valeur dépend de l'actuelle, **TOUJOURS** utiliser la version callback. Sinon, plusieurs `setX(x+1)` rapides peuvent rater :",
+        "code": {
+          "lang": "jsx",
+          "value": "// MAUVAIS : 3 clics rapides peuvent ne donner que +1\nsetCount(count + 1);\n\n// BON : React garantit que prev est la dernière valeur\nsetCount(prev => prev + 1);\n\n// Cas typique : 3 clics\nsetCount(prev => prev + 1);\nsetCount(prev => prev + 1);\nsetCount(prev => prev + 1);\n// → résultat : count + 3 (garanti)"
+        }
+      },
+      {
+        "heading": "État immutable : ne JAMAIS muter",
+        "body": "React compare le nouveau et l'ancien état avec `Object.is`. Si tu MUTES (sans changer la référence), React croit que rien n'a changé → pas de re-render.",
+        "code": {
+          "lang": "jsx",
+          "value": "// MAUVAIS — push mute le tableau, même référence\nconst [items, setItems] = useState([]);\nitems.push('nouveau');  // ne re-render PAS\nsetItems(items);        // même référence !\n\n// BON — nouvelle référence\nsetItems([...items, 'nouveau']);\nsetItems(prev => [...prev, 'nouveau']);\n\n// Pour un objet\nconst [user, setUser] = useState({ name: 'Léa', age: 28 });\nsetUser(prev => ({ ...prev, age: 29 }));"
+        }
+      },
+      {
+        "heading": "Plusieurs useState ou un seul objet ?",
+        "body": "**Plusieurs useState séparés** quand les valeurs sont indépendantes (`name`, `age`, `isLoading`). Plus clair, plus performant (React 'batche' les mises à jour).\n\n**Un objet** seulement si les champs évoluent toujours ENSEMBLE (rare). Si c'est complexe → `useReducer`."
+      },
+      {
+        "heading": "Formulaires contrôlés",
+        "body": "L'input affiche `value`, et chaque frappe met à jour l'état. Source de vérité = le state.",
+        "code": {
+          "lang": "jsx",
+          "value": "function NameForm() {\n  const [name, setName] = useState('');\n\n  function handleSubmit(e) {\n    e.preventDefault();\n    alert(`Bonjour ${name}`);\n  }\n\n  return (\n    <form onSubmit={handleSubmit}>\n      <input\n        value={name}\n        onChange={(e) => setName(e.target.value)}\n        placeholder=\"Ton prénom\"\n      />\n      <button type=\"submit\">OK</button>\n    </form>\n  );\n}"
+        }
+      },
+      {
+        "heading": "useState lazy initial",
+        "body": "Si la valeur initiale demande un calcul COÛTEUX, passe une **fonction** au lieu d'une valeur. Elle ne sera appelée qu'AU PREMIER render.",
+        "code": {
+          "lang": "jsx",
+          "value": "// MAUVAIS — exécuté à CHAQUE render (perdu mais coûteux)\nconst [items, setItems] = useState(\n  loadHugeListFromLocalStorage()\n);\n\n// BON — exécuté UNE SEULE FOIS au mount\nconst [items, setItems] = useState(\n  () => loadHugeListFromLocalStorage()\n);"
+        }
+      },
+      {
+        "heading": "État dérivé : ne le stocke pas",
+        "body": "Si une valeur peut être CALCULÉE depuis le state existant, **NE LA STOCKE PAS**. Calcule-la lors du render.",
+        "code": {
+          "lang": "jsx",
+          "value": "// MAUVAIS — fullName redondant, risque de désynchro\nconst [first, setFirst] = useState('');\nconst [last, setLast] = useState('');\nconst [fullName, setFullName] = useState('');\n\n// BON — calculé\nconst [first, setFirst] = useState('');\nconst [last, setLast] = useState('');\nconst fullName = `${first} ${last}`.trim();\n\n// Si coûteux : useMemo (vu plus loin)"
+        }
+      },
+      {
+        "heading": "À retenir",
+        "body": "• `const [x, setX] = useState(initial)`.\n• Hooks : TOUJOURS au top, jamais dans un `if`.\n• `setX(prev => ...)` quand la nouvelle valeur dépend de l'ancienne.\n• JAMAIS muter — passe une nouvelle référence (`{ ...prev }`, `[...prev]`).\n• Plusieurs useState pour des valeurs indépendantes.\n• Formulaires contrôlés : `value` + `onChange`.\n• N'STOCKE PAS ce qui peut être calculé."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Que retourne `useState(0)` ?",
+        "choices": [
+          "Un nombre",
+          "Une fonction",
+          "Un tableau [valeur, setter]",
+          "Un objet { value, set }"
+        ],
+        "answer": 2,
+        "explanation": "useState retourne [currentValue, setterFunction]. On déstructure : const [x, setX] = useState(0)."
+      },
+      {
+        "question": "Pourquoi `setCount(count + 1)` peut-il poser problème ?",
+        "choices": [
+          "Aucun problème",
+          "Si plusieurs setCount rapides s'enchaînent, ils peuvent voir la même `count` désynchronisée",
+          "C'est interdit",
+          "C'est plus lent"
+        ],
+        "answer": 1,
+        "explanation": "Préfère setCount(prev => prev + 1) qui reçoit la dernière valeur garantie. Crucial dans des callbacks rapides ou async."
+      },
+      {
+        "question": "Comment ajouter un item à un tableau d'état SANS muter ?",
+        "choices": [
+          "items.push(x); setItems(items)",
+          "setItems([...items, x]) ou setItems(prev => [...prev, x])",
+          "setItems(items.add(x))",
+          "items[items.length] = x; setItems(items)"
+        ],
+        "answer": 1,
+        "explanation": "Spread crée une nouvelle référence. push() mute → React ne détecte aucun changement (même référence) et ne re-render pas."
+      },
+      {
+        "question": "Quelle règle des hooks est ESSENTIELLE ?",
+        "choices": [
+          "Toujours dans un useEffect",
+          "Au TOP du composant, jamais dans un if/for/callback",
+          "Préfixés par use_",
+          "Un seul hook par composant"
+        ],
+        "answer": 1,
+        "explanation": "React identifie chaque hook par son ORDRE d'appel. Sauter un hook (dans un if) casse complètement le mapping."
+      },
+      {
+        "question": "Pour une valeur initiale COÛTEUSE à calculer, quelle est la bonne forme ?",
+        "choices": [
+          "useState(expensiveCalc())",
+          "useState(() => expensiveCalc())",
+          "useState.lazy(expensiveCalc)",
+          "useEffect(() => setX(expensiveCalc()), [])"
+        ],
+        "answer": 1,
+        "explanation": "useState(() => fn) — la fonction n'est appelée qu'UNE fois (au mount). Sans la fonction wrapper, expensiveCalc() est appelé à chaque render (jeté ensuite, mais coûteux)."
+      }
+    ]
+  },
+  {
+    "slug": "react-effects",
+    "theme": "react",
+    "title": "useEffect : effets de bord",
+    "summary": "Synchroniser ton composant avec l'extérieur : fetch, timers, abonnements.",
+    "level": 2,
+    "sections": [
+      {
+        "heading": "Qu'est-ce qu'un 'effet' ?",
+        "body": "Tout ce qui SORT du calcul pur 'props/state → JSX' :\n• Fetch d'API\n• Timer (setInterval, setTimeout)\n• Abonnements (WebSocket, événements DOM)\n• Modification du `document.title`\n• Lecture/écriture localStorage\n\nReact veut que le RENDER soit pur (mêmes inputs → même output, sans effet). Les effets se font APRÈS le commit du render."
+      },
+      {
+        "heading": "useEffect : la signature",
+        "body": "`useEffect(callback, dependencies)`. Le callback s'exécute après le render, quand UNE des dépendances a changé.",
+        "code": {
+          "lang": "jsx",
+          "value": "import { useEffect, useState } from 'react';\n\nfunction Title({ name }) {\n  useEffect(() => {\n    document.title = `Salut ${name}`;\n    // exécuté APRÈS chaque render où name a changé\n  }, [name]);\n\n  return <h1>{name}</h1>;\n}"
+        }
+      },
+      {
+        "heading": "Les 3 formes du tableau de dépendances",
+        "body": "• **`[]`** : exécuté UNE FOIS au mount (et le cleanup au unmount).\n• **`[a, b]`** : exécuté quand `a` ou `b` change (en plus du mount).\n• **rien (`undefined`)** : exécuté à CHAQUE render. **À éviter** sauf cas très précis.\n\nRègle : mets dans le tableau **toutes** les variables que ton effet UTILISE (l'ESLint rule react-hooks/exhaustive-deps t'aide)."
+      },
+      {
+        "heading": "Cleanup : la fonction de nettoyage",
+        "body": "Si ton effet 'ouvre' quelque chose (timer, listener, abo), tu dois le 'fermer' AVANT le prochain effet et au unmount. Renvoie une fonction depuis le callback.",
+        "code": {
+          "lang": "jsx",
+          "value": "function Clock() {\n  const [time, setTime] = useState(new Date());\n\n  useEffect(() => {\n    const id = setInterval(\n      () => setTime(new Date()), 1000\n    );\n    return () => clearInterval(id);\n    // crucial : sans cleanup, des intervals s'accumulent\n  }, []);\n\n  return <p>{time.toLocaleTimeString()}</p>;\n}"
+        }
+      },
+      {
+        "heading": "Pattern fetch : annuler les requêtes en vol",
+        "body": "Quand l'utilisateur navigue rapidement, des fetchs anciens peuvent revenir APRÈS — et écraser l'état avec des données obsolètes. Solution : `AbortController`.",
+        "code": {
+          "lang": "jsx",
+          "value": "useEffect(() => {\n  const controller = new AbortController();\n\n  fetch(`/api/user/${id}`, { signal: controller.signal })\n    .then(res => res.json())\n    .then(setUser)\n    .catch(err => {\n      if (err.name !== 'AbortError') console.error(err);\n    });\n\n  return () => controller.abort();\n}, [id]);"
+        }
+      },
+      {
+        "heading": "Pièges courants",
+        "body": "• **Boucle infinie** : effet qui setState → re-render → effet → setState. Cause : oubli des deps OU dep sur un objet/tableau recréé à chaque render.\n• **Effets dans une condition** : interdit. Ils doivent être au TOP comme tous les hooks.\n• **Async direct** : le callback de useEffect ne peut pas être async (il doit retourner un cleanup, pas une Promise). Définis une fonction async DEDANS et appelle-la."
+      },
+      {
+        "heading": "Effet asynchrone : le bon pattern",
+        "body": "useEffect ne doit pas retourner une Promise. On définit une fonction async à l'intérieur.",
+        "code": {
+          "lang": "jsx",
+          "value": "useEffect(() => {\n  let cancelled = false;\n\n  async function load() {\n    const data = await fetchData();\n    if (!cancelled) setData(data);\n  }\n\n  load();\n  return () => { cancelled = true; };\n}, []);"
+        }
+      },
+      {
+        "heading": "Dois-je mettre cet effet ?",
+        "body": "**Souvent NON.** Beaucoup d'effets sont inutiles.\n• Pour TRANSFORMER des props/state → calcule pendant le render.\n• Pour réagir à un événement utilisateur → mets le code dans le handler, pas dans un effet.\n• Pour synchroniser avec un système externe (DOM, API, abo) → OUI, c'est exactement ça."
+      },
+      {
+        "heading": "Quand utiliser useLayoutEffect ?",
+        "body": "`useLayoutEffect` est synchrone : il s'exécute APRÈS le DOM commit mais AVANT que le navigateur ne peigne. Utile pour mesurer des dimensions ou éviter un flash visuel. **Plus coûteux** : utilise `useEffect` par défaut, `useLayoutEffect` uniquement si tu vois un flicker."
+      },
+      {
+        "heading": "À retenir",
+        "body": "• useEffect = synchroniser avec un système EXTERNE (DOM, API, timer).\n• Tableau de deps : `[]` au mount, `[a]` quand a change.\n• `return () => cleanup()` pour timers/listeners/aborts.\n• Async : définis la fonction DEDANS, ne rends pas le callback async.\n• Évite les effets inutiles : transformer state → calcule pendant le render.\n• AbortController pour les fetch dépendant d'un id qui change."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Quand le callback d'un useEffect avec `[]` s'exécute-t-il ?",
+        "choices": [
+          "À chaque render",
+          "Une seule fois après le PREMIER render (mount)",
+          "Jamais",
+          "Au unmount"
+        ],
+        "answer": 1,
+        "explanation": "[] = aucune dépendance qui change → exécuté une fois au mount. Le cleanup s'exécute au unmount."
+      },
+      {
+        "question": "Pourquoi retourner une fonction depuis useEffect ?",
+        "choices": [
+          "Pour le cleanup : déconnecter timers/listeners avant le prochain effet ou au unmount",
+          "Pour return du JSX",
+          "Pour signaler que c'est async",
+          "C'est obligatoire"
+        ],
+        "answer": 0,
+        "explanation": "Le return = fonction de cleanup. Sans elle, intervals/listeners s'accumulent et causent fuites mémoire / bugs."
+      },
+      {
+        "question": "Pourquoi `useEffect(async () => {...}, [])` est-il problématique ?",
+        "choices": [
+          "Il est plus lent",
+          "useEffect attend une fonction de cleanup en retour, pas une Promise",
+          "C'est interdit en strict mode",
+          "Async ne marche pas dans React"
+        ],
+        "answer": 1,
+        "explanation": "Une fonction async retourne une Promise — pas une fonction de cleanup. Définis une async fn DEDANS et appelle-la."
+      },
+      {
+        "question": "Comment éviter les fetchs périmés qui écrasent l'état ?",
+        "choices": [
+          "Mettre le fetch dans le render",
+          "Utiliser AbortController et l'abort dans le cleanup",
+          "Utiliser setTimeout",
+          "C'est impossible"
+        ],
+        "answer": 1,
+        "explanation": "AbortController.signal passé à fetch + cleanup `controller.abort()` annule les requêtes en vol quand les deps changent."
+      },
+      {
+        "question": "Tu veux mettre à jour `fullName` quand `first` ou `last` changent. Effet ou pas ?",
+        "choices": [
+          "useEffect qui set fullName",
+          "Pas d'effet : calcule fullName pendant le render avec const fullName = first + ' ' + last",
+          "useLayoutEffect",
+          "useState"
+        ],
+        "answer": 1,
+        "explanation": "Données dérivées = calcule pendant le render. Pas de state, pas d'effet, pas de désynchro possible."
+      }
+    ]
+  },
+  {
+    "slug": "react-perf",
+    "theme": "react",
+    "title": "Hooks avancés & performance",
+    "summary": "useMemo, useCallback, React.memo, custom hooks — pour des UIs rapides et lisibles.",
+    "level": 3,
+    "sections": [
+      {
+        "heading": "Quand React re-render ?",
+        "body": "Un composant re-render quand :\n• Son **état** change.\n• Ses **props** changent.\n• Son **parent re-render** (par défaut).\n\nUn re-render n'est PAS forcément lent : React diff le Virtual DOM et n'applique que les changements. Mais si tu rends 1000 lignes coûteuses inutilement, oui ça rame."
+      },
+      {
+        "heading": "useMemo : mémoïser une VALEUR coûteuse",
+        "body": "Si une valeur dérivée est COÛTEUSE à calculer, et n'a pas besoin d'être recalculée à chaque render, mémo-ise.",
+        "code": {
+          "lang": "jsx",
+          "value": "import { useMemo } from 'react';\n\nfunction Stats({ items }) {\n  const total = useMemo(() => {\n    return items\n      .filter(i => i.active)\n      .reduce((s, i) => s + i.price, 0);\n  }, [items]);\n\n  return <p>Total : {total}€</p>;\n}\n\n// Recalcule total UNIQUEMENT quand items change."
+        }
+      },
+      {
+        "heading": "useCallback : mémoïser une FONCTION",
+        "body": "Une fonction est recréée à chaque render → nouvelle référence → si elle est dep d'un useEffect, l'effet se re-déclenche en boucle.",
+        "code": {
+          "lang": "jsx",
+          "value": "import { useCallback } from 'react';\n\nfunction Search({ onResult }) {\n  // Sans useCallback : nouvelle fn à chaque render\n  const search = useCallback((query) => {\n    fetch(`/api?q=${query}`).then(r => r.json()).then(onResult);\n  }, [onResult]);\n\n  // search est stable tant que onResult ne change pas\n  return <SearchInput onChange={search} />;\n}"
+        }
+      },
+      {
+        "heading": "React.memo : éviter les re-renders d'un enfant",
+        "body": "Wrap ton composant dans `React.memo`. Il ne re-rendra que si ses props ont changé (par référence).",
+        "code": {
+          "lang": "jsx",
+          "value": "import { memo } from 'react';\n\nconst ExpensiveRow = memo(function Row({ item, onClick }) {\n  console.log('render', item.id);\n  return <li onClick={onClick}>{item.name}</li>;\n});\n\n// Important : pour que memo soit utile, les props doivent être stables.\n// Une fn créée à chaque render du parent CASSE memo.\n// → useCallback côté parent."
+        }
+      },
+      {
+        "heading": "N'optimise PAS prématurément",
+        "body": "Règle d'or : **mesure avant d'optimiser**. useMemo/useCallback ont un coût (mémoire, comparaison de deps). Si la valeur n'est PAS coûteuse, c'est moins performant que sans.\n\nAjoute-les SEULEMENT :\n• Quand tu vois un VRAI ralentissement (React DevTools profiler).\n• Quand une fn/objet doit être stable pour `memo` ou pour une dep d'effet."
+      },
+      {
+        "heading": "useReducer : alternative à useState pour un état complexe",
+        "body": "Quand l'état a plusieurs sous-champs liés et plusieurs types d'actions, `useReducer` clarifie :",
+        "code": {
+          "lang": "jsx",
+          "value": "import { useReducer } from 'react';\n\nfunction reducer(state, action) {\n  switch (action.type) {\n    case 'INC':   return { count: state.count + 1 };\n    case 'DEC':   return { count: state.count - 1 };\n    case 'RESET': return { count: 0 };\n    default: return state;\n  }\n}\n\nfunction Counter() {\n  const [state, dispatch] = useReducer(reducer, { count: 0 });\n  return (\n    <>\n      <button onClick={() => dispatch({ type: 'INC' })}>+</button>\n      <span>{state.count}</span>\n    </>\n  );\n}"
+        }
+      },
+      {
+        "heading": "useContext : éviter le 'props drilling'",
+        "body": "Quand une donnée doit traverser 5 niveaux de composants, plutôt que de passer la prop partout, partage-la via Context.",
+        "code": {
+          "lang": "jsx",
+          "value": "import { createContext, useContext, useState } from 'react';\n\nconst ThemeContext = createContext('dark');\n\nfunction App() {\n  const [theme, setTheme] = useState('dark');\n  return (\n    <ThemeContext.Provider value={theme}>\n      <Layout />\n    </ThemeContext.Provider>\n  );\n}\n\n// 5 niveaux plus bas\nfunction Button() {\n  const theme = useContext(ThemeContext);\n  return <button className={theme}>OK</button>;\n}"
+        }
+      },
+      {
+        "heading": "Custom hooks : extraire la logique réutilisable",
+        "body": "Une fonction qui commence par `use*` et utilise d'autres hooks. Permet de partager du COMPORTEMENT entre composants (ce que les classes faisaient mal).",
+        "code": {
+          "lang": "jsx",
+          "value": "// hooks/useLocalStorage.js\nimport { useState, useEffect } from 'react';\n\nexport function useLocalStorage(key, initial) {\n  const [value, setValue] = useState(() => {\n    const stored = localStorage.getItem(key);\n    return stored ? JSON.parse(stored) : initial;\n  });\n\n  useEffect(() => {\n    localStorage.setItem(key, JSON.stringify(value));\n  }, [key, value]);\n\n  return [value, setValue];\n}\n\n// Usage\nconst [theme, setTheme] = useLocalStorage('theme', 'dark');"
+        }
+      },
+      {
+        "heading": "Lazy loading et code splitting",
+        "body": "Pour réduire le bundle initial, charge des composants à la demande :",
+        "code": {
+          "lang": "jsx",
+          "value": "import { lazy, Suspense } from 'react';\n\nconst HeavyChart = lazy(() => import('./HeavyChart'));\n\nfunction App() {\n  return (\n    <Suspense fallback={<p>Chargement…</p>}>\n      <HeavyChart />\n    </Suspense>\n  );\n}"
+        }
+      },
+      {
+        "heading": "À retenir",
+        "body": "• React re-render quand state/props/parent changent. Souvent OK.\n• `useMemo` pour mémoïser une VALEUR coûteuse.\n• `useCallback` pour mémoïser une FONCTION (stabilité de référence).\n• `React.memo` pour éviter le re-render d'un enfant aux props stables.\n• `useReducer` quand l'état est complexe.\n• `useContext` pour éviter le props drilling.\n• Custom hooks (`use*`) pour partager de la logique.\n• `lazy + Suspense` pour le code splitting.\n• **Mesure** avant d'optimiser (React DevTools)."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "À quoi sert `useMemo` ?",
+        "choices": [
+          "Mémoïser une VALEUR calculée pour ne pas la recalculer à chaque render",
+          "Stocker un état",
+          "Faire un effet",
+          "Annuler un re-render"
+        ],
+        "answer": 0,
+        "explanation": "useMemo cache la valeur calculée par la fonction passée, et ne la recalcule que si les deps changent."
+      },
+      {
+        "question": "Pourquoi `useCallback` est-il utile ?",
+        "choices": [
+          "Pour appeler une fonction plus vite",
+          "Pour stabiliser la référence d'une fn entre les renders (utile en dep d'effet ou pour React.memo)",
+          "Pour rendre les fn async",
+          "Pour les côtés serveur"
+        ],
+        "answer": 1,
+        "explanation": "Sans useCallback, une fn est recréée à chaque render = nouvelle référence = re-déclenche les useEffect qui en dépendent."
+      },
+      {
+        "question": "Que fait `React.memo` ?",
+        "choices": [
+          "Mémoïse une valeur",
+          "Empêche un composant de re-render si ses props n'ont pas changé (compare par référence)",
+          "Active le strict mode",
+          "Supprime les renders"
+        ],
+        "answer": 1,
+        "explanation": "memo wrap un composant : il ne re-rend que si une prop a changé (===). Pour être utile, les props doivent être stables (useCallback côté parent)."
+      },
+      {
+        "question": "Quand préférer useReducer à useState ?",
+        "choices": [
+          "Toujours",
+          "Quand l'état est complexe avec plusieurs sous-champs et plusieurs types de mutations",
+          "Pour les performances",
+          "Pour les fetchs"
+        ],
+        "answer": 1,
+        "explanation": "useReducer centralise les transitions d'état dans une fonction pure, plus testable et lisible quand l'état grossit."
+      },
+      {
+        "question": "Quelle convention pour un custom hook ?",
+        "choices": [
+          "Préfixé par hook",
+          "Préfixé par `use` (pour que React reconnaisse les règles des hooks)",
+          "En CamelCase",
+          "Suffixé par Hook"
+        ],
+        "answer": 1,
+        "explanation": "Le préfixe `use` est obligatoire — React ESLint et le runtime utilisent ça pour valider les règles des hooks."
+      }
+    ]
+  }
+]
