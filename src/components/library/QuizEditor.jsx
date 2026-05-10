@@ -1,4 +1,5 @@
 // Form spécifique pour éditer une carte Quiz.
+import { X } from 'lucide-react';
 
 const labelCls = 'text-xs font-semibold uppercase tracking-widest text-slate-400';
 const inputCls =
@@ -53,10 +54,10 @@ export default function QuizEditor({ value, onChange }) {
                   const answer = value.answer >= choices.length ? choices.length - 1 : value.answer;
                   update({ choices, answer });
                 }}
-                className="text-xs text-slate-500 hover:text-rose-400"
+                className="grid h-6 w-6 place-items-center rounded text-slate-500 hover:bg-rose-500/10 hover:text-rose-400"
                 aria-label="Supprimer ce choix"
               >
-                ✕
+                <X size={14} aria-hidden />
               </button>
             )}
           </label>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Check, X } from 'lucide-react';
 import FlipCard from './FlipCard.jsx';
 import Button from '../ui/Button.jsx';
 import { SWIPE_QUALITY } from '../../lib/sm2.js';
@@ -90,7 +91,8 @@ function QuizBack({ card, selected, isCorrect, onContinue }) {
             isCorrect ? 'bg-emerald-400/15 text-emerald-300' : 'bg-rose-400/15 text-rose-300',
           ].join(' ')}
         >
-          {isCorrect ? '✓ Correct' : '✗ Faux'}
+          {isCorrect ? <Check size={14} aria-hidden /> : <X size={14} aria-hidden />}
+          {isCorrect ? 'Correct' : 'Faux'}
         </span>
       </header>
 
@@ -117,10 +119,20 @@ function QuizBack({ card, selected, isCorrect, onContinue }) {
               </span>
               <span className="text-sm leading-snug">{choice}</span>
               {isAnswer && (
-                <span className="ml-auto text-xs font-bold text-emerald-300">✓</span>
+                <Check
+                  size={16}
+                  strokeWidth={3}
+                  className="ml-auto shrink-0 text-emerald-300"
+                  aria-hidden
+                />
               )}
               {!isAnswer && isPicked && (
-                <span className="ml-auto text-xs font-bold text-rose-300">✗</span>
+                <X
+                  size={16}
+                  strokeWidth={3}
+                  className="ml-auto shrink-0 text-rose-300"
+                  aria-hidden
+                />
               )}
             </li>
           );

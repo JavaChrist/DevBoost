@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Check, X, ChevronDown } from 'lucide-react';
 // Liste des tests d'un challenge : repliée par défaut, dépliable au clic.
 
 function fmt(value) {
@@ -31,12 +32,16 @@ function StatusBadge({ r, running, index }) {
   return (
     <span
       className={[
-        'inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-xs font-bold',
+        'inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md',
         r.ok ? 'bg-emerald-500/30 text-emerald-200' : 'bg-rose-500/30 text-rose-200',
       ].join(' ')}
       aria-label={r.ok ? 'Test réussi' : 'Test échoué'}
     >
-      {r.ok ? '✓' : '✗'}
+      {r.ok ? (
+        <Check size={12} strokeWidth={3} aria-hidden />
+      ) : (
+        <X size={12} strokeWidth={3} aria-hidden />
+      )}
     </span>
   );
 }
@@ -64,15 +69,14 @@ function TestRow({ test, result, running, index }) {
       >
         <StatusBadge r={result} running={running} index={index} />
         <span className="min-w-0 flex-1 truncate font-medium">{test.label}</span>
-        <span
+        <ChevronDown
+          size={14}
           aria-hidden
           className={[
             'shrink-0 text-slate-500 transition-transform',
             expanded ? 'rotate-180' : 'rotate-0',
           ].join(' ')}
-        >
-          ▾
-        </span>
+        />
       </button>
       {expanded && (
         <div className="space-y-1 border-t border-current/10 px-2.5 py-1.5 text-[11px] text-slate-400">

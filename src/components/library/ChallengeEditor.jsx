@@ -1,6 +1,7 @@
 // Form spécifique pour éditer une carte Challenge.
 // CodeEditor (CodeMirror) est lazy-importé via la lib parent (la Library est déjà lazy).
 
+import { X } from 'lucide-react';
 import CodeEditor from '../cards/CodeEditor.jsx';
 
 const labelCls = 'text-xs font-semibold uppercase tracking-widest text-slate-400';
@@ -72,10 +73,10 @@ export default function ChallengeEditor({ value, onChange }) {
                 <button
                   type="button"
                   onClick={() => removeTest(i)}
-                  className="text-xs text-slate-500 hover:text-rose-400"
+                  className="grid h-6 w-6 place-items-center rounded text-slate-500 hover:bg-rose-500/10 hover:text-rose-400"
                   aria-label="Supprimer ce test"
                 >
-                  ✕
+                  <X size={14} aria-hidden />
                 </button>
               )}
             </div>

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { Check, Lightbulb } from 'lucide-react';
 import db from '../db/dexie.js';
 import {
   setLastSection,
@@ -155,7 +156,8 @@ function SectionView({ section, isFirst, isLast, showQuiz, onPrev, onNext, onFin
             </Button>
           ) : (
             <Button size="sm" onClick={onFinish}>
-              Terminer ✓
+              Terminer
+              <Check size={14} aria-hidden />
             </Button>
           )
         ) : (
@@ -314,8 +316,9 @@ function QuizView({ quiz, slug, theme, onBack, onDone }) {
                 );
               })}
               {submitted && q.explanation && (
-                <p className="rounded-md bg-slate-950/50 px-3 py-2 text-[11px] text-slate-400">
-                  💡 {q.explanation}
+                <p className="flex items-start gap-1.5 rounded-md bg-slate-950/50 px-3 py-2 text-[11px] text-slate-400">
+                  <Lightbulb size={12} aria-hidden className="mt-0.5 shrink-0" />
+                  <span>{q.explanation}</span>
                 </p>
               )}
             </fieldset>
@@ -358,7 +361,8 @@ function QuizView({ quiz, slug, theme, onBack, onDone }) {
               Tester en session
             </Button>
             <Button size="sm" onClick={onDone}>
-              Terminer ✓
+              Terminer
+              <Check size={14} aria-hidden />
             </Button>
           </div>
         </div>

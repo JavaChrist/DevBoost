@@ -10,6 +10,7 @@ import {
   Pie,
   Cell,
 } from 'recharts';
+import { Flame } from 'lucide-react';
 import db from '../db/dexie.js';
 import { useUserStore } from '../store/useUserStore.js';
 import { computeStreaks, dailySessions, themeStats, aggregate } from '../lib/stats.js';
@@ -48,7 +49,12 @@ export default function Stats() {
       )}
 
       <div className="grid grid-cols-3 gap-2">
-        <KpiCard label="Streak" value={streaks.current} suffix="🔥" tone="amber" />
+        <KpiCard
+          label="Streak"
+          value={streaks.current}
+          suffix={<Flame size={16} fill="currentColor" className="inline" aria-hidden />}
+          tone="amber"
+        />
         <KpiCard label="Max" value={streaks.max} suffix="j" tone="slate" />
         <KpiCard label="XP" value={xp} tone="emerald" />
       </div>

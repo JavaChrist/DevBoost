@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Lightbulb, AlarmClock, Check, PartyPopper } from 'lucide-react';
 import FlipCard from './FlipCard.jsx';
 import CodeEditor from './CodeEditor.jsx';
 import TestList from './TestList.jsx';
@@ -106,9 +107,15 @@ function ChallengeFront({
           <button
             type="button"
             onClick={onToggleHint}
-            className="shrink-0 rounded-full bg-slate-800 px-2.5 py-1 text-[11px] font-semibold text-slate-300 hover:bg-slate-700"
+            className="inline-flex shrink-0 items-center gap-1 rounded-full bg-slate-800 px-2.5 py-1 text-[11px] font-semibold text-slate-300 hover:bg-slate-700"
           >
-            {hintOpen ? 'Masquer' : '💡 Astuce'}
+            {hintOpen ? (
+              'Masquer'
+            ) : (
+              <>
+                <Lightbulb size={12} aria-hidden /> Astuce
+              </>
+            )}
           </button>
         )}
       </header>
@@ -133,8 +140,8 @@ function ChallengeFront({
         </p>
       )}
       {results?.timedOut && (
-        <p className="rounded-lg bg-amber-500/10 p-2 text-xs text-amber-300 ring-1 ring-amber-400/30">
-          ⏰ {results.error}
+        <p className="inline-flex items-center gap-1.5 rounded-lg bg-amber-500/10 p-2 text-xs text-amber-300 ring-1 ring-amber-400/30">
+          <AlarmClock size={14} aria-hidden /> {results.error}
         </p>
       )}
 
@@ -180,13 +187,16 @@ function ChallengeBack({ card, code, outcome, results, onContinue }) {
             success ? 'bg-emerald-400/15 text-emerald-300' : 'bg-slate-800 text-slate-300',
           ].join(' ')}
         >
-          {success ? '✓ Tous les tests passent' : 'À retravailler'}
+          {success && <Check size={14} aria-hidden />}
+          {success ? 'Tous les tests passent' : 'À retravailler'}
         </span>
       </header>
 
       {success ? (
         <>
-          <h2 className="text-2xl font-extrabold tracking-tight text-emerald-300">Bravo 🎉</h2>
+          <h2 className="inline-flex items-center gap-2 text-2xl font-extrabold tracking-tight text-emerald-300">
+            Bravo <PartyPopper size={24} aria-hidden />
+          </h2>
           <p className="text-sm text-slate-300">
             {results.passed}/{results.total} tests verts. Cette carte reviendra plus tard, plus
             espacée.

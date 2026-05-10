@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import { PartyPopper } from 'lucide-react';
 import { useSessionStore } from '../store/useSessionStore.js';
 import Card from '../components/cards/Card.jsx';
 import SwipeableCard from '../components/cards/SwipeableCard.jsx';
@@ -38,7 +39,9 @@ export default function Session() {
     const xp = results.reduce((s, r) => s + r.xpGained, 0);
     return (
       <section className="flex flex-col items-center gap-6 p-6 text-center">
-        <h1 className="text-3xl font-extrabold tracking-tight text-emerald-400">Bravo 🎉</h1>
+        <h1 className="inline-flex items-center gap-3 text-3xl font-extrabold tracking-tight text-emerald-400">
+          Bravo <PartyPopper size={32} aria-hidden />
+        </h1>
         <p className="text-slate-300">
           Session terminée — {passed} / {cards.length} réussies
         </p>

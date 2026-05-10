@@ -1,11 +1,12 @@
 import { NavLink } from 'react-router-dom';
+import { Home, BookOpen, Library, BarChart3, Settings } from 'lucide-react';
 
 const tabs = [
-  { to: '/', label: 'Accueil', icon: '🏠' },
-  { to: '/courses', label: 'Cours', icon: '📖' },
-  { to: '/library', label: 'Cartes', icon: '📚' },
-  { to: '/stats', label: 'Stats', icon: '📈' },
-  { to: '/settings', label: 'Réglages', icon: '⚙️' },
+  { to: '/', label: 'Accueil', Icon: Home },
+  { to: '/courses', label: 'Cours', Icon: BookOpen },
+  { to: '/library', label: 'Cartes', Icon: Library },
+  { to: '/stats', label: 'Stats', Icon: BarChart3 },
+  { to: '/settings', label: 'Réglages', Icon: Settings },
 ];
 
 export default function BottomNav() {
@@ -16,12 +17,12 @@ export default function BottomNav() {
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       <ul className="flex items-stretch justify-around">
-        {tabs.map((t) => (
-          <li key={t.to} className="flex-1">
+        {tabs.map(({ to, label, Icon }) => (
+          <li key={to} className="flex-1">
             <NavLink
-              to={t.to}
-              end={t.to === '/'}
-              aria-label={t.label}
+              to={to}
+              end={to === '/'}
+              aria-label={label}
               className={({ isActive }) =>
                 [
                   'flex flex-col items-center justify-center gap-0.5 py-2 text-xs transition-colors rounded-md',
@@ -30,10 +31,8 @@ export default function BottomNav() {
                 ].join(' ')
               }
             >
-              <span aria-hidden className="text-lg leading-none">
-                {t.icon}
-              </span>
-              <span>{t.label}</span>
+              <Icon size={20} strokeWidth={2} aria-hidden />
+              <span>{label}</span>
             </NavLink>
           </li>
         ))}

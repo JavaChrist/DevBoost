@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { Check } from 'lucide-react';
 import db from '../db/dexie.js';
 import { progressPercent } from '../lib/courses.js';
 import Skeleton from '../components/ui/Skeleton.jsx';
@@ -106,8 +107,16 @@ export default function Courses() {
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className="text-[11px] font-semibold text-slate-400">
-                    {p?.completed ? '✓ Terminé' : pct > 0 ? `${pct}%` : 'Non commencé'}
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400">
+                    {p?.completed ? (
+                      <>
+                        <Check size={12} aria-hidden /> Terminé
+                      </>
+                    ) : pct > 0 ? (
+                      `${pct}%`
+                    ) : (
+                      'Non commencé'
+                    )}
                   </span>
                 </div>
               </button>

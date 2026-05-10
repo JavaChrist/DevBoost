@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
 
 // Modal mobile-first : bottom-sheet sur mobile, centré sur desktop large.
 export default function Modal({ open, onClose, title, children, footer }) {
@@ -47,9 +48,9 @@ export default function Modal({ open, onClose, title, children, footer }) {
                   type="button"
                   onClick={onClose}
                   aria-label="Fermer"
-                  className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-slate-100"
+                  className="grid h-8 w-8 place-items-center rounded-lg text-slate-400 hover:bg-slate-800 hover:text-slate-100"
                 >
-                  ✕
+                  <X size={18} aria-hidden />
                 </button>
               </header>
             )}

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Flame } from 'lucide-react';
 
 export default function StreakBadge({ streak = 0, className = '' }) {
   const active = streak > 0;
@@ -23,13 +24,17 @@ export default function StreakBadge({ streak = 0, className = '' }) {
     >
       <motion.span
         key={`flame-${bumpKey}`}
-        className={active ? 'animate-flame' : ''}
+        className={['inline-flex', active ? 'animate-flame' : ''].join(' ')}
         initial={bumpKey === 0 ? false : { scale: 1.6, rotate: -10 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 12 }}
         aria-hidden
       >
-        🔥
+        <Flame
+          size={16}
+          fill={active ? 'currentColor' : 'transparent'}
+          className={active ? '' : 'opacity-70'}
+        />
       </motion.span>
       <motion.span
         key={`num-${streak}`}

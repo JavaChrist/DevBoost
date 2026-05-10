@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Check } from 'lucide-react';
 import db from '../../db/dexie.js';
 import { parseImport } from '../../lib/cards.js';
 import { toast } from '../../store/useToastStore.js';
@@ -81,9 +82,9 @@ export default function ImportDialog({ open, onClose, onImported }) {
         />
         {preview && (
           <div className="flex flex-col gap-2">
-            <p className="text-xs text-slate-300">
-              ✓ {preview.cards.length} carte{preview.cards.length > 1 ? 's' : ''} valide
-              {preview.cards.length > 1 ? 's' : ''}
+            <p className="inline-flex items-center gap-1 text-xs text-emerald-300">
+              <Check size={14} aria-hidden /> {preview.cards.length} carte
+              {preview.cards.length > 1 ? 's' : ''} valide{preview.cards.length > 1 ? 's' : ''}
             </p>
             {preview.errors.length > 0 && (
               <ul className="rounded-lg bg-rose-500/10 p-2 text-[11px] text-rose-300 ring-1 ring-rose-400/30">

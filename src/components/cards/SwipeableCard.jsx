@@ -7,6 +7,7 @@
 //   les sélections de texte / horizontal scroll dans le code).
 
 import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { Check, X } from 'lucide-react';
 import useSwipe from '../../hooks/useSwipe.js';
 import { vibrate } from '../../lib/feedback.js';
 import { useSettingsStore } from '../../store/useSettingsStore.js';
@@ -75,16 +76,16 @@ export default function SwipeableCard({
       <motion.span
         aria-hidden
         style={{ opacity: okOpacity }}
-        className="pointer-events-none absolute right-3 top-3 z-10 rounded-lg border-2 border-emerald-400 bg-emerald-500/10 px-3 py-1 text-sm font-extrabold uppercase tracking-widest text-emerald-300 shadow-lg"
+        className="pointer-events-none absolute right-3 top-3 z-10 inline-flex items-center gap-1 rounded-lg border-2 border-emerald-400 bg-emerald-500/10 px-3 py-1 text-sm font-extrabold uppercase tracking-widest text-emerald-300 shadow-lg"
       >
-        OK ✓
+        OK <Check size={16} strokeWidth={3} />
       </motion.span>
       <motion.span
         aria-hidden
         style={{ opacity: retryOpacity }}
-        className="pointer-events-none absolute left-3 top-3 z-10 rounded-lg border-2 border-rose-400 bg-rose-500/10 px-3 py-1 text-sm font-extrabold uppercase tracking-widest text-rose-300 shadow-lg"
+        className="pointer-events-none absolute left-3 top-3 z-10 inline-flex items-center gap-1 rounded-lg border-2 border-rose-400 bg-rose-500/10 px-3 py-1 text-sm font-extrabold uppercase tracking-widest text-rose-300 shadow-lg"
       >
-        ✗ À revoir
+        <X size={16} strokeWidth={3} /> À revoir
       </motion.span>
 
       {children}
