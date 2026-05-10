@@ -19,7 +19,9 @@ import { pullAllFromCloud, pushAllToCloud } from '../lib/cloudSync.js';
 import Button from '../components/ui/Button.jsx';
 import SignOutButton from '../components/auth/SignOutButton.jsx';
 import DeleteAccountDialog from '../components/auth/DeleteAccountDialog.jsx';
-import { Trash2 } from 'lucide-react';
+import AvatarUploader from '../components/auth/AvatarUploader.jsx';
+import { Trash2, Download } from 'lucide-react';
+import { downloadExport } from '../lib/account.js';
 
 export default function Settings() {
   const sessionDuration = useSettingsStore((s) => s.sessionDuration);
@@ -41,6 +43,7 @@ export default function Settings() {
   const [confirmReset, setConfirmReset] = useState(false);
   const [syncBusy, setSyncBusy] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [exportBusy, setExportBusy] = useState(false);
 
   // Recalcule la permission quand la fenêtre revient au focus.
   useEffect(() => {
@@ -109,6 +112,19 @@ export default function Settings() {
     }
   };
 
+  const handleExport = async () => {
+    if (exportBusy) return;
+    setExportBusy(true);
+    try {
+      const { filename } = await downloadExport(authUser);
+      toast.success(`Export téléchargé : ${filename}`);
+    } catch {
+      toast.error('Export impossible');
+    } finally {
+      setExportBusy(false);
+    }
+  };
+
   const handleReset = async () => {
     if (!confirmReset) {
       setConfirmReset(true);
@@ -131,16 +147,12 @@ export default function Settings() {
       {/* Compte */}
       {authUser && (
         <Section title="Compte">
-          <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-emerald-500/15 text-sm font-bold text-emerald-300 ring-1 ring-emerald-400/30">
-              {(authUser.firstName || authUser.email || '?').slice(0, 1).toUpperCase()}
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-slate-100">
-                {authUser.firstName || 'Sans prénom'}
-              </p>
-              <p className="truncate text-[11px] text-slate-500">{authUser.email}</p>
-            </div>
+          <AvatarUploader />
+          <div className="mt-4 min-w-0">
+            <p className="truncate text-sm font-semibold text-slate-100">
+              {authUser.firstName || 'Sans prénom'}
+            </p>
+            <p className="truncate text-[11px] text-slate-500">{authUser.email}</p>
           </div>
           <div className="mt-3 flex items-center justify-between gap-2 rounded-lg bg-slate-950/40 px-3 py-2 ring-1 ring-slate-800">
             <div className="min-w-0">
@@ -305,6 +317,27 @@ export default function Settings() {
           Supprime toutes les cartes, sessions et progrès. Le seed initial sera rejoué.
         </p>
       </Section>
+
+      {/* Export RGPD */}
+      {authUser && (
+        <Section title="Mes données" subtitle="Export RGPD">
+          <p className="mb-3 text-[11px] leading-relaxed text-slate-500">
+            Télécharge un fichier JSON contenant l’intégralité de ton profil,
+            de tes statistiques, sessions, reviews, progression cours et cartes
+            personnelles (côté serveur ET copie locale).
+          </p>
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={handleExport}
+            disabled={exportBusy}
+            className="w-full"
+          >
+            <Download size={16} aria-hidden />
+            {exportBusy ? 'Préparation…' : 'Télécharger mes données (JSON)'}
+          </Button>
+        </Section>
+      )}
 
       {/* Zone de danger : suppression définitive du compte (RGPD) */}
       {authUser && (

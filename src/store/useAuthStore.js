@@ -16,6 +16,7 @@ function pickProfile(user) {
     id: user.id,
     email: user.email,
     firstName: meta.first_name ?? meta.firstName ?? '',
+    avatarUrl: meta.avatar_url ?? meta.avatarUrl ?? null,
     createdAt: user.created_at,
   };
 }
@@ -148,6 +149,20 @@ export const useAuthStore = create((set, get) => ({
     }
     set({ user: pickProfile(data?.user), loading: false });
     return { ok: true };
+  },
+
+  // Recharge le profil depuis Supabase (utile après un updateUser côté
+  // helper, par ex. upload avatar). Pas de loading/error global pour ne
+  // pas bloquer l'UI : c'est best-effort.
+  refreshProfile: async () => {
+    try {
+      const { data } = await supabase.auth.getUser();
+      const profile = pickProfile(data?.user);
+      set({ user: profile });
+      return profile;
+    } catch {
+      return null;
+    }
   },
 
   clearError: () => set({ error: null }),

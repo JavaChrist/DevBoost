@@ -4,6 +4,7 @@ import { LogOut, Settings as SettingsIcon } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuthStore } from '../../store/useAuthStore.js';
 import { toast } from '../../store/useToastStore.js';
+import Avatar from './Avatar.jsx';
 
 // Avatar utilisateur (initiale) dans le header. Au clic, ouvre un menu
 // déroulant avec : prénom + email, Réglages, Se déconnecter.
@@ -33,8 +34,6 @@ export default function UserMenu() {
 
   if (!user) return null;
 
-  const initial = (user.firstName || user.email || '?').slice(0, 1).toUpperCase();
-
   const handleSignOut = async () => {
     setOpen(false);
     await signOut();
@@ -49,9 +48,9 @@ export default function UserMenu() {
         aria-label="Menu utilisateur"
         aria-haspopup="menu"
         aria-expanded={open}
-        className="grid h-9 w-9 place-items-center rounded-full bg-emerald-500/15 text-sm font-bold text-emerald-300 ring-1 ring-emerald-400/30 transition-colors hover:bg-emerald-500/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/60"
+        className="rounded-full transition-transform hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/60"
       >
-        {initial}
+        <Avatar user={user} size={40} />
       </button>
       <AnimatePresence>
         {open && (
