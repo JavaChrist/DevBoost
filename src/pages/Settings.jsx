@@ -13,6 +13,7 @@ import {
 } from '../lib/notifications.js';
 import { sound, vibrate } from '../lib/feedback.js';
 import { toast } from '../store/useToastStore.js';
+import { useAuthStore } from '../store/useAuthStore.js';
 import Button from '../components/ui/Button.jsx';
 
 export default function Settings() {
@@ -27,8 +28,13 @@ export default function Settings() {
   const setSound = useSettingsStore((s) => s.setSound);
   const setHaptic = useSettingsStore((s) => s.setHaptic);
 
+  const authUser = useAuthStore((s) => s.user);
+  const signOut = useAuthStore((s) => s.signOut);
+  const authLoading = useAuthStore((s) => s.loading);
+
   const [permission, setPermission] = useState(getPermission());
   const [confirmReset, setConfirmReset] = useState(false);
+  const [confirmSignOut, setConfirmSignOut] = useState(false);
 
   // Recalcule la permission quand la fenêtre revient au focus.
   useEffect(() => {
@@ -78,6 +84,15 @@ export default function Settings() {
     if (next) vibrate(30);
   };
 
+  const handleSignOut = async () => {
+    if (!confirmSignOut) {
+      setConfirmSignOut(true);
+      return;
+    }
+    await signOut();
+    toast.show('Déconnecté');
+  };
+
   const handleReset = async () => {
     if (!confirmReset) {
       setConfirmReset(true);
@@ -96,6 +111,41 @@ export default function Settings() {
         <h1 className="text-2xl font-extrabold tracking-tight">Réglages</h1>
         <p className="text-sm text-slate-400">Ajuste DevBoost à ton rythme.</p>
       </header>
+
+      {/* Compte */}
+      {authUser && (
+        <Section title="Compte">
+          <div className="flex items-center gap-3">
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-emerald-500/15 text-sm font-bold text-emerald-300 ring-1 ring-emerald-400/30">
+              {(authUser.firstName || authUser.email || '?').slice(0, 1).toUpperCase()}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold text-slate-100">
+                {authUser.firstName || 'Sans prénom'}
+              </p>
+              <p className="truncate text-[11px] text-slate-500">{authUser.email}</p>
+            </div>
+          </div>
+          <Button
+            variant={confirmSignOut ? 'danger' : 'ghost'}
+            size="md"
+            onClick={handleSignOut}
+            disabled={authLoading}
+            className="mt-3 w-full ring-1 ring-slate-800"
+          >
+            {confirmSignOut ? 'Confirmer la déconnexion ?' : 'Se déconnecter'}
+          </Button>
+          {confirmSignOut && (
+            <button
+              type="button"
+              onClick={() => setConfirmSignOut(false)}
+              className="mt-1 w-full text-center text-[11px] text-slate-500 hover:text-slate-300"
+            >
+              Annuler
+            </button>
+          )}
+        </Section>
+      )}
 
       {/* Thèmes */}
       <Section title="Thèmes actifs" subtitle={`${themes.length} sur ${allThemes.length}`}>

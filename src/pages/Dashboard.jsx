@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
+import { AlarmClock, Sparkles } from 'lucide-react';
 import { useUserStore } from '../store/useUserStore.js';
 import { useSettingsStore } from '../store/useSettingsStore.js';
 import { useSessionStore } from '../store/useSessionStore.js';
+import { useAuthStore } from '../store/useAuthStore.js';
 import StreakBadge from '../components/ui/StreakBadge.jsx';
 import Button from '../components/ui/Button.jsx';
 import InstallPrompt from '../components/ui/InstallPrompt.jsx';
@@ -17,6 +19,7 @@ export default function Dashboard() {
   const themes = useSettingsStore((s) => s.themes);
   const startFromDb = useSessionStore((s) => s.startFromDb);
   const sessionLoading = useSessionStore((s) => s.loading);
+  const firstName = useAuthStore((s) => s.user?.firstName);
 
   const { count: dueCount } = useDueCount(themes);
   const level = Math.floor(xp / XP_PER_LEVEL) + 1;
@@ -30,9 +33,20 @@ export default function Dashboard() {
   return (
     <section className="flex flex-col gap-4 p-4">
       <header className="flex items-center justify-between pt-2">
-        <div>
-          <h1 className="text-2xl font-extrabold tracking-tight">DevBoost</h1>
-          <p className="text-sm text-slate-400">Une session, chaque jour.</p>
+        <div className="flex items-center gap-3">
+          <img
+            src="/logo64.png"
+            alt="DevBoost"
+            width="44"
+            height="44"
+            className="h-11 w-11 shrink-0 rounded-xl shadow-card ring-1 ring-slate-800"
+          />
+          <div className="min-w-0">
+            <h1 className="text-2xl font-extrabold tracking-tight">
+              {firstName ? `Salut ${firstName}` : 'DevBoost'}
+            </h1>
+            <p className="text-sm text-slate-400">Une session, chaque jour.</p>
+          </div>
         </div>
         <StreakBadge streak={streak} />
       </header>
@@ -67,12 +81,12 @@ export default function Dashboard() {
           <Skeleton className="mt-3 h-6 w-40 rounded-full" />
         ) : dueCount > 0 ? (
           <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-amber-400/10 px-3 py-1 text-xs font-semibold text-amber-400">
-            <span aria-hidden>⏰</span>
+            <AlarmClock size={14} aria-hidden />
             {dueCount} carte{dueCount > 1 ? 's' : ''} à réviser
           </p>
         ) : (
           <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">
-            <span aria-hidden>✨</span>
+            <Sparkles size={14} aria-hidden />
             Tu es à jour ! Une session de plus pour rester chaud.
           </p>
         )}
