@@ -15,6 +15,7 @@ import { sound, vibrate } from '../lib/feedback.js';
 import { toast } from '../store/useToastStore.js';
 import { useAuthStore } from '../store/useAuthStore.js';
 import Button from '../components/ui/Button.jsx';
+import SignOutButton from '../components/auth/SignOutButton.jsx';
 
 export default function Settings() {
   const sessionDuration = useSettingsStore((s) => s.sessionDuration);
@@ -29,12 +30,9 @@ export default function Settings() {
   const setHaptic = useSettingsStore((s) => s.setHaptic);
 
   const authUser = useAuthStore((s) => s.user);
-  const signOut = useAuthStore((s) => s.signOut);
-  const authLoading = useAuthStore((s) => s.loading);
 
   const [permission, setPermission] = useState(getPermission());
   const [confirmReset, setConfirmReset] = useState(false);
-  const [confirmSignOut, setConfirmSignOut] = useState(false);
 
   // Recalcule la permission quand la fenêtre revient au focus.
   useEffect(() => {
@@ -84,15 +82,6 @@ export default function Settings() {
     if (next) vibrate(30);
   };
 
-  const handleSignOut = async () => {
-    if (!confirmSignOut) {
-      setConfirmSignOut(true);
-      return;
-    }
-    await signOut();
-    toast.show('Déconnecté');
-  };
-
   const handleReset = async () => {
     if (!confirmReset) {
       setConfirmReset(true);
@@ -126,24 +115,7 @@ export default function Settings() {
               <p className="truncate text-[11px] text-slate-500">{authUser.email}</p>
             </div>
           </div>
-          <Button
-            variant={confirmSignOut ? 'danger' : 'ghost'}
-            size="md"
-            onClick={handleSignOut}
-            disabled={authLoading}
-            className="mt-3 w-full ring-1 ring-slate-800"
-          >
-            {confirmSignOut ? 'Confirmer la déconnexion ?' : 'Se déconnecter'}
-          </Button>
-          {confirmSignOut && (
-            <button
-              type="button"
-              onClick={() => setConfirmSignOut(false)}
-              className="mt-1 w-full text-center text-[11px] text-slate-500 hover:text-slate-300"
-            >
-              Annuler
-            </button>
-          )}
+          <SignOutButton className="mt-3" />
         </Section>
       )}
 

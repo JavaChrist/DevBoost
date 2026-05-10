@@ -5,6 +5,8 @@ import { Check } from 'lucide-react';
 import db from '../db/dexie.js';
 import { progressPercent } from '../lib/courses.js';
 import Skeleton from '../components/ui/Skeleton.jsx';
+import UserMenu from '../components/auth/UserMenu.jsx';
+import SignOutButton from '../components/auth/SignOutButton.jsx';
 
 const THEME_LABEL = {
   html: 'HTML',
@@ -45,11 +47,14 @@ export default function Courses() {
 
   return (
     <section className="flex flex-col gap-3 p-4">
-      <header className="pt-2">
-        <h1 className="text-2xl font-extrabold tracking-tight">Cours</h1>
-        <p className="text-sm text-slate-400">
-          Apprends les concepts à ton rythme, puis teste-toi avec une session.
-        </p>
+      <header className="flex items-start justify-between gap-3 pt-2">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-extrabold tracking-tight">Cours</h1>
+          <p className="text-sm text-slate-400">
+            Apprends les concepts à ton rythme, puis teste-toi avec une session.
+          </p>
+        </div>
+        <UserMenu />
       </header>
 
       <div className="flex gap-1 overflow-x-auto pb-1">
@@ -124,6 +129,8 @@ export default function Courses() {
           })
         )}
       </div>
+
+      <SignOutButton className="mt-2" />
     </section>
   );
 }

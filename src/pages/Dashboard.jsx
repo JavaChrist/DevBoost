@@ -8,6 +8,8 @@ import StreakBadge from '../components/ui/StreakBadge.jsx';
 import Button from '../components/ui/Button.jsx';
 import InstallPrompt from '../components/ui/InstallPrompt.jsx';
 import Skeleton from '../components/ui/Skeleton.jsx';
+import UserMenu from '../components/auth/UserMenu.jsx';
+import SignOutButton from '../components/auth/SignOutButton.jsx';
 import useDueCount from '../hooks/useDueCount.js';
 
 const XP_PER_LEVEL = 100;
@@ -48,7 +50,10 @@ export default function Dashboard() {
             <p className="text-sm text-slate-400">Une session, chaque jour.</p>
           </div>
         </div>
-        <StreakBadge streak={streak} />
+        <div className="flex items-center gap-2">
+          <StreakBadge streak={streak} />
+          <UserMenu />
+        </div>
       </header>
 
       <InstallPrompt />
@@ -95,6 +100,8 @@ export default function Dashboard() {
           {sessionLoading ? 'Préparation…' : 'Démarrer la session'}
         </Button>
       </div>
+
+      <SignOutButton className="mt-2" />
     </section>
   );
 }
