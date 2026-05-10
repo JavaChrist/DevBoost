@@ -46,7 +46,7 @@ export default function Library() {
   }, [cards, themeFilter, typeFilter, search]);
 
   return (
-    <section className="flex flex-col gap-3 p-4">
+    <section className="flex flex-col gap-3 p-4 pb-28">
       <header className="flex items-center justify-between pt-2">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">Bibliothèque</h1>
