@@ -7,8 +7,11 @@ import { sound, vibrate } from '../lib/feedback.js';
 import { useUserStore } from './useUserStore.js';
 import { useSettingsStore } from './useSettingsStore.js';
 import { useAuthStore } from './useAuthStore.js';
+import { useSubscriptionStore } from './useSubscriptionStore.js';
 import { toast } from './useToastStore.js';
 import { pushReview, pushSession, pushUserStats } from '../lib/cloudSync.js';
+import { PREMIUM_RULES } from '../lib/premium.js';
+import { deriveStatus } from '../lib/subscription.js';
 
 const XP_PASS = 10;
 const XP_BONUS_CHALLENGE = 10; // bonus si challenge réussi
@@ -32,7 +35,17 @@ export const useSessionStore = create((set, get) => ({
       const total = duration * 2;
       const challengeCount = Math.max(1, Math.round(total * 0.3));
       const quizCount = Math.max(1, total - challengeCount);
-      const cards = buildSession({ cards: allCards, themes, quizCount, challengeCount });
+      // Filtre les thèmes Premium pour les utilisateurs non-Premium.
+      const sub = useSubscriptionStore.getState().subscription;
+      const { isPremium } = deriveStatus(sub);
+      const excludeThemes = isPremium ? null : PREMIUM_RULES.themes;
+      const cards = buildSession({
+        cards: allCards,
+        themes,
+        quizCount,
+        challengeCount,
+        excludeThemes,
+      });
       set({
         cards,
         index: 0,

@@ -1,12 +1,16 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Check } from 'lucide-react';
+import { Check, Lock } from 'lucide-react';
 import db from '../db/dexie.js';
 import { progressPercent } from '../lib/courses.js';
+import { isCoursePremium } from '../lib/premium.js';
+import { usePremium } from '../store/useSubscriptionStore.js';
 import Skeleton from '../components/ui/Skeleton.jsx';
 import UserMenu from '../components/auth/UserMenu.jsx';
 import SignOutButton from '../components/auth/SignOutButton.jsx';
+import PremiumBadge from '../components/premium/PremiumBadge.jsx';
+import Paywall from '../components/premium/Paywall.jsx';
 
 const THEME_LABEL = {
   html: 'HTML',
@@ -20,6 +24,8 @@ const THEME_LABEL = {
 export default function Courses() {
   const navigate = useNavigate();
   const [themeFilter, setThemeFilter] = useState('all');
+  const { isPremium } = usePremium();
+  const [paywallReason, setPaywallReason] = useState(null);
 
   const courses = useLiveQuery(() => db.courses.toArray(), []);
   const progressList = useLiveQuery(() => db.courseProgress.toArray(), [], []);
@@ -88,18 +94,37 @@ export default function Courses() {
           filtered.map((c) => {
             const p = progressBySlug.get(c.slug);
             const pct = progressPercent(c, p);
+            const premium = isCoursePremium(c);
+            const locked = premium && !isPremium;
             return (
               <button
                 key={c.slug}
                 type="button"
-                onClick={() => navigate(`/courses/${c.slug}`)}
-                className="group flex flex-col gap-2 rounded-2xl bg-slate-900 p-4 text-left ring-1 ring-slate-800 shadow-card transition-colors hover:bg-slate-800/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/60"
+                onClick={() => {
+                  if (locked) {
+                    setPaywallReason(`« ${c.title} » fait partie du contenu Premium.`);
+                  } else {
+                    navigate(`/courses/${c.slug}`);
+                  }
+                }}
+                className={[
+                  'group flex flex-col gap-2 rounded-2xl p-4 text-left shadow-card transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/60',
+                  locked
+                    ? 'bg-amber-500/5 ring-1 ring-amber-400/30 hover:bg-amber-500/10'
+                    : 'bg-slate-900 ring-1 ring-slate-800 hover:bg-slate-800/60',
+                ].join(' ')}
               >
                 <div className="flex items-baseline justify-between gap-2">
-                  <h3 className="font-bold tracking-tight text-slate-100">{c.title}</h3>
-                  <span className="shrink-0 rounded-md bg-slate-800 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-300">
-                    {THEME_LABEL[c.theme] ?? c.theme}
-                  </span>
+                  <h3 className="flex items-center gap-2 font-bold tracking-tight text-slate-100">
+                    {locked && <Lock size={12} className="text-amber-300" aria-hidden />}
+                    {c.title}
+                  </h3>
+                  <div className="flex shrink-0 items-center gap-1">
+                    {premium && <PremiumBadge size="sm" />}
+                    <span className="rounded-md bg-slate-800 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-300">
+                      {THEME_LABEL[c.theme] ?? c.theme}
+                    </span>
+                  </div>
                 </div>
                 {c.summary && <p className="text-xs text-slate-400">{c.summary}</p>}
                 <div className="mt-1 flex items-center gap-2">
@@ -113,7 +138,9 @@ export default function Courses() {
                     />
                   </div>
                   <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400">
-                    {p?.completed ? (
+                    {locked ? (
+                      'Premium'
+                    ) : p?.completed ? (
                       <>
                         <Check size={12} aria-hidden /> Terminé
                       </>
@@ -131,6 +158,12 @@ export default function Courses() {
       </div>
 
       <SignOutButton className="mt-2" />
+
+      <Paywall
+        open={!!paywallReason}
+        onClose={() => setPaywallReason(null)}
+        reason={paywallReason}
+      />
     </section>
   );
 }

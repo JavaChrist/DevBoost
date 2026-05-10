@@ -20,6 +20,7 @@ import Button from '../components/ui/Button.jsx';
 import SignOutButton from '../components/auth/SignOutButton.jsx';
 import DeleteAccountDialog from '../components/auth/DeleteAccountDialog.jsx';
 import AvatarUploader from '../components/auth/AvatarUploader.jsx';
+import SubscriptionSection from '../components/premium/SubscriptionSection.jsx';
 import { Trash2, Download } from 'lucide-react';
 import { downloadExport } from '../lib/account.js';
 
@@ -175,6 +176,9 @@ export default function Settings() {
           <SignOutButton className="mt-3" />
         </Section>
       )}
+
+      {/* Abonnement Premium */}
+      {authUser && <SubscriptionSection />}
 
       {/* Thèmes */}
       <Section title="Thèmes actifs" subtitle={`${themes.length} sur ${allThemes.length}`}>

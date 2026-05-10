@@ -12,6 +12,9 @@ import { useSessionStore } from '../store/useSessionStore.js';
 import { toast } from '../store/useToastStore.js';
 import Button from '../components/ui/Button.jsx';
 import CodeBlock from '../components/courses/CodeBlock.jsx';
+import { isCoursePremium } from '../lib/premium.js';
+import { usePremium } from '../store/useSubscriptionStore.js';
+import Paywall from '../components/premium/Paywall.jsx';
 
 export default function Course() {
   const { slug } = useParams();
@@ -20,6 +23,7 @@ export default function Course() {
   const course = useLiveQuery(() => db.courses.where('slug').equals(slug).first(), [slug]);
   const [index, setIndex] = useState(0);
   const [hydrated, setHydrated] = useState(false);
+  const premium = usePremium();
 
   // Hydrate l'index depuis la progression sauvée (1 fois).
   useEffect(() => {
@@ -54,6 +58,12 @@ export default function Course() {
         <Button onClick={() => navigate('/courses')}>Retour aux cours</Button>
       </section>
     );
+  }
+
+  // Gating Premium : si le cours est premium et l'user ne l'est pas,
+  // on l'envoie sur la modal Paywall et on bloque l'accès.
+  if (isCoursePremium(course) && !premium.isPremium) {
+    return <PremiumLocked course={course} />;
   }
 
   const sections = course.sections ?? [];
@@ -368,5 +378,33 @@ function QuizView({ quiz, slug, theme, onBack, onDone }) {
         </div>
       )}
     </article>
+  );
+}
+
+// Écran affiché quand l'user arrive sur un cours Premium sans abo.
+function PremiumLocked({ course }) {
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(true);
+  return (
+    <section className="flex flex-col gap-3 p-6 text-center">
+      <h2 className="text-xl font-extrabold">{course.title}</h2>
+      <p className="text-sm text-slate-400">
+        Ce cours fait partie du contenu Premium de DevBoost.
+      </p>
+      <div className="mt-2 flex flex-col gap-2">
+        <Button onClick={() => setOpen(true)}>Voir l’offre Premium</Button>
+        <Button variant="ghost" onClick={() => navigate('/courses')}>
+          Retour aux cours
+        </Button>
+      </div>
+      <Paywall
+        open={open}
+        onClose={() => {
+          setOpen(false);
+          navigate('/courses');
+        }}
+        reason={`« ${course.title} » est réservé aux membres Premium.`}
+      />
+    </section>
   );
 }

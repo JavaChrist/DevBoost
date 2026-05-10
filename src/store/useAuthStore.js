@@ -8,6 +8,7 @@ import { create } from 'zustand';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 import { pullAllFromCloud } from '../lib/cloudSync.js';
 import { useSyncStore } from './useSyncStore.js';
+import { useSubscriptionStore } from './useSubscriptionStore.js';
 
 function pickProfile(user) {
   if (!user) return null;
@@ -99,6 +100,7 @@ export const useAuthStore = create((set, get) => ({
     set({ loading: true });
     await supabase.auth.signOut();
     set({ user: null, loading: false });
+    useSubscriptionStore.getState().reset();
     return { ok: true };
   },
 
@@ -168,9 +170,12 @@ export const useAuthStore = create((set, get) => ({
   clearError: () => set({ error: null }),
 }));
 
-// Helper interne : pull cloud avec gestion d'état UI.
+// Helper interne : pull cloud + refresh subscription avec gestion d'état UI.
 async function runCloudPull(userId) {
   const sync = useSyncStore.getState();
+  // Refresh abonnement en parallèle (best-effort, ne bloque pas la sync).
+  useSubscriptionStore.getState().refresh(userId);
+
   if (typeof navigator !== 'undefined' && navigator.onLine === false) {
     sync.setOffline();
     return;

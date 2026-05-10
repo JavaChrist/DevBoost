@@ -15,10 +15,15 @@ export function buildSession({
   themes = null, // null = pas de filtre
   now = new Date(),
   rng = Math.random,
+  excludeThemes = null, // ex: ['ia'] pour exclure les thèmes Premium
 } = {}) {
   const t = now instanceof Date ? now.getTime() : Number(now);
 
-  const filtered = themes ? cards.filter((c) => themes.includes(c.theme)) : cards;
+  let filtered = themes ? cards.filter((c) => themes.includes(c.theme)) : cards;
+  if (excludeThemes && excludeThemes.length) {
+    const ex = new Set(excludeThemes);
+    filtered = filtered.filter((c) => !ex.has(c.theme));
+  }
 
   const quizzes = pick(filtered.filter((c) => c.type === 'quiz'), quizCount, t, rng);
   const challenges = pick(

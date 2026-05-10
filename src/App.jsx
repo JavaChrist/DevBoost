@@ -12,7 +12,15 @@ import { useSyncStore } from './store/useSyncStore.js';
 import { pullAllFromCloud } from './lib/cloudSync.js';
 
 // Routes où la BottomNav ne doit pas apparaître.
-const BARE_ROUTES = ['/login', '/reset-password', '/update-password', '/terms', '/privacy'];
+const BARE_ROUTES = [
+  '/login',
+  '/reset-password',
+  '/update-password',
+  '/terms',
+  '/privacy',
+  '/payment-success',
+  '/payment-cancel',
+];
 
 function Shell() {
   const { pathname } = useLocation();

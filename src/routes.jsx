@@ -18,6 +18,8 @@ const UpdatePassword = lazy(() => import('./pages/UpdatePassword.jsx'));
 const Landing = lazy(() => import('./pages/Landing.jsx'));
 const Terms = lazy(() => import('./pages/Terms.jsx'));
 const Privacy = lazy(() => import('./pages/Privacy.jsx'));
+const PaymentSuccess = lazy(() => import('./pages/PaymentSuccess.jsx'));
+const PaymentCancel = lazy(() => import('./pages/PaymentCancel.jsx'));
 
 function RouteFallback() {
   return (
@@ -58,6 +60,8 @@ export default function AppRoutes() {
         <Route path="/courses/:slug" element={Protected(<Course />)} />
         <Route path="/stats" element={Protected(<Stats />)} />
         <Route path="/settings" element={Protected(<Settings />)} />
+        <Route path="/payment-success" element={Protected(<PaymentSuccess />)} />
+        <Route path="/payment-cancel" element={Protected(<PaymentCancel />)} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>
