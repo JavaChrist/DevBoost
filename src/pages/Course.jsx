@@ -249,10 +249,10 @@ function parseBlocks(text) {
       i++;
       continue;
     }
-    if (/^[•\-]\s/.test(line)) {
+    if (/^[•-]\s/.test(line)) {
       const items = [];
-      while (i < lines.length && /^[•\-]\s/.test(lines[i])) {
-        items.push(parseInlineLine(lines[i].replace(/^[•\-]\s/, '')));
+      while (i < lines.length && /^[•-]\s/.test(lines[i])) {
+        items.push(parseInlineLine(lines[i].replace(/^[•-]\s/, '')));
         i++;
       }
       blocks.push({ type: 'list', items });
