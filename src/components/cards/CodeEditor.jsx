@@ -3,7 +3,7 @@
 // Le parent utilise `key={card.id}` pour forcer un remount entre cartes
 // (évite la complexité d'une reconciliation de l'état CM en cas de starterCode différent).
 
-import { useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import { EditorState } from '@codemirror/state';
 import { EditorView, lineNumbers, highlightActiveLine, keymap } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
@@ -15,6 +15,17 @@ import {
   indentOnInput,
 } from '@codemirror/language';
 import { tags as t } from '@lezer/highlight';
+
+// Désactive les "aides" du clavier mobile qui transforment le code en bouillie
+// (autocorrection iOS qui met "Const" majuscule, autocomplete qui propose des
+// mots français, soulignement spellcheck rouge sur tout le code…).
+const mobileFriendlyAttrs = EditorView.contentAttributes.of({
+  autocorrect: 'off',
+  autocapitalize: 'off',
+  autocomplete: 'off',
+  spellcheck: 'false',
+  inputmode: 'text',
+});
 
 const editorTheme = EditorView.theme(
   {
@@ -62,7 +73,14 @@ const highlightStyle = HighlightStyle.define([
   { tag: t.punctuation, color: '#94a3b8' },
 ]);
 
-export default function CodeEditor({ initialValue = '', onChange, minHeight = 180, readOnly = false }) {
+// API impérative exposée par le wrapper :
+//   ref.current.insert('text')       → insère au curseur, place le curseur après
+//   ref.current.insertPair('(', ')') → insère "()" et place le curseur entre les deux
+//   ref.current.focus()              → rend le focus à l'éditeur
+const CodeEditor = forwardRef(function CodeEditor(
+  { initialValue = '', onChange, minHeight = 180, readOnly = false },
+  ref,
+) {
   const hostRef = useRef(null);
   const viewRef = useRef(null);
   const onChangeRef = useRef(onChange);
@@ -87,6 +105,8 @@ export default function CodeEditor({ initialValue = '', onChange, minHeight = 18
         javascript(),
         keymap.of([indentWithTab, ...defaultKeymap, ...historyKeymap]),
         editorTheme,
+        mobileFriendlyAttrs,
+        updateListener,
         EditorState.readOnly.of(readOnly),
         EditorView.lineWrapping,
       ],
@@ -102,6 +122,38 @@ export default function CodeEditor({ initialValue = '', onChange, minHeight = 18
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useImperativeHandle(
+    ref,
+    () => ({
+      insert(text) {
+        const view = viewRef.current;
+        if (!view) return;
+        const { from, to } = view.state.selection.main;
+        view.dispatch({
+          changes: { from, to, insert: text },
+          selection: { anchor: from + text.length },
+        });
+        view.focus();
+      },
+      insertPair(open, close) {
+        const view = viewRef.current;
+        if (!view) return;
+        const { from, to } = view.state.selection.main;
+        const selected = view.state.sliceDoc(from, to);
+        const insert = open + selected + close;
+        view.dispatch({
+          changes: { from, to, insert },
+          selection: { anchor: from + open.length + selected.length },
+        });
+        view.focus();
+      },
+      focus() {
+        viewRef.current?.focus();
+      },
+    }),
+    [],
+  );
+
   return (
     <div
       ref={hostRef}
@@ -109,4 +161,6 @@ export default function CodeEditor({ initialValue = '', onChange, minHeight = 18
       style={{ minHeight }}
     />
   );
-}
+});
+
+export default CodeEditor;

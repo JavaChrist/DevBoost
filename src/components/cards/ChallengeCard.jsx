@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Lightbulb, AlarmClock, Check, PartyPopper } from 'lucide-react';
 import FlipCard from './FlipCard.jsx';
 import CodeEditor from './CodeEditor.jsx';
+import CodeToolbar from './CodeToolbar.jsx';
 import TestList from './TestList.jsx';
 import Button from '../ui/Button.jsx';
 import { runChallenge } from '../../lib/runner/runChallenge.js';
@@ -97,6 +98,7 @@ function ChallengeFront({
   onRun,
   onGiveUp,
 }) {
+  const editorRef = useRef(null);
   return (
     <article className="flex w-full min-w-0 max-w-full flex-col gap-3 overflow-hidden rounded-2xl bg-slate-900 p-5 ring-1 ring-slate-800 shadow-card">
       <header className="flex items-center justify-between gap-2">
@@ -130,7 +132,15 @@ function ChallengeFront({
         </p>
       )}
 
-      <CodeEditor initialValue={code} onChange={onCodeChange} minHeight={160} />
+      <div className="flex flex-col gap-1.5">
+        <CodeEditor
+          ref={editorRef}
+          initialValue={code}
+          onChange={onCodeChange}
+          minHeight={200}
+        />
+        <CodeToolbar editorRef={editorRef} />
+      </div>
 
       <TestList tests={card.tests} results={results?.results} running={running} />
 
