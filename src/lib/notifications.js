@@ -47,8 +47,8 @@ export function showNotification(title, options = {}) {
   if (!isNotificationSupported() || Notification.permission !== 'granted') return false;
   try {
     new Notification(title, {
-      icon: '/pwa-192x192.png',
-      badge: '/pwa-64x64.png',
+      icon: '/logo192.png',
+      badge: '/logo64.png',
       ...options,
     });
     return true;

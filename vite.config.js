@@ -10,7 +10,13 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      includeAssets: ['favicon.svg', 'robots.txt', 'apple-touch-icon.png', 'logo.svg'],
+      includeAssets: [
+        'favicon.ico',
+        'robots.txt',
+        'apple-touch-icon.png',
+        'apple-touch-icon-3d.png',
+        'logo.svg',
+      ],
       manifest: {
         name: 'DevBoost',
         short_name: 'DevBoost',
@@ -24,27 +30,17 @@ export default defineConfig({
         lang: 'fr',
         categories: ['education', 'productivity'],
         icons: [
-          {
-            src: 'pwa-64x64.png',
-            sizes: '64x64',
-            type: 'image/png',
-          },
-          {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-          },
-          {
-            src: 'maskable-icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable',
-          },
+          { src: 'logo16.png', sizes: '16x16', type: 'image/png' },
+          { src: 'logo32.png', sizes: '32x32', type: 'image/png' },
+          { src: 'logo48.png', sizes: '48x48', type: 'image/png' },
+          { src: 'logo64.png', sizes: '64x64', type: 'image/png' },
+          { src: 'logo96.png', sizes: '96x96', type: 'image/png' },
+          { src: 'logo128.png', sizes: '128x128', type: 'image/png' },
+          { src: 'logo192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: 'logo256.png', sizes: '256x256', type: 'image/png' },
+          { src: 'logo384.png', sizes: '384x384', type: 'image/png' },
+          { src: 'logo512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'logo512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
       workbox: {

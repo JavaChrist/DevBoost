@@ -1,49 +1,37 @@
-// Génère les icônes PWA depuis public/logo.svg via sharp.
+// Génère le set d'icônes PWA depuis public/logo.svg via sharp.
 // Usage : npm run gen:icons
+//
+// Produit : logo16/32/48/64/96/128/192/256/384/512.png + apple-touch-icon.png
+// (apple-touch-icon-3d.png et favicon.ico sont des artworks fournis manuellement
+//  et ne sont PAS écrasés par ce script.)
 import sharp from 'sharp';
 import fs from 'node:fs/promises';
 
 const SRC = 'public/logo.svg';
 const BG = '#020617'; // slate-950
 
-const targets = [
-  { name: 'pwa-64x64.png', size: 64 },
-  { name: 'pwa-192x192.png', size: 192 },
-  { name: 'pwa-512x512.png', size: 512 },
-  { name: 'apple-touch-icon.png', size: 180, background: BG },
-  // maskable : safe zone = 80% centre
-  { name: 'maskable-icon-512x512.png', size: 512, maskable: true },
-];
+const SIZES = [16, 32, 48, 64, 96, 128, 192, 256, 384, 512];
 
 await fs.access(SRC).catch(() => {
   console.error(`[icons] ${SRC} introuvable`);
   process.exit(1);
 });
 
-for (const t of targets) {
-  const file = `public/${t.name}`;
-  if (t.maskable) {
-    const inner = Math.round(t.size * 0.8);
-    const innerBuf = await sharp(SRC).resize(inner, inner).png().toBuffer();
-    await sharp({
-      create: { width: t.size, height: t.size, channels: 4, background: BG },
-    })
-      .composite([{ input: innerBuf, gravity: 'center' }])
-      .png()
-      .toFile(file);
-  } else if (t.background) {
-    const innerBuf = await sharp(SRC).resize(t.size, t.size).png().toBuffer();
-    await sharp({
-      create: { width: t.size, height: t.size, channels: 4, background: t.background },
-    })
-      .composite([{ input: innerBuf, gravity: 'center' }])
-      .png()
-      .toFile(file);
-  } else {
-    await sharp(SRC).resize(t.size, t.size).png().toFile(file);
-  }
+for (const size of SIZES) {
+  const file = `public/logo${size}.png`;
+  await sharp(SRC).resize(size, size).png().toFile(file);
   const stat = await fs.stat(file);
   console.log(`[icons] ${file} (${(stat.size / 1024).toFixed(1)} KB)`);
 }
 
-console.log('[icons] OK — toutes les icônes PWA sont générées.');
+// apple-touch-icon : 180x180 sur fond opaque (iOS n'aime pas la transparence).
+const innerBuf = await sharp(SRC).resize(180, 180).png().toBuffer();
+await sharp({
+  create: { width: 180, height: 180, channels: 4, background: BG },
+})
+  .composite([{ input: innerBuf, gravity: 'center' }])
+  .png()
+  .toFile('public/apple-touch-icon.png');
+console.log('[icons] public/apple-touch-icon.png');
+
+console.log('[icons] OK — set complet généré.');
