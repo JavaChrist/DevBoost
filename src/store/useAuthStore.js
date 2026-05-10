@@ -77,6 +77,26 @@ export const useAuthStore = create((set, get) => ({
     return { ok: true };
   },
 
+  // OAuth (Google, GitHub, etc.). Redirige le navigateur vers le provider,
+  // puis Supabase consomme automatiquement le code au retour grâce à
+  // detectSessionInUrl: true.
+  signInWithProvider: async (provider) => {
+    set({ loading: true, error: null });
+    const redirectTo =
+      typeof window !== 'undefined' ? `${window.location.origin}/` : undefined;
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo },
+    });
+    if (error) {
+      set({ loading: false, error });
+      return { ok: false, error };
+    }
+    // Pas de set({loading:false}) volontaire : la page va se naviguer vers
+    // le provider, on laisse l'overlay actif jusqu'à la redirection.
+    return { ok: true };
+  },
+
   // Envoie le mail "réinitialise ton mot de passe". Le lien dans le mail
   // ramène l'utilisateur sur /update-password avec un token Supabase, qui
   // ouvre une session temporaire suffisante pour appeler updatePassword.

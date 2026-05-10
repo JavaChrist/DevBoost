@@ -5,6 +5,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore.js';
 import { toast } from '../store/useToastStore.js';
 import Button from '../components/ui/Button.jsx';
+import OAuthButtons from '../components/auth/OAuthButtons.jsx';
 
 const TABS = [
   { id: 'signin', label: 'Connexion' },
@@ -98,6 +99,14 @@ export default function Login() {
       )}
 
       <div className="w-full max-w-sm rounded-2xl bg-slate-900 p-5 ring-1 ring-slate-800 shadow-card">
+        <OAuthButtons />
+
+        <div className="my-4 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-slate-600">
+          <span className="h-px flex-1 bg-slate-800" aria-hidden />
+          ou
+          <span className="h-px flex-1 bg-slate-800" aria-hidden />
+        </div>
+
         {/* Tabs */}
         <div role="tablist" className="mb-5 flex rounded-full bg-slate-800/70 p-1">
           {TABS.map((t) => (
