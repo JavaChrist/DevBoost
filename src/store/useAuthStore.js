@@ -77,5 +77,34 @@ export const useAuthStore = create((set, get) => ({
     return { ok: true };
   },
 
+  // Envoie le mail "réinitialise ton mot de passe". Le lien dans le mail
+  // ramène l'utilisateur sur /update-password avec un token Supabase, qui
+  // ouvre une session temporaire suffisante pour appeler updatePassword.
+  requestPasswordReset: async ({ email }) => {
+    set({ loading: true, error: null });
+    const redirectTo =
+      typeof window !== 'undefined'
+        ? `${window.location.origin}/update-password`
+        : undefined;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+    if (error) {
+      set({ loading: false, error });
+      return { ok: false, error };
+    }
+    set({ loading: false });
+    return { ok: true };
+  },
+
+  updatePassword: async ({ password }) => {
+    set({ loading: true, error: null });
+    const { data, error } = await supabase.auth.updateUser({ password });
+    if (error) {
+      set({ loading: false, error });
+      return { ok: false, error };
+    }
+    set({ user: pickProfile(data?.user), loading: false });
+    return { ok: true };
+  },
+
   clearError: () => set({ error: null }),
 }));

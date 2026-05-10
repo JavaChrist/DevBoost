@@ -177,6 +177,17 @@ export default function Login() {
             }
           />
 
+          {tab === 'signin' && (
+            <div className="-mt-1 text-right">
+              <Link
+                to="/reset-password"
+                className="text-[11px] font-semibold text-slate-400 hover:text-emerald-400 hover:underline"
+              >
+                Mot de passe oublié ?
+              </Link>
+            </div>
+          )}
+
           {error && (
             <p className="rounded-lg bg-rose-500/10 px-3 py-2 text-xs text-rose-300 ring-1 ring-rose-400/30">
               {friendlyError(error)}

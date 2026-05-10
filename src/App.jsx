@@ -9,7 +9,7 @@ import useDailyNotification from './hooks/useDailyNotification.js';
 import { useAuthStore } from './store/useAuthStore.js';
 
 // Routes où la BottomNav ne doit pas apparaître.
-const BARE_ROUTES = ['/login'];
+const BARE_ROUTES = ['/login', '/reset-password', '/update-password'];
 
 function Shell() {
   const { pathname } = useLocation();

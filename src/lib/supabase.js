@@ -34,6 +34,15 @@ const stub = {
     async signOut() {
       return { error: null };
     },
+    async resetPasswordForEmail() {
+      return { data: null, error: new Error('Supabase non configuré') };
+    },
+    async updateUser() {
+      return { data: null, error: new Error('Supabase non configuré') };
+    },
+    async signInWithOAuth() {
+      return { data: null, error: new Error('Supabase non configuré') };
+    },
   },
 };
 
@@ -42,7 +51,11 @@ export const supabase = isSupabaseConfigured
       auth: {
         persistSession: true, // garde la session entre 2 ouvertures
         autoRefreshToken: true,
-        detectSessionInUrl: false,
+        // true : Supabase consomme automatiquement les hash/query params de
+        // type ?code=... ou #access_token=... au chargement de la page (utile
+        // pour les flows reset password, magic link et OAuth).
+        detectSessionInUrl: true,
+        flowType: 'pkce',
       },
     })
   : stub;
