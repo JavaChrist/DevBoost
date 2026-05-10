@@ -4,6 +4,7 @@ import AppRoutes from './routes.jsx';
 import PageWrapper from './components/layout/PageWrapper.jsx';
 import BottomNav from './components/layout/BottomNav.jsx';
 import Toaster from './components/ui/Toaster.jsx';
+import UpdatePrompt from './components/ui/UpdatePrompt.jsx';
 import useDbInit from './hooks/useDbInit.js';
 import useDailyNotification from './hooks/useDailyNotification.js';
 import { useAuthStore } from './store/useAuthStore.js';
@@ -11,7 +12,7 @@ import { useSyncStore } from './store/useSyncStore.js';
 import { pullAllFromCloud } from './lib/cloudSync.js';
 
 // Routes où la BottomNav ne doit pas apparaître.
-const BARE_ROUTES = ['/login', '/reset-password', '/update-password'];
+const BARE_ROUTES = ['/login', '/reset-password', '/update-password', '/terms', '/privacy'];
 
 function Shell() {
   const { pathname } = useLocation();
@@ -25,6 +26,7 @@ function Shell() {
       </PageWrapper>
       {showNav && user && <BottomNav />}
       <Toaster />
+      <UpdatePrompt />
     </>
   );
 }

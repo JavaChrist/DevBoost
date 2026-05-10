@@ -8,8 +8,12 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
-      injectRegister: 'auto',
+      // 'prompt' permet d'afficher un toast "nouvelle version dispo" au lieu
+      // d'attendre silencieusement que l'utilisateur recharge à la main.
+      // injectRegister=null car notre composant <UpdatePrompt /> appelle
+      // registerSW lui-même pour brancher onNeedRefresh.
+      registerType: 'prompt',
+      injectRegister: null,
       includeAssets: [
         'favicon.ico',
         'robots.txt',
@@ -45,6 +49,9 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2}'],
+        // Les splash screens iOS sont chargés par le système avant même que le
+        // SW ne soit actif → inutile de les précacher (économie ~870 KB).
+        globIgnores: ['**/apple-splash-*.png'],
         runtimeCaching: [
           {
             urlPattern: ({ request }) => request.destination === 'document',
