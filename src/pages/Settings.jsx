@@ -18,6 +18,8 @@ import { useSyncStore } from '../store/useSyncStore.js';
 import { pullAllFromCloud, pushAllToCloud } from '../lib/cloudSync.js';
 import Button from '../components/ui/Button.jsx';
 import SignOutButton from '../components/auth/SignOutButton.jsx';
+import DeleteAccountDialog from '../components/auth/DeleteAccountDialog.jsx';
+import { Trash2 } from 'lucide-react';
 
 export default function Settings() {
   const sessionDuration = useSettingsStore((s) => s.sessionDuration);
@@ -38,6 +40,7 @@ export default function Settings() {
   const [permission, setPermission] = useState(getPermission());
   const [confirmReset, setConfirmReset] = useState(false);
   const [syncBusy, setSyncBusy] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   // Recalcule la permission quand la fenêtre revient au focus.
   useEffect(() => {
@@ -302,6 +305,34 @@ export default function Settings() {
           Supprime toutes les cartes, sessions et progrès. Le seed initial sera rejoué.
         </p>
       </Section>
+
+      {/* Zone de danger : suppression définitive du compte (RGPD) */}
+      {authUser && (
+        <div className="rounded-2xl bg-rose-500/5 p-4 ring-1 ring-rose-500/30 shadow-card">
+          <div className="mb-2 flex items-center gap-2">
+            <Trash2 size={16} className="text-rose-400" aria-hidden />
+            <h2 className="text-sm font-bold tracking-tight text-rose-300">
+              Zone de danger
+            </h2>
+          </div>
+          <p className="mb-3 text-[11px] leading-relaxed text-rose-200/70">
+            Supprime définitivement ton compte et toutes les données associées
+            (XP, streak, sessions, cartes perso, progression). Cette action est
+            irréversible — RGPD oblige.
+          </p>
+          <Button
+            variant="danger"
+            size="md"
+            onClick={() => setDeleteOpen(true)}
+            className="w-full"
+          >
+            <Trash2 size={16} aria-hidden />
+            Supprimer mon compte
+          </Button>
+        </div>
+      )}
+
+      <DeleteAccountDialog open={deleteOpen} onClose={() => setDeleteOpen(false)} />
 
       <p className="pb-4 pt-2 text-center text-[11px] text-slate-600">
         <a href="/terms" className="hover:text-slate-400 hover:underline">

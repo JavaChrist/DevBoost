@@ -96,9 +96,10 @@ export default function Privacy() {
           </li>
           <li>
             <strong>Suppression</strong> : supprimer ton compte via{' '}
-            <em>Réglages → Compte</em> (à venir) ou en envoyant une demande GitHub.
-            Toutes les données associées (stats, sessions, reviews, cartes perso) sont
-            alors effacées en cascade grâce aux contraintes <code>on delete cascade</code>.
+            <em>Réglages → Zone de danger → Supprimer mon compte</em>. Toutes les
+            données associées (stats, sessions, reviews, cartes perso, progression
+            cours) sont effacées en cascade côté serveur ET sur ton appareil,
+            immédiatement et définitivement.
           </li>
           <li>
             <strong>Opposition</strong> : tu peux à tout moment cesser d’utiliser

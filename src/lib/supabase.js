@@ -2,12 +2,15 @@
 // Les credentials viennent de .env (VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY).
 import { createClient } from '@supabase/supabase-js';
 
-const url = import.meta.env.VITE_SUPABASE_URL;
-const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// import.meta.env n'existe pas sous Node (tests via node --test).
+// On lit les variables de façon défensive pour rester chargeable côté tests.
+const env = (typeof import.meta !== 'undefined' && import.meta.env) || {};
+const url = env.VITE_SUPABASE_URL;
+const anonKey = env.VITE_SUPABASE_ANON_KEY;
 
 export const isSupabaseConfigured = Boolean(url && anonKey);
 
-if (!isSupabaseConfigured && import.meta.env?.DEV) {
+if (!isSupabaseConfigured && env.DEV) {
   // eslint-disable-next-line no-console
   console.warn(
     '[supabase] VITE_SUPABASE_URL ou VITE_SUPABASE_ANON_KEY manquants dans .env — ' +

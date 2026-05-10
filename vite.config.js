@@ -90,5 +90,30 @@ export default defineConfig({
   },
   build: {
     chunkSizeWarningLimit: 900,
+    rollupOptions: {
+      output: {
+        // Split par grosses libs : améliore le cache navigateur (un push de
+        // notre code source n'invalide pas le chunk supabase / recharts /
+        // codemirror, qui changent rarement).
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          supabase: ['@supabase/supabase-js'],
+          recharts: ['recharts'],
+          codemirror: [
+            '@codemirror/lang-javascript',
+            '@codemirror/state',
+            '@codemirror/view',
+            '@codemirror/commands',
+            '@codemirror/language',
+            '@codemirror/search',
+            '@codemirror/autocomplete',
+            'codemirror',
+          ],
+          motion: ['framer-motion'],
+          icons: ['lucide-react'],
+          dexie: ['dexie', 'dexie-react-hooks'],
+        },
+      },
+    },
   },
 });

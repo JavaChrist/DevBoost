@@ -19,6 +19,7 @@ Les migrations sont **idempotentes** (`create table if not exists`,
 | Fichier | Contenu |
 | --- | --- |
 | `001_cloud_sync.sql` | Tables `user_stats`, `user_settings`, `reviews`, `sessions`, `course_progress`, `user_cards` + RLS owner-only + triggers `updated_at` |
+| `002_delete_account.sql` | Fonction RPC `delete_my_account()` (RGPD) — supprime l'utilisateur courant + cascade sur toutes ses données |
 
 ## RLS (Row Level Security)
 
