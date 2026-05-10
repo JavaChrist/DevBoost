@@ -16,6 +16,8 @@ const Course = lazy(() => import('./pages/Course.jsx'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword.jsx'));
 const UpdatePassword = lazy(() => import('./pages/UpdatePassword.jsx'));
 const Landing = lazy(() => import('./pages/Landing.jsx'));
+const Terms = lazy(() => import('./pages/Terms.jsx'));
+const Privacy = lazy(() => import('./pages/Privacy.jsx'));
 
 function RouteFallback() {
   return (
@@ -43,6 +45,8 @@ export default function AppRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/update-password" element={<UpdatePassword />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
 
         {/* Home publique (Landing si non connecté, Dashboard si connecté) */}
         <Route path="/" element={<Home />} />

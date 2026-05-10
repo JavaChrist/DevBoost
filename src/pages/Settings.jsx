@@ -303,7 +303,16 @@ export default function Settings() {
         </p>
       </Section>
 
-      <p className="pb-4 pt-2 text-center text-[11px] text-slate-600">DevBoost v0.1 · MVP</p>
+      <p className="pb-4 pt-2 text-center text-[11px] text-slate-600">
+        <a href="/terms" className="hover:text-slate-400 hover:underline">
+          CGU
+        </a>{' '}
+        ·{' '}
+        <a href="/privacy" className="hover:text-slate-400 hover:underline">
+          Confidentialité
+        </a>{' '}
+        · DevBoost v0.1 · MVP
+      </p>
     </section>
   );
 }

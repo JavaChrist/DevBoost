@@ -241,10 +241,15 @@ export default function Login() {
       </div>
 
       <p className="text-center text-[11px] text-slate-600">
-        En te connectant tu acceptes le bon usage de DevBoost.{' '}
-        <Link to="/" className="underline hover:text-slate-400">
-          Retour
+        En te connectant tu acceptes nos{' '}
+        <Link to="/terms" className="underline hover:text-slate-400">
+          CGU
+        </Link>{' '}
+        et notre{' '}
+        <Link to="/privacy" className="underline hover:text-slate-400">
+          politique de confidentialité
         </Link>
+        .
       </p>
     </section>
   );
