@@ -1,6 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Mail } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Link, Navigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore.js';
 import Button from '../components/ui/Button.jsx';
 
@@ -8,17 +7,29 @@ function friendlyError(err) {
   if (!err) return null;
   const m = err.message ?? String(err);
   if (/Unable to validate email/i.test(m)) return 'Email invalide.';
-  if (/non configuré/i.test(m)) return m;
+  if (/rate.?limit/i.test(m)) return 'Trop de tentatives, réessaie dans quelques minutes.';
   return m;
 }
 
 export default function ResetPassword() {
-  const [email, setEmail] = useState('');
-  const [sent, setSent] = useState(false);
+  const user = useAuthStore((s) => s.user);
+  const ready = useAuthStore((s) => s.ready);
   const loading = useAuthStore((s) => s.loading);
   const error = useAuthStore((s) => s.error);
   const configured = useAuthStore((s) => s.configured);
   const requestPasswordReset = useAuthStore((s) => s.requestPasswordReset);
+  const clearError = useAuthStore((s) => s.clearError);
+
+  const [email, setEmail] = useState('');
+  const [sent, setSent] = useState(false);
+
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
+
+  // Si l'utilisateur est déjà connecté, on l'envoie directement vers
+  // /update-password (cas typique : il veut changer son MDP depuis son compte).
+  if (ready && user) return <Navigate to="/update-password" replace />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,33 +49,28 @@ export default function ResetPassword() {
           className="h-20 w-20 rounded-2xl shadow-card ring-1 ring-slate-800"
         />
         <h1 className="text-2xl font-extrabold tracking-tight">Mot de passe oublié</h1>
+        <p className="max-w-xs text-center text-sm text-slate-400">
+          Indique ton email, on t&apos;envoie un lien pour en choisir un nouveau.
+        </p>
       </div>
 
       <div className="w-full max-w-sm rounded-2xl bg-slate-900 p-5 ring-1 ring-slate-800 shadow-card">
         {sent ? (
           <div className="space-y-3 text-center">
-            <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-400/30">
-              <Mail size={22} aria-hidden />
-            </div>
-            <p className="text-sm font-semibold text-slate-100">Email envoyé</p>
+            <p className="text-sm font-semibold text-emerald-300">Email envoyé.</p>
             <p className="text-xs text-slate-400">
-              Si <span className="font-mono text-slate-300">{email}</span> existe, un lien de
-              réinitialisation vient d&apos;être envoyé. Vérifie aussi tes spams.
+              Si un compte existe avec <span className="text-slate-200">{email}</span>, tu vas
+              recevoir un lien dans quelques secondes. Pense à vérifier tes spams.
             </p>
             <Link
               to="/login"
               className="mt-2 inline-block text-xs font-semibold text-emerald-400 hover:underline"
             >
-              Retour à la connexion
+              ← Retour à la connexion
             </Link>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-3">
-            <p className="text-xs text-slate-400">
-              Entre ton adresse email. On t&apos;enverra un lien pour choisir un nouveau mot de
-              passe.
-            </p>
-
             <label htmlFor="email" className="block">
               <span className="mb-1 block text-xs font-semibold text-slate-300">Email</span>
               <input
@@ -85,13 +91,13 @@ export default function ResetPassword() {
               </p>
             )}
 
-            <Button type="submit" size="lg" className="mt-2 w-full" disabled={loading || !configured}>
+            <Button type="submit" size="lg" className="w-full" disabled={loading || !configured}>
               {loading ? '…' : 'Envoyer le lien'}
             </Button>
 
-            <p className="pt-2 text-center text-xs text-slate-500">
+            <p className="pt-1 text-center text-xs text-slate-500">
               <Link to="/login" className="font-semibold text-emerald-400 hover:underline">
-                Retour à la connexion
+                ← Retour à la connexion
               </Link>
             </p>
           </form>

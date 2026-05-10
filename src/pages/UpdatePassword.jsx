@@ -1,52 +1,49 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore.js';
 import { toast } from '../store/useToastStore.js';
 import Button from '../components/ui/Button.jsx';
 
-// Page atterrie via le lien envoyé par mail. À ce stade Supabase a déjà
-// consommé le code de l'URL (detectSessionInUrl=true) et créé une session
-// temporaire suffisante pour appeler updateUser({ password }).
 function friendlyError(err) {
   if (!err) return null;
   const m = err.message ?? String(err);
-  if (/Password should be at least/i.test(m)) return 'Mot de passe trop court (min. 6 caractères).';
-  if (/same as the old password/i.test(m)) return 'Choisis un mot de passe différent de l’ancien.';
-  if (/Auth session missing/i.test(m))
-    return 'Lien expiré ou déjà utilisé. Refais une demande de réinitialisation.';
-  if (/non configuré/i.test(m)) return m;
+  if (/Password should be at least/i.test(m))
+    return 'Mot de passe trop court (min. 6 caractères).';
+  if (/Auth session missing|JWT/i.test(m))
+    return 'Lien expiré ou invalide. Refais une demande de réinitialisation.';
   return m;
 }
 
+// Page atterrie après le clic sur le lien dans l'email Supabase :
+//   detectSessionInUrl=true + flowType=pkce → la session "recovery" est
+//   automatiquement consommée par le client. Une fois `ready` à true,
+//   `user` est défini si le lien était valide.
 export default function UpdatePassword() {
-  const navigate = useNavigate();
-  const [password, setPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
-  const [showPwd, setShowPwd] = useState(false);
-  const [localError, setLocalError] = useState(null);
-
-  const user = useAuthStore((s) => s.user);
   const ready = useAuthStore((s) => s.ready);
+  const user = useAuthStore((s) => s.user);
   const loading = useAuthStore((s) => s.loading);
   const error = useAuthStore((s) => s.error);
   const configured = useAuthStore((s) => s.configured);
   const updatePassword = useAuthStore((s) => s.updatePassword);
   const clearError = useAuthStore((s) => s.clearError);
 
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [showPwd, setShowPwd] = useState(false);
+  const [done, setDone] = useState(false);
+  const [localError, setLocalError] = useState(null);
+
   useEffect(() => {
     clearError();
   }, [clearError]);
 
-  // Si on a déjà un user en session (ce qui est attendu après l'arrivée
-  // depuis le mail) on permet le formulaire. Sinon on affiche un message
-  // explicatif (lien expiré ou directement visité sans token).
-  const hasRecoverySession = ready && !!user;
+  if (done) return <Navigate to="/" replace />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLocalError(null);
     if (!configured) return;
+    setLocalError(null);
     if (password.length < 6) {
       setLocalError('Mot de passe trop court (min. 6 caractères).');
       return;
@@ -57,8 +54,8 @@ export default function UpdatePassword() {
     }
     const r = await updatePassword({ password });
     if (r.ok) {
-      toast.success('Mot de passe mis à jour !');
-      navigate('/', { replace: true });
+      toast.success('Mot de passe mis à jour');
+      setDone(true);
     }
   };
 
@@ -73,49 +70,43 @@ export default function UpdatePassword() {
           className="h-20 w-20 rounded-2xl shadow-card ring-1 ring-slate-800"
         />
         <h1 className="text-2xl font-extrabold tracking-tight">Nouveau mot de passe</h1>
+        <p className="max-w-xs text-center text-sm text-slate-400">
+          Choisis un mot de passe que tu pourras retenir.
+        </p>
       </div>
 
       <div className="w-full max-w-sm rounded-2xl bg-slate-900 p-5 ring-1 ring-slate-800 shadow-card">
-        {!ready ? (
-          <p className="text-center text-sm text-slate-400">Chargement…</p>
-        ) : !hasRecoverySession ? (
+        {ready && !user ? (
           <div className="space-y-3 text-center">
-            <p className="text-sm text-slate-300">
-              Ce lien est expiré ou a déjà été utilisé.
-            </p>
-            <p className="text-xs text-slate-500">
-              Demande un nouveau lien de réinitialisation.
+            <p className="text-sm text-rose-300">
+              Lien expiré ou invalide. Refais une demande de réinitialisation.
             </p>
             <Link
               to="/reset-password"
-              className="mt-2 inline-block rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-emerald-400"
+              className="inline-block text-xs font-semibold text-emerald-400 hover:underline"
             >
-              Recommencer
+              Refaire une demande
             </Link>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-3">
-            <p className="text-xs text-slate-400">
-              Choisis un nouveau mot de passe pour{' '}
-              <span className="font-mono text-slate-300">{user?.email}</span>.
-            </p>
-
             <PasswordField
               id="password"
               label="Nouveau mot de passe"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               show={showPwd}
-              onToggleShow={() => setShowPwd((v) => !v)}
+              onToggle={() => setShowPwd((v) => !v)}
+              autoComplete="new-password"
             />
-
             <PasswordField
               id="confirm"
-              label="Confirme le mot de passe"
+              label="Confirmer"
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               show={showPwd}
-              onToggleShow={() => setShowPwd((v) => !v)}
+              onToggle={() => setShowPwd((v) => !v)}
+              autoComplete="new-password"
             />
 
             {(localError || error) && (
@@ -124,7 +115,7 @@ export default function UpdatePassword() {
               </p>
             )}
 
-            <Button type="submit" size="lg" className="mt-2 w-full" disabled={loading || !configured}>
+            <Button type="submit" size="lg" className="w-full" disabled={loading || !configured}>
               {loading ? '…' : 'Mettre à jour'}
             </Button>
           </form>
@@ -134,7 +125,7 @@ export default function UpdatePassword() {
   );
 }
 
-function PasswordField({ id, label, value, onChange, show, onToggleShow }) {
+function PasswordField({ id, label, show, onToggle, ...rest }) {
   return (
     <label htmlFor={id} className="block">
       <span className="mb-1 block text-xs font-semibold text-slate-300">{label}</span>
@@ -142,25 +133,20 @@ function PasswordField({ id, label, value, onChange, show, onToggleShow }) {
         <input
           id={id}
           type={show ? 'text' : 'password'}
-          autoComplete="new-password"
           required
           minLength={6}
-          value={value}
-          onChange={onChange}
+          {...rest}
           placeholder="6 caractères minimum"
           className="w-full rounded-xl bg-slate-950 px-3 py-2.5 pr-11 text-sm text-slate-100 ring-1 ring-slate-800 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-400/70"
         />
-        <div className="absolute inset-y-0 right-1 flex items-center">
-          <button
-            type="button"
-            onClick={onToggleShow}
-            className="grid h-8 w-8 place-items-center rounded-md text-slate-400 hover:text-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/60"
-            aria-label={show ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
-            title={show ? 'Masquer' : 'Afficher'}
-          >
-            {show ? <EyeOff size={18} aria-hidden /> : <Eye size={18} aria-hidden />}
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={onToggle}
+          className="absolute inset-y-0 right-1 grid w-9 place-items-center text-slate-400 hover:text-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/60"
+          aria-label={show ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+        >
+          {show ? <EyeOff size={18} aria-hidden /> : <Eye size={18} aria-hidden />}
+        </button>
       </div>
     </label>
   );
