@@ -29,26 +29,63 @@ Trois Edge Functions Supabase (Deno) pour gérer l'abonnement Premium via Mollie
 
 ## 3. Déployer les fonctions
 
-Avec la [Supabase CLI](https://supabase.com/docs/guides/cli) installée :
+> ⚠️ Supabase CLI ne supporte plus `npm install -g supabase`.
+> Trois options ci-dessous, choisis celle qui te convient.
+
+### Option A — `npx` (recommandé, zéro install)
+
+Pas besoin d'installer la CLI, npx la télécharge à la volée :
 
 ```bash
-# Une seule fois : link au projet
-supabase link --project-ref <ton-project-ref>
-
-# À chaque modif des fonctions :
-supabase functions deploy create-subscription
-supabase functions deploy mollie-webhook --no-verify-jwt
-supabase functions deploy cancel-subscription
+npx supabase login
+npx supabase link --project-ref <ton-project-ref>
+npx supabase functions deploy create-subscription
+npx supabase functions deploy cancel-subscription
+npx supabase functions deploy mollie-webhook --no-verify-jwt
 ```
 
 > ⚠️ `--no-verify-jwt` est **obligatoire** pour le webhook : Mollie n'envoie pas de JWT.
 
-Pour déployer les 3 d'un coup :
+### Option B — Scoop (Windows)
 
-```bash
-supabase functions deploy create-subscription cancel-subscription
+Si tu n'as pas Scoop : `irm get.scoop.sh | iex` dans PowerShell.
+
+```powershell
+scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
+scoop install supabase
+supabase login
+supabase link --project-ref <ton-project-ref>
+supabase functions deploy create-subscription
+supabase functions deploy cancel-subscription
 supabase functions deploy mollie-webhook --no-verify-jwt
 ```
+
+### Option C — Homebrew (macOS / Linux)
+
+```bash
+brew install supabase/tap/supabase
+supabase login
+supabase link --project-ref <ton-project-ref>
+supabase functions deploy create-subscription
+supabase functions deploy cancel-subscription
+supabase functions deploy mollie-webhook --no-verify-jwt
+```
+
+### Option D — Dashboard Supabase (zéro CLI)
+
+Pour 3 fonctions, c'est faisable manuellement :
+
+1. **Edge Functions → Deploy a new function**
+2. Nom = `create-subscription`, colle le contenu de
+   `supabase/functions/create-subscription/index.ts`
+3. Déploie. Répète pour `cancel-subscription`.
+4. Pour `mollie-webhook` : pareil + désactive
+   **Settings → Verify JWT with legacy secret** (équivalent du
+   `--no-verify-jwt`).
+
+Le Dashboard ne supporte pas les imports relatifs vers `_shared/`, donc
+il faudra inliner le contenu de `cors.ts`, `mollie.ts` et
+`supabaseAdmin.ts` dans chaque fonction. La CLI reste plus pratique.
 
 ## 4. Tester en local (optionnel)
 
