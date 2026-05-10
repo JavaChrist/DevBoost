@@ -1,5 +1,18 @@
 // Helpers pour les cours : validation, sync depuis les seeds JSON, progression.
 
+import { pushCourseProgress, schedulePush } from './cloudSync.js';
+import { useAuthStore } from '../store/useAuthStore.js';
+
+// Pousse la progression d'un cours vers le cloud, debounced par slug pour
+// grouper les appels rapides (lecture rapide de plusieurs sections).
+function schedulePushProgress(progress) {
+  const userId = useAuthStore.getState().user?.id;
+  if (!userId || !progress?.slug) return;
+  schedulePush(`course_progress:${progress.slug}`, () =>
+    pushCourseProgress(userId, progress),
+  );
+}
+
 export function validateCourse(course) {
   const errors = [];
   if (!course || typeof course !== 'object') return { ok: false, errors: ['cours invalide'] };
@@ -75,19 +88,23 @@ export async function getProgress(db, slug) {
 
 export async function setLastSection(db, slug, lastSection) {
   const existing = await db.courseProgress.get(slug);
-  await db.courseProgress.put({
+  const next = {
     ...(existing ?? { slug, completed: false, completedAt: null }),
     lastSection,
-  });
+  };
+  await db.courseProgress.put(next);
+  schedulePushProgress(next);
 }
 
 export async function markCompleted(db, slug) {
-  await db.courseProgress.put({
+  const next = {
     slug,
     lastSection: -1,
     completed: true,
     completedAt: new Date().toISOString(),
-  });
+  };
+  await db.courseProgress.put(next);
+  schedulePushProgress(next);
 }
 
 // Pourcentage 0..100 — sections vues + bonus 20% si quiz validé.

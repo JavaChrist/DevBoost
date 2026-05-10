@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import db from '../db/dexie.js';
 import { KNOWN_THEMES } from '../lib/cards.js';
+import { pushSettings, schedulePush } from '../lib/cloudSync.js';
+import { useAuthStore } from './useAuthStore.js';
 
 const DEFAULTS = {
   sessionDuration: 5, // minutes (indicatif → impacte quizCount/challengeCount)
@@ -15,6 +17,11 @@ async function persist(patch) {
     await db.settings.update(1, patch);
   } catch {
     /* noop */
+  }
+  // Push cloud debounced (bouclé sur user_settings pour grouper).
+  const userId = useAuthStore.getState().user?.id;
+  if (userId) {
+    schedulePush('user_settings', () => pushSettings(userId));
   }
 }
 

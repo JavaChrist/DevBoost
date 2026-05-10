@@ -6,7 +6,9 @@ import { nextStreak } from '../lib/streak.js';
 import { sound, vibrate } from '../lib/feedback.js';
 import { useUserStore } from './useUserStore.js';
 import { useSettingsStore } from './useSettingsStore.js';
+import { useAuthStore } from './useAuthStore.js';
 import { toast } from './useToastStore.js';
+import { pushReview, pushSession, pushUserStats } from '../lib/cloudSync.js';
 
 const XP_PASS = 10;
 const XP_BONUS_CHALLENGE = 10; // bonus si challenge réussi
@@ -104,6 +106,19 @@ export const useSessionStore = create((set, get) => ({
     if (settings.haptic) vibrate(ok ? 25 : [40, 30, 40]);
     if (xpGained > 0) toast.success(`+${xpGained} XP`);
 
+    // Push cloud (fire-and-forget) : 1 review = 1 insert.
+    const userId = useAuthStore.getState().user?.id;
+    if (userId) {
+      pushReview(userId, {
+        cardId: card.id,
+        quality,
+        easeFactor: sm.easeFactor,
+        interval: sm.interval,
+        nextReview: sm.nextReview,
+        date: reviewedAt,
+      }).catch(() => {});
+    }
+
     const nextIndex = index + 1;
     const newResults = [...results, { cardId: card.id, quality, ok, xpGained }];
     const isLast = nextIndex >= cards.length;
@@ -165,6 +180,18 @@ export const useSessionStore = create((set, get) => ({
 
     if (newStreak > (user.streak ?? 0)) {
       toast.success(`Streak ${newStreak} 🔥`);
+    }
+
+    // Push cloud : 1 session + stats à jour (fire-and-forget).
+    const userId = useAuthStore.getState().user?.id;
+    if (userId) {
+      pushSession(userId, {
+        cardsCount: cards.length,
+        passed,
+        durationSec,
+        date: today,
+      }).catch(() => {});
+      pushUserStats(userId).catch(() => {});
     }
 
     set({ finishedAt });

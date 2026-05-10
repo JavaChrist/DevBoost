@@ -2,10 +2,20 @@ import { useEffect, useState } from 'react';
 import db from '../../db/dexie.js';
 import { KNOWN_THEMES, validateCard } from '../../lib/cards.js';
 import { toast } from '../../store/useToastStore.js';
+import { useAuthStore } from '../../store/useAuthStore.js';
+import { pushUserCard, deleteUserCard } from '../../lib/cloudSync.js';
 import Modal from '../ui/Modal.jsx';
 import Button from '../ui/Button.jsx';
 import QuizEditor from './QuizEditor.jsx';
 import ChallengeEditor from './ChallengeEditor.jsx';
+
+// Génère un id string pour les cartes créées par l'utilisateur. On
+// distingue ainsi les cartes "perso" (id string, sync cloud) des cartes
+// seedées (id numérique auto-incrémenté par Dexie, jamais sync).
+function makeUserCardId() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+  return `c_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+}
 
 const labelCls = 'text-xs font-semibold uppercase tracking-widest text-slate-400';
 
@@ -56,14 +66,23 @@ export default function CardEditor({ open, card, onClose, onSaved }) {
       toast.error(`Carte invalide : ${v.errors[0]}`);
       return;
     }
+    const userId = useAuthStore.getState().user?.id;
+
     if (isNew) {
+      // Force un id string pour pouvoir sync (les seedées gardent leur id num).
+      toSave = { ...toSave, id: makeUserCardId() };
       await db.cards.add(toSave);
       toast.success('Carte créée');
+      if (userId) pushUserCard(userId, toSave).catch(() => {});
     } else {
       const { id, ...patch } = toSave;
       void id;
       await db.cards.update(card.id, patch);
       toast.success('Carte sauvegardée');
+      // Si la carte est perso (id string), on push la version mise à jour.
+      if (userId && typeof card.id === 'string') {
+        pushUserCard(userId, { ...toSave, id: card.id }).catch(() => {});
+      }
     }
     onSaved?.();
     onClose?.();
@@ -74,8 +93,13 @@ export default function CardEditor({ open, card, onClose, onSaved }) {
       setConfirmDelete(true);
       return;
     }
-    await db.cards.delete(card.id);
+    const cardId = card.id;
+    const userId = useAuthStore.getState().user?.id;
+    await db.cards.delete(cardId);
     toast.show('Carte supprimée');
+    if (userId && typeof cardId === 'string') {
+      deleteUserCard(userId, cardId).catch(() => {});
+    }
     onSaved?.();
     onClose?.();
   };

@@ -7,6 +7,8 @@ import Toaster from './components/ui/Toaster.jsx';
 import useDbInit from './hooks/useDbInit.js';
 import useDailyNotification from './hooks/useDailyNotification.js';
 import { useAuthStore } from './store/useAuthStore.js';
+import { useSyncStore } from './store/useSyncStore.js';
+import { pullAllFromCloud } from './lib/cloudSync.js';
 
 // Routes où la BottomNav ne doit pas apparaître.
 const BARE_ROUTES = ['/login', '/reset-password', '/update-password'];
@@ -36,6 +38,29 @@ export default function App() {
   useEffect(() => {
     hydrateAuth();
   }, [hydrateAuth]);
+
+  // Resync au retour en ligne et marquage offline en cas de coupure.
+  useEffect(() => {
+    const onOnline = () => {
+      const userId = useAuthStore.getState().user?.id;
+      const sync = useSyncStore.getState();
+      if (!userId) return;
+      sync.setPulling();
+      pullAllFromCloud(userId)
+        .then(() => sync.setIdle())
+        .catch((err) => sync.setError(err));
+    };
+    const onOffline = () => useSyncStore.getState().setOffline();
+    window.addEventListener('online', onOnline);
+    window.addEventListener('offline', onOffline);
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      useSyncStore.getState().setOffline();
+    }
+    return () => {
+      window.removeEventListener('online', onOnline);
+      window.removeEventListener('offline', onOffline);
+    };
+  }, []);
 
   if (error) {
     return (

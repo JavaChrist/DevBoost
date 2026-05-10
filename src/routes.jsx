@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Dashboard from './pages/Dashboard.jsx';
 import Login from './pages/Login.jsx';
 import RequireAuth from './components/auth/RequireAuth.jsx';
+import { useAuthStore } from './store/useAuthStore.js';
 
 // Pages secondaires lazy-loaded : Session embarque framer-motion + cards,
 // les autres écrans ne servent pas au premier render.
@@ -14,6 +15,7 @@ const Courses = lazy(() => import('./pages/Courses.jsx'));
 const Course = lazy(() => import('./pages/Course.jsx'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword.jsx'));
 const UpdatePassword = lazy(() => import('./pages/UpdatePassword.jsx'));
+const Landing = lazy(() => import('./pages/Landing.jsx'));
 
 function RouteFallback() {
   return (
@@ -26,6 +28,13 @@ function RouteFallback() {
 // Wrapper court pour réduire la verbosité des routes protégées.
 const Protected = (el) => <RequireAuth>{el}</RequireAuth>;
 
+// La home est publique : Landing pour les visiteurs, Dashboard pour les
+// utilisateurs connectés. Évite que la 1re visite tombe sur un login froid.
+function Home() {
+  const user = useAuthStore((s) => s.user);
+  return user ? <Dashboard /> : <Landing />;
+}
+
 export default function AppRoutes() {
   return (
     <Suspense fallback={<RouteFallback />}>
@@ -35,8 +44,10 @@ export default function AppRoutes() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/update-password" element={<UpdatePassword />} />
 
+        {/* Home publique (Landing si non connecté, Dashboard si connecté) */}
+        <Route path="/" element={<Home />} />
+
         {/* Protégées */}
-        <Route path="/" element={Protected(<Dashboard />)} />
         <Route path="/session" element={Protected(<Session />)} />
         <Route path="/library" element={Protected(<Library />)} />
         <Route path="/courses" element={Protected(<Courses />)} />

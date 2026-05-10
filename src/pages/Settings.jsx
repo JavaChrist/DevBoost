@@ -14,6 +14,8 @@ import {
 import { sound, vibrate } from '../lib/feedback.js';
 import { toast } from '../store/useToastStore.js';
 import { useAuthStore } from '../store/useAuthStore.js';
+import { useSyncStore } from '../store/useSyncStore.js';
+import { pullAllFromCloud, pushAllToCloud } from '../lib/cloudSync.js';
 import Button from '../components/ui/Button.jsx';
 import SignOutButton from '../components/auth/SignOutButton.jsx';
 
@@ -30,9 +32,12 @@ export default function Settings() {
   const setHaptic = useSettingsStore((s) => s.setHaptic);
 
   const authUser = useAuthStore((s) => s.user);
+  const syncStatus = useSyncStore((s) => s.status);
+  const lastSyncedAt = useSyncStore((s) => s.lastSyncedAt);
 
   const [permission, setPermission] = useState(getPermission());
   const [confirmReset, setConfirmReset] = useState(false);
+  const [syncBusy, setSyncBusy] = useState(false);
 
   // Recalcule la permission quand la fenêtre revient au focus.
   useEffect(() => {
@@ -82,6 +87,25 @@ export default function Settings() {
     if (next) vibrate(30);
   };
 
+  const handleManualSync = async () => {
+    if (!authUser?.id || syncBusy) return;
+    setSyncBusy(true);
+    const sync = useSyncStore.getState();
+    sync.setPushing();
+    try {
+      await pushAllToCloud(authUser.id);
+      sync.setPulling();
+      await pullAllFromCloud(authUser.id);
+      sync.setIdle();
+      toast.success('Synchronisé');
+    } catch (err) {
+      sync.setError(err);
+      toast.error('Synchro impossible');
+    } finally {
+      setSyncBusy(false);
+    }
+  };
+
   const handleReset = async () => {
     if (!confirmReset) {
       setConfirmReset(true);
@@ -114,6 +138,24 @@ export default function Settings() {
               </p>
               <p className="truncate text-[11px] text-slate-500">{authUser.email}</p>
             </div>
+          </div>
+          <div className="mt-3 flex items-center justify-between gap-2 rounded-lg bg-slate-950/40 px-3 py-2 ring-1 ring-slate-800">
+            <div className="min-w-0">
+              <p className="text-[11px] font-semibold text-slate-300">{syncLabel(syncStatus)}</p>
+              <p className="truncate text-[10px] text-slate-500">
+                {lastSyncedAt
+                  ? `Dernière synchro : ${formatRelative(lastSyncedAt)}`
+                  : 'Pas encore synchronisé'}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleManualSync}
+              disabled={syncBusy || syncStatus === 'pulling' || syncStatus === 'pushing'}
+              className="shrink-0 rounded-md bg-slate-800 px-2.5 py-1 text-[11px] font-semibold text-slate-200 ring-1 ring-slate-700 hover:bg-slate-700 disabled:opacity-50"
+            >
+              {syncBusy ? '…' : 'Sync'}
+            </button>
           </div>
           <SignOutButton className="mt-3" />
         </Section>
@@ -264,6 +306,29 @@ export default function Settings() {
       <p className="pb-4 pt-2 text-center text-[11px] text-slate-600">DevBoost v0.1 · MVP</p>
     </section>
   );
+}
+
+function syncLabel(status) {
+  switch (status) {
+    case 'pulling':
+      return 'Récupération du cloud…';
+    case 'pushing':
+      return 'Envoi vers le cloud…';
+    case 'offline':
+      return 'Hors ligne — sync différée';
+    case 'error':
+      return 'Erreur de synchronisation';
+    default:
+      return 'Synchronisation cloud OK';
+  }
+}
+
+function formatRelative(ts) {
+  const diff = Date.now() - ts;
+  if (diff < 60_000) return 'à l’instant';
+  if (diff < 3_600_000) return `il y a ${Math.round(diff / 60_000)} min`;
+  if (diff < 86_400_000) return `il y a ${Math.round(diff / 3_600_000)} h`;
+  return new Date(ts).toLocaleString();
 }
 
 function Section({ title, subtitle, children }) {

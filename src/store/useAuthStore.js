@@ -2,8 +2,12 @@
 // - hydrate() : récupère la session existante au démarrage
 // - listener auto sur onAuthStateChange : tient le state à jour si la session
 //   est invalidée (logout d'un autre onglet, expiration, etc.)
+// - À chaque connexion détectée, déclenche un pull cloud des données
+//   utilisateur (XP, settings, course progress, cartes perso, reviews).
 import { create } from 'zustand';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
+import { pullAllFromCloud } from '../lib/cloudSync.js';
+import { useSyncStore } from './useSyncStore.js';
 
 function pickProfile(user) {
   if (!user) return null;
@@ -27,18 +31,38 @@ export const useAuthStore = create((set, get) => ({
   // --- actions ---
   hydrate: async () => {
     if (get().ready) return;
+    let firstUserId = null;
     try {
       const { data } = await supabase.auth.getSession();
-      set({ user: pickProfile(data?.session?.user), ready: true });
+      const profile = pickProfile(data?.session?.user);
+      firstUserId = profile?.id ?? null;
+      set({ user: profile, ready: true });
     } catch (err) {
       // eslint-disable-next-line no-console
       if (import.meta.env?.DEV) console.error('[auth] hydrate error:', err);
       set({ user: null, ready: true, error: err });
     }
 
+    // 1er pull si l'utilisateur était déjà connecté à l'ouverture de l'app.
+    if (firstUserId) {
+      runCloudPull(firstUserId);
+    }
+
     // Écoute les changements (signin/signout/token refresh).
-    supabase.auth.onAuthStateChange((_event, session) => {
-      set({ user: pickProfile(session?.user) });
+    let lastUserId = firstUserId;
+    supabase.auth.onAuthStateChange((event, session) => {
+      const profile = pickProfile(session?.user);
+      set({ user: profile });
+      // Pull à chaque nouvelle connexion (signin, oauth, recovery accepté…)
+      // mais pas sur TOKEN_REFRESHED ni USER_UPDATED.
+      if (
+        profile?.id &&
+        profile.id !== lastUserId &&
+        (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')
+      ) {
+        runCloudPull(profile.id);
+      }
+      lastUserId = profile?.id ?? null;
     });
   },
 
@@ -128,3 +152,21 @@ export const useAuthStore = create((set, get) => ({
 
   clearError: () => set({ error: null }),
 }));
+
+// Helper interne : pull cloud avec gestion d'état UI.
+async function runCloudPull(userId) {
+  const sync = useSyncStore.getState();
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    sync.setOffline();
+    return;
+  }
+  sync.setPulling();
+  try {
+    await pullAllFromCloud(userId);
+    sync.setIdle();
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    if (import.meta.env?.DEV) console.warn('[sync] pull error:', err);
+    sync.setError(err);
+  }
+}
