@@ -28,3 +28,7 @@ dev-dist
 .env
 .env.local
 .env.*.local
+
+# Supabase CLI cache (link, versions, project-ref)
+supabase/.temp/
+supabase/.branches/

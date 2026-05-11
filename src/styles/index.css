@@ -11,6 +11,13 @@
   body,
   #root {
     height: 100%;
+    /* Empêche tout scroll horizontal accidentel (cartes swipées hors écran,
+       transforms framer-motion, modales débordantes, etc.). On utilise
+       `clip` plutôt que `hidden` car `clip` n'établit PAS un nouveau
+       conteneur de défilement → meilleur pour les overlays fixed/sticky.
+       Fallback `hidden` pour les vieux navigateurs. */
+    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   body {

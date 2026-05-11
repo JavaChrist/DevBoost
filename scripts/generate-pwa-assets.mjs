@@ -80,6 +80,22 @@ if (FORCE || !(await exists(appleIcon))) {
   console.log(`[icons] ${appleIcon} déjà présent → skip`);
 }
 
+// --- logo-maskable : 512x512 avec safe zone Android ---
+// Android crop l'icône maskable dans un cercle/squircle de ~80% du carré.
+// Pour éviter "letter-on-background" (icône remplacée par la lettre du nom),
+// on rend le logo dans les 60% centraux + fond plein opaque.
+// → ALWAYS regenerated (toujours dérivé de logo.svg, pas un asset manuel).
+const maskable = 'public/logo-maskable.png';
+const inner = Math.round(512 * 0.6);
+const innerMaskBuf = await sharp(SRC).resize(inner, inner).png().toBuffer();
+await sharp({
+  create: { width: 512, height: 512, channels: 4, background: BG },
+})
+  .composite([{ input: innerMaskBuf, gravity: 'center' }])
+  .png()
+  .toFile(maskable);
+console.log(`[icons] ${maskable} (safe-zone 60%)`);
+
 // --- Splash screens iOS ---
 // Logo centré occupant ~30% de la plus petite dimension, fond plein BG.
 for (const [w, h, , label] of SPLASH) {

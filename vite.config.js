@@ -20,6 +20,7 @@ export default defineConfig({
         'apple-touch-icon.png',
         'apple-touch-icon-3d.png',
         'logo.svg',
+        'logo-maskable.png',
       ],
       manifest: {
         name: 'DevBoost',
@@ -44,7 +45,10 @@ export default defineConfig({
           { src: 'logo256.png', sizes: '256x256', type: 'image/png' },
           { src: 'logo384.png', sizes: '384x384', type: 'image/png' },
           { src: 'logo512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
-          { src: 'logo512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+          // Icône dédiée 'maskable' avec safe-zone (logo dans les 60% centraux + fond plein).
+          // Évite que Chrome Android n'affiche un fond avec la lettre "D" quand le logo
+          // a de la transparence ou n'est pas dans la zone safe.
+          { src: 'logo-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
       workbox: {
