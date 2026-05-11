@@ -13,8 +13,12 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="DevBoost" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-3d.png" />
+    <!-- iOS utilise EXCLUSIVEMENT apple-touch-icon (ignore le manifest).
+         Une seule déclaration, taille exacte (180x180), opaque (sans alpha).
+         Si la taille déclarée ne matche PAS le fichier réel, iOS rejette
+         silencieusement l'icône et affiche la 1ère lettre de
+         apple-mobile-web-app-title (= "D" pour DevBoost). -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
     <!-- iOS splash screens (apple-touch-startup-image)
          Une déclaration par modèle. Sans ces media queries, iOS affiche un

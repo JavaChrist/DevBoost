@@ -18,7 +18,6 @@ export default defineConfig({
         'favicon.ico',
         'robots.txt',
         'apple-touch-icon.png',
-        'apple-touch-icon-3d.png',
         'logo.svg',
         'logo-maskable.png',
       ],
